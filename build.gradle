@@ -1,6 +1,5 @@
 buildscript {
     
-
     repositories {
         mavenLocal()
         mavenCentral()
@@ -10,24 +9,19 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.2.0'
-        
-
+        classpath 'com.android.tools.build:gradle:3.3.2'
     }
 }
 
 allprojects {
-    apply plugin: "eclipse"
+    
     apply plugin: "idea"
 
     version = '1.0'
     ext {
         appName = "re_planetoria"
         gdxVersion = '1.9.9'
-        roboVMVersion = '2.3.6'
-        box2DLightsVersion = '1.4'
-        ashleyVersion = '1.7.0'
-        aiVersion = '1.8.0'
+        ashleyVersion = '1.7.3'
     }
 
     repositories {
@@ -41,18 +35,18 @@ allprojects {
 }
 
 project(":desktop") {
-    apply plugin: "java"
 
+    apply plugin: "java"
 
     dependencies {
         implementation project(":core")
         implementation "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
         implementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
-        
     }
 }
 
 project(":android") {
+
     apply plugin: "android"
 
     configurations { natives }
@@ -66,21 +60,15 @@ project(":android") {
         natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86"
         natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86_64"
         implementation "com.badlogicgames.ashley:ashley:$ashleyVersion"
-        
     }
 }
 
 project(":core") {
-    apply plugin: "java"
 
+    apply plugin: "java"
 
     dependencies {
         implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
         implementation "com.badlogicgames.ashley:ashley:$ashleyVersion"
-        
     }
-}
-
-tasks.eclipse.doLast {
-    delete ".project"
 }

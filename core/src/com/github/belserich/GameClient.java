@@ -6,6 +6,7 @@ public class GameClient extends ApplicationAdapter {
 	
 	@Override
 	public void create () {
+	
 	}
 
 	@Override
