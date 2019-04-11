@@ -66,7 +66,7 @@ public class StateDomain implements State {
 	/**
 	 * Checks whether the specified state id is a valid id in this domain. Throws an {@link IllegalArgumentException} exception if it is not.
 	 *
-	 * @param state the state to check
+	 * @param state state in question
 	 * @return whether the specified state id is valid in this context
 	 */
 	private boolean check(int state) {
