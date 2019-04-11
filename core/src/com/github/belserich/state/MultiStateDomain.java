@@ -11,7 +11,7 @@ import java.util.List;
 public class MultiStateDomain implements State {
 	
 	/**
-	 * State objects making up this domain
+	 * state objects making up this domain
 	 */
 	private final List<State> states;
 	
