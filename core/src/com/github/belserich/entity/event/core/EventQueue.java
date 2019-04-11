@@ -3,11 +3,11 @@ package com.github.belserich.entity.event.core;
 import com.badlogic.gdx.utils.Array;
 import com.google.common.eventbus.EventBus;
 
-public class QueuedEventBus extends EventBus {
+public class EventQueue extends EventBus {
 	
 	private Array<EntityEvent> queue;
 	
-	public QueuedEventBus() {
+	public EventQueue() {
 		queue = new Array<EntityEvent>();
 	}
 	
