@@ -166,6 +166,15 @@ public abstract class EntityEvSystem<T extends Component> extends EntitySystem i
 		}
 	}
 	
+	public void justAdded(Entity entity) {
+	}
+	
+	public void justRemoved(Entity entity) {
+	}
+	
+	public void update(Entity entity) {
+	}
+	
 	/**
 	 * Flags an entity for updates.
 	 *
