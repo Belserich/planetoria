@@ -2,6 +2,16 @@ package com.github.belserich.asset;
 
 public enum UiZones {
 	
-	P1_BATTLE, P1_REPAIR, P1_PLANET, P1_MOTHER, P1_DECK, P1_YARD,
-	P2_BATTLE, P2_REPAIR, P2_PLANET, P2_MOTHER, P2_DECK, P2_YARD
+	P0_BATTLE(0), P0_REPAIR(0), P0_PLANET(0), P0_MOTHER(0), P0_DECK(0), P0_YARD(0),
+	P1_BATTLE(1), P1_REPAIR(1), P1_PLANET(1), P1_MOTHER(1), P1_DECK(1), P1_YARD(1);
+	
+	private int playerNumber;
+	
+	UiZones(int playerNumber) {
+		this.playerNumber = playerNumber;
+	}
+	
+	public int playerNumber() {
+		return playerNumber;
+	}
 }
