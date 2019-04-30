@@ -218,7 +218,9 @@ public abstract class EntityEvSystem<T extends Component> extends EntitySystem i
 		flagged.clear();
 		removal.clear();
 		
-		autoFlagger.dispose();
+		if (autoFlagger != null) {
+			autoFlagger.dispose();
+		}
 		autoFlagger = null;
 	}
 	
