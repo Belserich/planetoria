@@ -7,8 +7,8 @@ import com.github.belserich.GameClient;
 public class DesktopLauncher {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		config.width = 800;
-		config.height = 600;
+		config.width = 1200;
+		config.height = 900;
 		new LwjglApplication(new GameClient(), config);
 	}
 }
