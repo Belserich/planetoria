@@ -7,13 +7,13 @@ public class UiComponent implements Component {
 	
 	public UiZones zone;
 	public String displayName;
-	public float lp, ap, sp;
+	public String lpStr, apStr, spStr;
 	
-	public UiComponent(UiZones zone, String displayName, float lp, float ap, float sp) {
+	public UiComponent(UiZones zone, String displayName, String lpStr, String apStr, String spStr) {
 		this.zone = zone;
 		this.displayName = displayName;
-		this.lp = lp;
-		this.ap = ap;
-		this.sp = sp;
+		this.lpStr = lpStr;
+		this.apStr = apStr;
+		this.spStr = spStr;
 	}
 }
