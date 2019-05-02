@@ -3,8 +3,8 @@ package com.github.belserich.entity.system;
 import com.badlogic.ashley.core.Entity;
 import com.github.belserich.entity.component.LifeComponent;
 import com.github.belserich.entity.core.EntityEvSystem;
-import com.github.belserich.entity.event.SingleCardAttackEvent;
-import com.github.belserich.entity.event.SingleCardAttackLpEvent;
+import com.github.belserich.entity.event.attack.CardAttackEvent;
+import com.github.belserich.entity.event.attack.CardAttackLpEvent;
 import com.github.belserich.entity.event.core.EventQueue;
 import com.google.common.eventbus.Subscribe;
 
@@ -15,7 +15,7 @@ public class LifeSystem extends EntityEvSystem<LifeComponent> {
 	}
 	
 	@Subscribe
-	public void on(SingleCardAttackEvent ev) {
+	public void on(CardAttackEvent ev) {
 		
 		Entity attacked = ev.attacked();
 		if (mapper.has(attacked)) {
@@ -23,7 +23,7 @@ public class LifeSystem extends EntityEvSystem<LifeComponent> {
 			comp = mapper.get(attacked);
 			float oldPts = comp.pts;
 			comp.pts = comp.pts - ev.attackPts();
-			queueEvent(new SingleCardAttackLpEvent(ev, oldPts, comp.pts));
+			queueEvent(new CardAttackLpEvent(ev, oldPts, comp.pts));
 		}
 	}
 }

@@ -1,16 +1,16 @@
-package com.github.belserich.entity.event;
+package com.github.belserich.entity.event.base;
 
 import com.badlogic.ashley.core.Entity;
 
-public class SingleCardAttackEvent extends SingleCardInteractEvent {
+public abstract class CardAttackBaseEvent extends CardInteractBaseEvent {
 	
 	private final float attackPts;
 	
-	public SingleCardAttackEvent(SingleCardInteractEvent ev, float attackPts) {
+	public CardAttackBaseEvent(CardInteractBaseEvent ev, float attackPts) {
 		this(ev.sourceCard(), ev.destCard(), attackPts);
 	}
 	
-	public SingleCardAttackEvent(Entity sourceCard, Entity destCard, float attackPts) {
+	public CardAttackBaseEvent(Entity sourceCard, Entity destCard, float attackPts) {
 		super(sourceCard, destCard);
 		this.attackPts = attackPts;
 	}

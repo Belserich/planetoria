@@ -3,9 +3,9 @@ package com.github.belserich.entity.system;
 import com.badlogic.ashley.core.Entity;
 import com.github.belserich.entity.component.AttackComponent;
 import com.github.belserich.entity.core.EntityEvSystem;
-import com.github.belserich.entity.event.SingleCardAttackEvent;
-import com.github.belserich.entity.event.SingleCardUiInteractEvent;
+import com.github.belserich.entity.event.attack.CardAttackEvent;
 import com.github.belserich.entity.event.core.EventQueue;
+import com.github.belserich.entity.event.interact.CardInteractEvent;
 import com.google.common.eventbus.Subscribe;
 
 public class AttackSystem extends EntityEvSystem<AttackComponent> {
@@ -15,13 +15,13 @@ public class AttackSystem extends EntityEvSystem<AttackComponent> {
 	}
 	
 	@Subscribe
-	public void on(SingleCardUiInteractEvent ev) {
+	public void on(CardInteractEvent ev) {
 		
 		Entity source = ev.sourceCard();
 		if (mapper.has(source)) {
 			
 			comp = mapper.get(source);
-			queueEvent(new SingleCardAttackEvent(ev, comp.pts));
+			queueEvent(new CardAttackEvent(ev, comp.pts));
 		}
 	}
 }

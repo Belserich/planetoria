@@ -1,13 +1,13 @@
-package com.github.belserich.entity.event;
+package com.github.belserich.entity.event.base;
 
 import com.badlogic.ashley.core.Entity;
 import com.github.belserich.entity.event.core.EntityEvent;
 
-public class SingleCardInteractEvent extends EntityEvent {
+public abstract class CardInteractBaseEvent extends EntityEvent {
 	
 	private final Entity destCard;
 	
-	public SingleCardInteractEvent(Entity sourceCard, Entity destCard) {
+	public CardInteractBaseEvent(Entity sourceCard, Entity destCard) {
 		super(sourceCard);
 		this.destCard = destCard;
 	}

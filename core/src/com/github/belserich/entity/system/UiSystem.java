@@ -17,10 +17,10 @@ import com.badlogic.gdx.utils.Align;
 import com.github.belserich.asset.UiZones;
 import com.github.belserich.entity.component.UiComponent;
 import com.github.belserich.entity.core.EntityEvSystem;
-import com.github.belserich.entity.event.SingleCardAttackLpEvent;
-import com.github.belserich.entity.event.SingleCardSelectEvent;
-import com.github.belserich.entity.event.SingleCardUiInteractEvent;
+import com.github.belserich.entity.event.attack.CardAttackLpEvent;
 import com.github.belserich.entity.event.core.EventQueue;
+import com.github.belserich.entity.event.interact.CardInteractEvent;
+import com.github.belserich.entity.event.select.CardSelectEvent;
 import com.google.common.base.Optional;
 import com.google.common.eventbus.Subscribe;
 
@@ -167,14 +167,14 @@ public class UiSystem extends EntityEvSystem<UiComponent> {
 		comp = mapper.get(entity);
 		if (comp.zone.playerNumber() == currPlayer) {
 			selectedCard = Optional.of(entity);
-			queueEvent(new SingleCardSelectEvent(entity));
+			queueEvent(new CardSelectEvent(entity));
 		} else if (selectedCard.isPresent()) {
-			queueEvent(new SingleCardUiInteractEvent(selectedCard.get(), entity));
+			queueEvent(new CardInteractEvent(selectedCard.get(), entity));
 		}
 	}
 	
 	@Subscribe
-	public void on(SingleCardAttackLpEvent ev) {
+	public void on(CardAttackLpEvent ev) {
 		
 		Entity attacked = ev.destCard();
 		if (mapper.has(attacked)) {
