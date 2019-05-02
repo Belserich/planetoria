@@ -17,8 +17,8 @@ import com.badlogic.gdx.utils.Align;
 import com.github.belserich.asset.UiZones;
 import com.github.belserich.entity.component.UiComponent;
 import com.github.belserich.entity.core.EntityEvSystem;
-import com.github.belserich.entity.event.SingleCardInteractEvent;
 import com.github.belserich.entity.event.SingleCardSelectEvent;
+import com.github.belserich.entity.event.SingleCardUiInteractEvent;
 import com.github.belserich.entity.event.core.EventQueue;
 import com.google.common.base.Optional;
 
@@ -41,8 +41,8 @@ public class UiSystem extends EntityEvSystem<UiComponent> {
 	
 	private int zoneIndex;
 	
-	public UiSystem(EventQueue eventBus, Class clazz) {
-		super(eventBus, true, clazz);
+	public UiSystem(EventQueue eventBus) {
+		super(eventBus, true, UiComponent.class);
 		
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
@@ -157,7 +157,7 @@ public class UiSystem extends EntityEvSystem<UiComponent> {
 			selectedCard = Optional.of(entity);
 			queueEvent(new SingleCardSelectEvent(entity));
 		} else if (selectedCard.isPresent()) {
-			queueEvent(new SingleCardInteractEvent(selectedCard.get(), entity));
+			queueEvent(new SingleCardUiInteractEvent(selectedCard.get(), entity));
 		}
 	}
 	

@@ -44,7 +44,7 @@ public class GameClient extends ApplicationAdapter {
 	
 	private void createSystems() {
 		
-		uiSys = new UiSystem(queue, UiComponent.class);
+		uiSys = new UiSystem(queue);
 		engine.addSystem(uiSys);
 	}
 	
