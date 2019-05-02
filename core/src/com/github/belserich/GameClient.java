@@ -62,7 +62,7 @@ public class GameClient extends ApplicationAdapter {
 		
 		entity.add(new LifeComponent(1));
 		entity.add(new ShieldComponent(1));
-		entity.add(new AttackComponent(1));
+		entity.add(new AttackComponent(1, 1));
 		entity.add(new UiComponent(zone, "Raumschiff A", "1.0", "1.0", "1.0"));
 		return entity;
 	}
@@ -71,7 +71,7 @@ public class GameClient extends ApplicationAdapter {
 		
 		entity.add(new LifeComponent(2));
 		entity.add(new ShieldComponent(2));
-		entity.add(new AttackComponent(2));
+		entity.add(new AttackComponent(2, 1));
 		entity.add(new UiComponent(zone, "Raumschiff B", "2.0", "2.0", "2.0"));
 		return entity;
 	}
