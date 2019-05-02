@@ -21,7 +21,7 @@ public class AttackSystem extends EntityEvSystem<AttackComponent> {
 		if (mapper.has(source)) {
 			
 			comp = mapper.get(source);
-			queueEvent(new SingleCardAttackEvent(source, ev.destCard(), comp.pts));
+			queueEvent(new SingleCardAttackEvent(ev, comp.pts));
 		}
 	}
 }

@@ -11,6 +11,7 @@ import com.github.belserich.entity.component.UiComponent;
 import com.github.belserich.entity.core.EntityEvEngine;
 import com.github.belserich.entity.event.core.EventQueue;
 import com.github.belserich.entity.system.AttackSystem;
+import com.github.belserich.entity.system.LifeSystem;
 import com.github.belserich.entity.system.UiSystem;
 
 public class GameClient extends ApplicationAdapter {
@@ -20,6 +21,7 @@ public class GameClient extends ApplicationAdapter {
 	
 	private UiSystem uiSys;
 	private AttackSystem attackSys;
+	private LifeSystem lifeSys;
 	
 	@Override
 	public void create () {
@@ -51,6 +53,9 @@ public class GameClient extends ApplicationAdapter {
 		
 		attackSys = new AttackSystem(queue);
 		engine.addSystem(attackSys);
+		
+		lifeSys = new LifeSystem(queue);
+		engine.addSystem(lifeSys);
 	}
 	
 	private Entity createShipA(Entity entity, UiZones zone) {
