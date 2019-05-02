@@ -17,20 +17,26 @@ import com.badlogic.gdx.utils.Align;
 import com.github.belserich.asset.UiZones;
 import com.github.belserich.entity.component.UiComponent;
 import com.github.belserich.entity.core.EntityEvSystem;
+import com.github.belserich.entity.event.SingleCardAttackLpEvent;
 import com.github.belserich.entity.event.SingleCardSelectEvent;
 import com.github.belserich.entity.event.SingleCardUiInteractEvent;
 import com.github.belserich.entity.event.core.EventQueue;
 import com.google.common.base.Optional;
+import com.google.common.eventbus.Subscribe;
 
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 
 public class UiSystem extends EntityEvSystem<UiComponent> {
 	
 	public static final int[] CARDS_PER_ROW = new int[]{8, 7, 7, 8};
 	private static final float CARD_HEIGHT_FACTOR = 1.421f;
 	private static final float MIN_CARD_WIDTH = 75f * 1.5f;
+	
 	private Stage stage;
+	private Table table;
 	private BitmapFont font;
 	
 	private Cell[] cardCells;
@@ -85,7 +91,7 @@ public class UiSystem extends EntityEvSystem<UiComponent> {
 		
 		stage.setDebugAll(true);
 		
-		Table table = new Table();
+		table = new Table();
 		table.setFillParent(true);
 		
 		int cardCount = 0;
@@ -124,19 +130,25 @@ public class UiSystem extends EntityEvSystem<UiComponent> {
 	public synchronized void justAdded(Entity entity) {
 		
 		comp = mapper.get(entity);
-		int index = zones.get(comp.zone).freeIndex();
+		int index = zones.get(comp.zone).freeIndex(entity);
 		if (index != -1) {
-			
-			String cardString = comp.displayName + "\nLP: " + comp.lpStr + "\nAP: " + comp.apStr + "\nSP: " + comp.spStr;
-			Label.LabelStyle style = new Label.LabelStyle(font, Color.BLACK);
-			
-			Label cardText = new Label(cardString, style);
-			cardText.addListener(new CardClickListener(entity));
-			cardText.setAlignment(Align.center);
-			cardText.setWrap(true);
-			
-			cardCells[index].setActor(cardText);
+			setCardAt(index, entity);
 		}
+	}
+	
+	private void setCardAt(int cellIndex, Entity entity) {
+		
+		comp = mapper.get(entity);
+		
+		String cardString = comp.displayName + "\nLP: " + comp.lpStr + "\nAP: " + comp.apStr + "\nSP: " + comp.spStr;
+		Label.LabelStyle style = new Label.LabelStyle(font, Color.BLACK);
+		
+		Label cardText = new Label(cardString, style);
+		cardText.addListener(new CardClickListener(entity));
+		cardText.setAlignment(Align.center);
+		cardText.setWrap(true);
+		
+		cardCells[cellIndex].setActor(cardText);
 	}
 	
 	@Override
@@ -161,6 +173,19 @@ public class UiSystem extends EntityEvSystem<UiComponent> {
 		}
 	}
 	
+	@Subscribe
+	public void on(SingleCardAttackLpEvent ev) {
+		
+		Entity attacked = ev.destCard();
+		if (mapper.has(attacked)) {
+			
+			comp = mapper.get(attacked);
+			comp.lpStr = String.valueOf(ev.newLp());
+			ZoneMeta meta = zones.get(comp.zone);
+			setCardAt(meta.indexOf(attacked), attacked);
+		}
+	}
+	
 	public void resize(int width, int height) {
 		// TODO
 	}
@@ -170,36 +195,31 @@ public class UiSystem extends EntityEvSystem<UiComponent> {
 		private LinkedList<Integer> freeIndices;
 		private LinkedList<Integer> occupiedIndices;
 		
+		private Map<Entity, Integer> cellIds;
+		
 		public ZoneMeta(int... indices) {
 			freeIndices = new LinkedList<Integer>();
 			occupiedIndices = new LinkedList<Integer>();
+			
+			cellIds = new HashMap<Entity, Integer>();
 			
 			for (int i = 0; i < indices.length; i++) {
 				freeIndices.add(indices[i]);
 			}
 		}
 		
-		int freeIndex() {
+		int freeIndex(Entity entity) {
 			if (!freeIndices.isEmpty()) {
 				int index = freeIndices.remove();
 				occupiedIndices.add(index);
+				cellIds.put(entity, index);
 				return index;
 			}
 			return -1;
 		}
 		
-		int occupiedIndex() {
-			if (!occupiedIndices.isEmpty()) {
-				int index = occupiedIndices.remove();
-				freeIndices.add(index);
-				return index;
-			}
-			return -1;
-		}
-		
-		void release(int index) {
-			occupiedIndices.remove(index);
-			freeIndices.add(index);
+		int indexOf(Entity entity) {
+			return cellIds.get(entity);
 		}
 	}
 	
