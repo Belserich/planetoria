@@ -24,10 +24,7 @@ import com.github.belserich.entity.event.select.CardSelectEvent;
 import com.google.common.base.Optional;
 import com.google.common.eventbus.Subscribe;
 
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
+import java.util.*;
 
 public class UiSystem extends EntityEvSystem<UiComponent> {
 	
@@ -43,7 +40,8 @@ public class UiSystem extends EntityEvSystem<UiComponent> {
 	private EnumMap<UiZones, ZoneMeta> zones;
 	
 	private int currPlayer;
-	private Optional<Entity> selectedCard;
+	private Optional<Entity> primaryCard;
+	private Set<Entity> secondaryCards;
 	
 	private int zoneIndex;
 	
@@ -67,7 +65,8 @@ public class UiSystem extends EntityEvSystem<UiComponent> {
 		zones = new EnumMap<UiZones, ZoneMeta>(UiZones.class);
 		
 		currPlayer = 0;
-		selectedCard = Optional.absent();
+		primaryCard = Optional.absent();
+		secondaryCards = new HashSet<Entity>();
 		
 		createZones();
 		createUi();
@@ -162,14 +161,32 @@ public class UiSystem extends EntityEvSystem<UiComponent> {
 		zones.clear();
 	}
 	
-	private synchronized void selectAttempt(Entity entity) {
+	private synchronized void click(CardClickListener listener, Entity entity) {
 		
 		comp = mapper.get(entity);
 		if (comp.zone.playerNumber() == currPlayer) {
-			selectedCard = Optional.of(entity);
-			queueEvent(new CardSelectEvent(entity));
-		} else if (selectedCard.isPresent()) {
-			queueEvent(new CardInteractEvent(selectedCard.get(), entity));
+			
+			listener.selected = !listener.selected;
+			
+			if (listener.selected) {
+				
+				if (primaryCard.isPresent() && primaryCard.get() != entity) {
+					secondaryCards.add(primaryCard.get());
+				}
+				
+				primaryCard = Optional.of(entity);
+				queueEvent(new CardSelectEvent(entity));
+			} else {
+				
+				secondaryCards.remove(entity);
+				if (primaryCard.isPresent() && primaryCard.get() == entity) {
+					primaryCard = Optional.absent();
+				}
+			}
+			
+		} else if (primaryCard.isPresent()) {
+			
+			queueEvent(new CardInteractEvent(primaryCard.get(), entity, secondaryCards.toArray(new Entity[0])));
 		}
 	}
 	
@@ -226,6 +243,7 @@ public class UiSystem extends EntityEvSystem<UiComponent> {
 	class CardClickListener extends ClickListener {
 		
 		Entity entity;
+		boolean selected;
 		
 		public CardClickListener(Entity entity) {
 			this.entity = entity;
@@ -235,7 +253,7 @@ public class UiSystem extends EntityEvSystem<UiComponent> {
 		public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
 			
 			if (button == Input.Buttons.LEFT) {
-				selectAttempt(entity);
+				click(this, entity);
 			}
 			return false;
 		}
