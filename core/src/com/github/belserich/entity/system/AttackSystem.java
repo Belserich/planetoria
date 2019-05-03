@@ -1,6 +1,7 @@
 package com.github.belserich.entity.system;
 
 import com.badlogic.ashley.core.Entity;
+import com.github.belserich.GameClient;
 import com.github.belserich.entity.component.AttackComponent;
 import com.github.belserich.entity.core.EntityEvSystem;
 import com.github.belserich.entity.event.attack.CardAttackEvent;
@@ -32,6 +33,7 @@ public class AttackSystem extends EntityEvSystem<AttackComponent> {
 			}
 			
 			queueEvent(new CardAttackEvent(ev, attackPts));
+			GameClient.log(this, "Card attack! Attackers: " + attackers.length + "; Attack points: " + attackPts);
 		}
 	}
 }

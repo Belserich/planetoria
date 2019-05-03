@@ -1,6 +1,7 @@
 package com.github.belserich.entity.system;
 
 import com.badlogic.ashley.core.Entity;
+import com.github.belserich.GameClient;
 import com.github.belserich.entity.component.LifeComponent;
 import com.github.belserich.entity.core.EntityEvSystem;
 import com.github.belserich.entity.event.attack.CardAttackEvent;
@@ -23,6 +24,8 @@ public class LifeSystem extends EntityEvSystem<LifeComponent> {
 			comp = mapper.get(attacked);
 			float oldPts = comp.pts;
 			comp.pts = comp.pts - ev.attackPts();
+			
+			GameClient.log(this, "Card attacked! Old LP: " + oldPts + "; New LP: " + comp.pts);
 			queueEvent(new CardAttackLpEvent(ev, oldPts, comp.pts));
 		}
 	}

@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
+import com.github.belserich.GameClient;
 import com.github.belserich.asset.UiZones;
 import com.github.belserich.entity.component.UiComponent;
 import com.github.belserich.entity.core.EntityEvSystem;
@@ -29,14 +30,15 @@ import java.util.*;
 public class UiSystem extends EntityEvSystem<UiComponent> {
 	
 	public static final int[] CARDS_PER_ROW = new int[]{8, 7, 7, 8};
+	
 	private static final float CARD_HEIGHT_FACTOR = 1.421f;
 	private static final float MIN_CARD_WIDTH = 75f * 1.5f;
 	
 	private Stage stage;
 	private Table table;
+	private Cell[] cardCells;
 	private BitmapFont font;
 	
-	private Cell[] cardCells;
 	private EnumMap<UiZones, ZoneMeta> zones;
 	
 	private int currPlayer;
@@ -115,17 +117,6 @@ public class UiSystem extends EntityEvSystem<UiComponent> {
 	}
 	
 	@Override
-	protected void update() {
-		super.update();
-		
-		Gdx.gl20.glClearColor(1f, 1f, 1f, 1f);
-		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		
-		stage.act(delta);
-		stage.draw();
-	}
-	
-	@Override
 	public synchronized void justAdded(Entity entity) {
 		
 		comp = mapper.get(entity);
@@ -135,7 +126,81 @@ public class UiSystem extends EntityEvSystem<UiComponent> {
 		}
 	}
 	
-	private void setCardAt(int cellIndex, Entity entity) {
+	private synchronized void click(CardClickListener listener, Entity entity) {
+		
+		comp = mapper.get(entity);
+		if (comp.zone.playerNumber() == currPlayer) { // click came from active player
+			
+			listener.selected = !listener.selected; // toggle selected state of card
+			
+			if (listener.selected) { // card been selected
+				
+				if (primaryCard.isPresent() && primaryCard.get() != entity) { // selected card is not previous primary card
+					secondaryCards.add(primaryCard.get()); // add old primary card to set of secondary cards
+				}
+				
+				primaryCard = Optional.of(entity); // set new primary card as selected card
+				
+				queueEvent(new CardSelectEvent(entity));
+				GameClient.log(this, "Card " + cardLogString(entity) + " selected.");
+				
+			} else { // card been unselected
+				
+				// remove card from selection set
+				secondaryCards.remove(entity);
+				if (primaryCard.isPresent() && primaryCard.get() == entity) {
+					primaryCard = Optional.absent();
+				}
+				
+				GameClient.log(this, "Card " + cardLogString(entity) + " unselected.");
+			}
+			
+			logSelected();
+			
+		} else if (primaryCard.isPresent()) {
+			
+			queueEvent(new CardInteractEvent(primaryCard.get(), entity, secondaryCards.toArray(new Entity[0])));
+		}
+	}
+	
+	@Override
+	public synchronized void justRemoved(Entity entity) {
+		super.justRemoved(entity);
+	}
+	
+	private static String cardLogString(Entity entity) {
+		UiComponent comp = entity.getComponent(UiComponent.class);
+		return comp.displayName + ";" + comp.lpStr + ";" + comp.apStr + ";" + comp.spStr;
+	}
+	
+	private void logSelected() {
+		
+		String logString = "Selected cards: ";
+		logString += primaryCard.isPresent() ? cardLogString(primaryCard.get()) + " " : "";
+		for (Entity otherCard : secondaryCards) {
+			logString += cardLogString(otherCard) + " ";
+		}
+		GameClient.log(this, logString);
+	}
+	
+	public void resize(int width, int height) {
+		// TODO
+	}
+	
+	@Subscribe
+	public synchronized void on(CardAttackLpEvent ev) {
+		
+		Entity attacked = ev.destCard();
+		if (mapper.has(attacked)) {
+			
+			comp = mapper.get(attacked);
+			comp.lpStr = String.valueOf(ev.newLp());
+			ZoneMeta meta = zones.get(comp.zone);
+			setCardAt(meta.indexOf(attacked), attacked);
+		}
+	}
+	
+	private synchronized void setCardAt(int cellIndex, Entity entity) {
 		
 		comp = mapper.get(entity);
 		
@@ -151,60 +216,20 @@ public class UiSystem extends EntityEvSystem<UiComponent> {
 	}
 	
 	@Override
-	public synchronized void justRemoved(Entity entity) {
-		super.justRemoved(entity);
+	protected void update() {
+		super.update();
+		
+		Gdx.gl20.glClearColor(1f, 1f, 1f, 1f);
+		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		
+		stage.act(delta);
+		stage.draw();
 	}
 	
 	@Override
-	public void dispose() {
+	public synchronized void dispose() {
 		super.dispose();
 		zones.clear();
-	}
-	
-	private synchronized void click(CardClickListener listener, Entity entity) {
-		
-		comp = mapper.get(entity);
-		if (comp.zone.playerNumber() == currPlayer) {
-			
-			listener.selected = !listener.selected;
-			
-			if (listener.selected) {
-				
-				if (primaryCard.isPresent() && primaryCard.get() != entity) {
-					secondaryCards.add(primaryCard.get());
-				}
-				
-				primaryCard = Optional.of(entity);
-				queueEvent(new CardSelectEvent(entity));
-			} else {
-				
-				secondaryCards.remove(entity);
-				if (primaryCard.isPresent() && primaryCard.get() == entity) {
-					primaryCard = Optional.absent();
-				}
-			}
-			
-		} else if (primaryCard.isPresent()) {
-			
-			queueEvent(new CardInteractEvent(primaryCard.get(), entity, secondaryCards.toArray(new Entity[0])));
-		}
-	}
-	
-	@Subscribe
-	public void on(CardAttackLpEvent ev) {
-		
-		Entity attacked = ev.destCard();
-		if (mapper.has(attacked)) {
-			
-			comp = mapper.get(attacked);
-			comp.lpStr = String.valueOf(ev.newLp());
-			ZoneMeta meta = zones.get(comp.zone);
-			setCardAt(meta.indexOf(attacked), attacked);
-		}
-	}
-	
-	public void resize(int width, int height) {
-		// TODO
 	}
 	
 	class ZoneMeta {
