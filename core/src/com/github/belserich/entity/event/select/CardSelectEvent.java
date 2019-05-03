@@ -5,7 +5,7 @@ import com.github.belserich.entity.event.base.CardSelectBaseEvent;
 
 public class CardSelectEvent extends CardSelectBaseEvent {
 	
-	public CardSelectEvent(Entity entity) {
-		super(entity);
+	public CardSelectEvent(Entity primary, Entity... others) {
+		super(primary, others);
 	}
 }

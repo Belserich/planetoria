@@ -7,10 +7,10 @@ import com.github.belserich.entity.event.base.CardInteractBaseEvent;
 public class CardAttackEvent extends CardAttackBaseEvent {
 	
 	public CardAttackEvent(CardInteractBaseEvent ev, float attackPts) {
-		super(ev, attackPts);
+		super(ev, attackPts, ev.all());
 	}
 	
-	public CardAttackEvent(Entity sourceCard, Entity destCard, float attackPts) {
-		super(sourceCard, destCard, attackPts);
+	public CardAttackEvent(Entity sourceCard, Entity destCard, float attackPts, Entity... others) {
+		super(sourceCard, destCard, attackPts, others);
 	}
 }

@@ -8,11 +8,11 @@ public class CardAttackLpEvent extends CardAttackBaseEvent {
 	private final float oldLp, newLp, lpShift;
 	
 	public CardAttackLpEvent(CardAttackBaseEvent ev, float oldLp, float newLp) {
-		this(ev.attacker(), ev.attacked(), ev.attackPts(), oldLp, newLp, newLp - oldLp);
+		this(ev.sourceCard(), ev.attacked(), ev.attackPts(), oldLp, newLp, newLp - oldLp, ev.attackers());
 	}
 	
-	public CardAttackLpEvent(Entity sourceCard, Entity destCard, float attackPts, float oldLp, float newLp, float lpShift) {
-		super(sourceCard, destCard, attackPts);
+	public CardAttackLpEvent(Entity sourceCard, Entity destCard, float attackPts, float oldLp, float newLp, float lpShift, Entity... others) {
+		super(sourceCard, destCard, attackPts, others);
 		this.oldLp = oldLp;
 		this.newLp = newLp;
 		this.lpShift = lpShift;

@@ -6,10 +6,10 @@ import com.github.belserich.entity.event.base.CardInteractBaseEvent;
 public class CardInteractEvent extends CardInteractBaseEvent {
 	
 	public CardInteractEvent(CardInteractBaseEvent ev) {
-		super(ev.sourceCard(), ev.destCard());
+		super(ev.sourceCard(), ev.destCard(), ev.all());
 	}
 	
-	public CardInteractEvent(Entity sourceCard, Entity destCard) {
-		super(sourceCard, destCard);
+	public CardInteractEvent(Entity primary, Entity destCard, Entity... others) {
+		super(primary, destCard, others);
 	}
 }
