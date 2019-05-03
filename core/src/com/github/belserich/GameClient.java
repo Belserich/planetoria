@@ -19,9 +19,9 @@ public class GameClient extends ApplicationAdapter {
 	private EntityEvEngine engine;
 	private EventQueue queue;
 	
-	private UiSystem uiSys;
 	private AttackSystem attackSys;
 	private LifeSystem lifeSys;
+	private UiSystem uiSys;
 	
 	@Override
 	public void create () {
@@ -29,7 +29,10 @@ public class GameClient extends ApplicationAdapter {
 		engine = new EntityEvEngine();
 		queue = new EventQueue();
 		
+		log(this, "Initializing game entities.");
 		createEntities();
+		
+		log(this, "Initializing entity systems.");
 		createSystems();
 	}
 	
@@ -48,14 +51,14 @@ public class GameClient extends ApplicationAdapter {
 	
 	private void createSystems() {
 		
-		uiSys = new UiSystem(queue);
-		engine.addSystem(uiSys);
-		
 		attackSys = new AttackSystem(queue);
 		engine.addSystem(attackSys);
 		
 		lifeSys = new LifeSystem(queue);
 		engine.addSystem(lifeSys);
+		
+		uiSys = new UiSystem(queue);
+		engine.addSystem(uiSys);
 	}
 	
 	private Entity createShipA(Entity entity, UiZones zone) {
@@ -83,7 +86,6 @@ public class GameClient extends ApplicationAdapter {
 	
 	@Override
 	public void render () {
-		
 		float delta = Gdx.graphics.getDeltaTime();
 		update(delta);
 	}
@@ -94,7 +96,13 @@ public class GameClient extends ApplicationAdapter {
 	
 	@Override
 	public void dispose () {
+		
+		log(this, "Disposing game entities.");
 		engine.dispose();
+		
+		log(this, "Disposing game systems.");
+		lifeSys.dispose();
+		attackSys.dispose();
 		uiSys.dispose();
 	}
 	
