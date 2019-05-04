@@ -15,6 +15,10 @@ public enum UiZones {
 		return playerNumber;
 	}
 	
+	public boolean isDeckZone() {
+		return name().equals(P0_DECK.toString()) || name().equals(P1_DECK.toString());
+	}
+	
 	public static UiZones battleZone(int playerNumber) {
 		switch (playerNumber) {
 			case 0:

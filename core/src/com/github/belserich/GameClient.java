@@ -39,8 +39,12 @@ public class GameClient extends ApplicationAdapter {
 		
 		log(this, "Initializing game entities.");
 		
-		engine.addEntity(createShipA(new Entity(), UiZones.P0_BATTLE));
-		engine.addEntity(createShipA(new Entity(), UiZones.P0_BATTLE));
+		engine.addEntity(createShipA(new Entity(), UiZones.P0_DECK));
+		engine.addEntity(createShipA(new Entity(), UiZones.P0_DECK));
+		engine.addEntity(createShipA(new Entity(), UiZones.P0_DECK));
+		engine.addEntity(createShipA(new Entity(), UiZones.P0_DECK));
+		engine.addEntity(createShipB(new Entity(), UiZones.P0_BATTLE));
+		engine.addEntity(createShipB(new Entity(), UiZones.P0_BATTLE));
 		engine.addEntity(createShipA(new Entity(), UiZones.P0_BATTLE));
 		engine.addEntity(createShipA(new Entity(), UiZones.P0_BATTLE));
 		

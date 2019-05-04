@@ -61,6 +61,7 @@ public class UiSystem extends EntityEvSystem<UiComponent> {
 	private Set<Entity> secondaryCards;
 	
 	private int zoneIndex;
+	private int deckZoneIndexOff;
 	
 	public UiSystem(EventQueue eventBus) {
 		super(eventBus, true, UiComponent.class);
@@ -85,7 +86,7 @@ public class UiSystem extends EntityEvSystem<UiComponent> {
 		}
 		
 		mainCells = new Cell[cardCount];
-		deckCells = new Cell[DECK_CARD_MAX];
+		deckCells = new Cell[DECK_CARD_MAX * 2];
 		
 		zones = new EnumMap<UiZones, ZoneMeta>(UiZones.class);
 		
@@ -110,8 +111,10 @@ public class UiSystem extends EntityEvSystem<UiComponent> {
 		zones.put(UiZones.P0_PLANET, new ZoneMeta(genZoneIndices(1)));
 		zones.put(UiZones.P0_YARD, new ZoneMeta(genZoneIndices(1)));
 		
-		zones.put(UiZones.P1_DECK, new ZoneMeta(genZoneIndices(DECK_CARD_MAX)));
+		deckZoneIndexOff = zoneIndex;
+		
 		zones.put(UiZones.P0_DECK, new ZoneMeta(genZoneIndices(DECK_CARD_MAX)));
+		zones.put(UiZones.P1_DECK, new ZoneMeta(genZoneIndices(DECK_CARD_MAX)));
 	}
 	
 	private void createUi() {
@@ -293,7 +296,11 @@ public class UiSystem extends EntityEvSystem<UiComponent> {
 		cardText.setAlignment(Align.center);
 		cardText.setWrap(true);
 		
-		mainCells[cellIndex].setActor(cardText);
+		if (!uic.zone.isDeckZone()) {
+			mainCells[cellIndex].setActor(cardText);
+		} else {
+			deckCells[cellIndex - deckZoneIndexOff].setActor(cardText);
+		}
 	}
 	
 	private void unselectAll() {
