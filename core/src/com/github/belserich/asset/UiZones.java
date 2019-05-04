@@ -14,4 +14,26 @@ public enum UiZones {
 	public int playerNumber() {
 		return playerNumber;
 	}
+	
+	public static UiZones battleZone(int playerNumber) {
+		switch (playerNumber) {
+			case 0:
+				return P0_BATTLE;
+			case 1:
+				return P1_BATTLE;
+			default:
+				return null;
+		}
+	}
+	
+	public static UiZones yardZone(int playerNumber) {
+		switch (playerNumber) {
+			case 0:
+				return P0_YARD;
+			case 1:
+				return P1_YARD;
+			default:
+				return null;
+		}
+	}
 }
