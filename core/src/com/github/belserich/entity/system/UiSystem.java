@@ -9,10 +9,8 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Cell;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.github.belserich.GameClient;
@@ -46,7 +44,7 @@ public class UiSystem extends EntityEvSystem<UiComponent> {
 	
 	private Table mainTable;
 	private Label deckToggle;
-	private Cell[] mainCells;
+	private Container[] mainCells;
 	
 	private Table deckTable;
 	private Cell[] deckCells;
@@ -59,6 +57,8 @@ public class UiSystem extends EntityEvSystem<UiComponent> {
 	private int currPlayer;
 	private Optional<Entity> primaryCard;
 	private Set<Entity> secondaryCards;
+	
+	private Optional<Entity> selectedDeckCard;
 	
 	private int zoneIndex;
 	private int deckZoneIndexOff;
@@ -85,7 +85,7 @@ public class UiSystem extends EntityEvSystem<UiComponent> {
 			cardCount += CARDS_PER_ROW[i];
 		}
 		
-		mainCells = new Cell[cardCount];
+		mainCells = new Container[cardCount];
 		deckCells = new Cell[DECK_CARD_MAX * 2];
 		
 		zones = new EnumMap<UiZones, ZoneMeta>(UiZones.class);
@@ -93,6 +93,8 @@ public class UiSystem extends EntityEvSystem<UiComponent> {
 		currPlayer = 0;
 		primaryCard = Optional.absent();
 		secondaryCards = new HashSet<Entity>();
+		
+		selectedDeckCard = Optional.absent();
 		
 		createZones();
 		createUi();
@@ -121,8 +123,17 @@ public class UiSystem extends EntityEvSystem<UiComponent> {
 		
 		float cardWidth = MIN_CARD_WIDTH;
 		float cardHeight = MIN_CARD_WIDTH * CARD_HEIGHT_FACTOR;
-		
-		stage.setDebugAll(true);
+
+//		stage.setDebugAll(true);
+		stage.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				super.clicked(event, x, y);
+				if (event.getButton() == Input.Buttons.RIGHT) {
+					selectedDeckCard = Optional.absent();
+				}
+			}
+		});
 		
 		group = new VerticalGroup();
 		group.setFillParent(true);
@@ -132,10 +143,18 @@ public class UiSystem extends EntityEvSystem<UiComponent> {
 		mainTable.padTop(70);
 		mainTable.padBottom(20);
 		
+		Container<Label> cont;
 		int cardCount = 0;
+		
 		for (int row = 0; row < CARDS_PER_ROW.length; row++) {
 			for (int col = 0; col < CARDS_PER_ROW[row]; col++, cardCount++) {
-				mainCells[cardCount] = mainTable.add().width(cardWidth).height(cardHeight).pad(10);
+				cont = new Container<Label>();
+				cont.minSize(cardWidth, cardHeight);
+				cont.setTouchable(Touchable.enabled);
+				cont.addListener(new MainCardClickListener());
+				cont.setDebug(true);
+				mainTable.add().pad(10).setActor(cont);
+				mainCells[cardCount] = cont;
 			}
 			mainTable.row();
 		}
@@ -204,19 +223,18 @@ public class UiSystem extends EntityEvSystem<UiComponent> {
 		updateCard(entity);
 	}
 	
-	private synchronized void click(MainCardClickListener listener, Entity entity) {
+	private synchronized void click(MainCardClickListener listener, Entity entity) { // click on occupied field
 		
 		comp = mapper.get(entity);
 		if (comp.zone.playerNumber() == currPlayer) { // click came from active player
 			
-			listener.selected = !listener.selected; // toggle selected state of card
-			
-			if (listener.selected) { // card been selected
+			boolean notSelected = !secondaryCards.contains(entity);
+			notSelected &= !primaryCard.isPresent() || primaryCard.get() != entity;
+			if (notSelected) { // card been selected
 				
-				if (primaryCard.isPresent() && primaryCard.get() != entity) { // selected card is not previous primary card
+				if (primaryCard.isPresent()) {
 					secondaryCards.add(primaryCard.get()); // add old primary card to set of secondary cards
 				}
-				
 				primaryCard = Optional.of(entity); // set new primary card as selected card
 				
 				queueEvent(new Select(entity));
@@ -241,31 +259,20 @@ public class UiSystem extends EntityEvSystem<UiComponent> {
 		}
 	}
 	
-	@Subscribe
-	public synchronized void on(DestroyLp ev) {
+	public synchronized void click() { // click on empty field
 		
-		Entity entity = ev.attacked();
-		if (mapper.has(entity)) {
+		if (selectedDeckCard.isPresent()) {
 			
-			comp = mapper.get(entity);
-			int cellIndex = zones.get(comp.zone).indexOf(entity);
+			Entity selected = selectedDeckCard.get();
+			comp = mapper.get(selected);
 			
-			mainCells[cellIndex].clearActor();
-			comp.zone = UiZones.yardZone((currPlayer + 1) % 2);
-			updateCard(entity);
-		}
-	}
-	
-	@Subscribe // TODO synchronized loswerden (Zugriff auf comp und mapper durch parallele Threads verhindern)
-	public synchronized void on(AttackBase ev) {
-		
-		Entity attacked = ev.destCard();
-		if (mapper.has(attacked)) {
+			int cellIndex = zones.get(comp.zone).indexOf(selected);
+			deckCells[cellIndex - deckZoneIndexOff].clearActor();
 			
-			updateCard(attacked);
-			primaryCard = Optional.absent();
-			secondaryCards.clear();
-			unselectAll();
+			comp.zone = UiZones.battleZone(currPlayer);
+			updateCard(selected);
+			
+			selectedDeckCard = Optional.absent();
 		}
 	}
 	
@@ -292,23 +299,45 @@ public class UiSystem extends EntityEvSystem<UiComponent> {
 		String cardString = uic.displayName + "\nLP: " + uic.lpStr + "\nAP: " + uic.apStr + "\nSP: " + uic.spStr;
 		
 		Label cardText = new Label(cardString, new Label.LabelStyle(font1, Color.BLACK));
-		cardText.addListener(new MainCardClickListener(entity));
+		if (uic.zone.isDeckZone()) {
+			cardText.addListener(new DeckCardClickListener(entity));
+		}
 		cardText.setAlignment(Align.center);
 		cardText.setWrap(true);
 		
 		if (!uic.zone.isDeckZone()) {
-			mainCells[cellIndex].setActor(cardText);
+			Container<Label> cont = mainCells[cellIndex];
+			((MainCardClickListener) cont.getListeners().get(0)).setEntity(entity);
+			cont.setActor(cardText);
 		} else {
 			deckCells[cellIndex - deckZoneIndexOff].setActor(cardText);
 		}
 	}
 	
-	private void unselectAll() {
+	@Subscribe // TODO synchronized loswerden (Zugriff auf comp und mapper durch parallele Threads verhindern)
+	public synchronized void on(AttackBase ev) {
 		
-		for (Cell cell : mainCells) {
-			if (cell.getActor() != null) {
-				((MainCardClickListener) cell.getActor().getListeners().get(0)).selected = false;
-			}
+		Entity attacked = ev.destCard();
+		if (mapper.has(attacked)) {
+			
+			updateCard(attacked);
+			primaryCard = Optional.absent();
+			secondaryCards.clear();
+		}
+	}
+	
+	@Subscribe
+	public synchronized void on(DestroyLp ev) {
+		
+		Entity entity = ev.attacked();
+		if (mapper.has(entity)) {
+			
+			comp = mapper.get(entity);
+			int cellIndex = zones.get(comp.zone).indexOf(entity);
+			
+			mainCells[cellIndex].clearChildren();
+			comp.zone = UiZones.yardZone((currPlayer + 1) % 2);
+			updateCard(entity);
 		}
 	}
 	
@@ -396,19 +425,37 @@ public class UiSystem extends EntityEvSystem<UiComponent> {
 	class MainCardClickListener extends ClickListener {
 		
 		Entity entity;
-		boolean selected;
 		
-		public MainCardClickListener(Entity entity) {
+		public void setEntity(Entity entity) {
 			this.entity = entity;
 		}
 		
 		@Override
-		public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-			
-			if (button == Input.Buttons.LEFT) {
-				click(this, entity);
+		public void clicked(InputEvent event, float x, float y) {
+			super.clicked(event, x, y);
+			if (event.getButton() == Input.Buttons.LEFT) {
+				if (entity != null) {
+					click(this, entity);
+				} else click();
 			}
-			return false;
+		}
+	}
+	
+	class DeckCardClickListener extends ClickListener {
+		
+		Entity entity;
+		
+		public DeckCardClickListener(Entity entity) {
+			this.entity = entity;
+		}
+		
+		@Override
+		public void clicked(InputEvent event, float x, float y) {
+			super.clicked(event, x, y);
+			if (event.getButton() == Input.Buttons.LEFT) {
+				selectedDeckCard = Optional.of(entity);
+				setMainActivity();
+			}
 		}
 	}
 }
