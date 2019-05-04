@@ -33,7 +33,7 @@ public class AttackSystem extends EntityEvSystem<AttackComponent> {
 			}
 			
 			queueEvent(new CardAttackEvent(ev, attackPts));
-			GameClient.log(this, "Card attack! Attackers: " + attackers.length + "; Attack points: " + attackPts);
+			GameClient.log(this, "! Attack. Attackers: " + attackers.length + "; Attack points: " + attackPts);
 		}
 	}
 }

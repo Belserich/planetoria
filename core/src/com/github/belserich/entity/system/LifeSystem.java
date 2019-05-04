@@ -25,7 +25,7 @@ public class LifeSystem extends EntityEvSystem<LifeComponent> {
 			float oldPts = comp.pts;
 			comp.pts = comp.pts - ev.attackPts();
 			
-			GameClient.log(this, "Card attacked! Old LP: " + oldPts + "; New LP: " + comp.pts);
+			GameClient.log(this, "! Life attack. Old LP: " + oldPts + "; New LP: " + comp.pts);
 			queueEvent(new CardAttackLpEvent(ev, oldPts, comp.pts));
 		}
 	}
