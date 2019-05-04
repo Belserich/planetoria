@@ -4,7 +4,7 @@ import com.badlogic.ashley.core.Entity;
 import com.github.belserich.entity.event.base.CardAttackBaseEvent;
 import com.github.belserich.entity.event.base.CardInteractBaseEvent;
 
-public class CardAttackEvent extends CardAttackBaseEvent {
+public final class CardAttackEvent extends CardAttackBaseEvent {
 	
 	public CardAttackEvent(CardInteractBaseEvent ev, float attackPts) {
 		super(ev, attackPts, ev.all());

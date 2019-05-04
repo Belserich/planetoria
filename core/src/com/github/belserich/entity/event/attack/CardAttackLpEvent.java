@@ -3,7 +3,7 @@ package com.github.belserich.entity.event.attack;
 import com.badlogic.ashley.core.Entity;
 import com.github.belserich.entity.event.base.CardAttackBaseEvent;
 
-public class CardAttackLpEvent extends CardAttackBaseEvent {
+public final class CardAttackLpEvent extends CardAttackBaseEvent {
 	
 	private final float oldLp, newLp, lpShift;
 	
