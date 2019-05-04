@@ -4,15 +4,17 @@ import com.badlogic.ashley.core.Entity;
 
 public class MultiEntityEvent extends EntityEvent {
 	
+	private final Entity[] secondary;
 	private final Entity[] all;
 	
-	public MultiEntityEvent(Entity primary, Entity... others) {
+	public MultiEntityEvent(Entity primary, Entity... secondary) {
 		super(primary);
+		this.secondary = secondary;
 		
-		all = new Entity[others.length + 1];
+		all = new Entity[secondary.length + 1];
 		all[0] = primary;
-		for (int i = 0; i < others.length; i++) {
-			all[i + 1] = others[i];
+		for (int i = 0; i < secondary.length; i++) {
+			all[i + 1] = secondary[i];
 		}
 	}
 	
@@ -20,11 +22,19 @@ public class MultiEntityEvent extends EntityEvent {
 		return entity();
 	}
 	
+	public Entity[] secondary() {
+		return secondary;
+	}
+	
+	public int secondaryCount() {
+		return secondary.length;
+	}
+	
 	public Entity[] all() {
 		return all;
 	}
 	
-	public int entityCount() {
+	public int allCount() {
 		return all.length;
 	}
 }
