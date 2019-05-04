@@ -24,12 +24,18 @@ public class AttackSystem extends EntityEvSystem<AttackComponent> {
 			Entity[] attackers = ev.all();
 			float attackPts = 0;
 			
+			// ensure all selected entities can attack
 			for (Entity att : attackers) {
 				comp = mapper.get(att);
-				if (comp.attCount > 0) {
-					attackPts += comp.pts;
-					comp.attCount--;
+				if (comp.attCount <= 0) {
+					return;
 				}
+			}
+			
+			for (Entity att : attackers) {
+				comp = mapper.get(att);
+				attackPts += comp.pts;
+				comp.attCount--;
 			}
 			
 			queueEvent(new CardAttackEvent(ev, attackPts));

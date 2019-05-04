@@ -12,6 +12,7 @@ import com.github.belserich.entity.core.EntityEvEngine;
 import com.github.belserich.entity.event.core.EventQueue;
 import com.github.belserich.entity.system.AttackSystem;
 import com.github.belserich.entity.system.LifeSystem;
+import com.github.belserich.entity.system.ShieldSystem;
 import com.github.belserich.entity.system.UiSystem;
 
 public class GameClient extends ApplicationAdapter {
@@ -19,8 +20,9 @@ public class GameClient extends ApplicationAdapter {
 	private EntityEvEngine engine;
 	private EventQueue queue;
 	
-	private AttackSystem attackSys;
 	private LifeSystem lifeSys;
+	private AttackSystem attackSys;
+	private ShieldSystem shieldSys;
 	private UiSystem uiSys;
 	
 	@Override
@@ -29,14 +31,13 @@ public class GameClient extends ApplicationAdapter {
 		engine = new EntityEvEngine();
 		queue = new EventQueue();
 		
-		log(this, "Initializing game entities.");
 		createEntities();
-		
-		log(this, "Initializing entity systems.");
 		createSystems();
 	}
 	
 	private void createEntities() {
+		
+		log(this, "Initializing game entities.");
 		
 		engine.addEntity(createShipA(new Entity(), UiZones.P0_BATTLE));
 		engine.addEntity(createShipA(new Entity(), UiZones.P0_BATTLE));
@@ -51,11 +52,16 @@ public class GameClient extends ApplicationAdapter {
 	
 	private void createSystems() {
 		
-		attackSys = new AttackSystem(queue);
-		engine.addSystem(attackSys);
+		log(this, "Initializing entity systems.");
 		
 		lifeSys = new LifeSystem(queue);
 		engine.addSystem(lifeSys);
+		
+		attackSys = new AttackSystem(queue);
+		engine.addSystem(attackSys);
+		
+		shieldSys = new ShieldSystem(queue);
+		engine.addSystem(shieldSys);
 		
 		uiSys = new UiSystem(queue);
 		engine.addSystem(uiSys);
@@ -101,8 +107,11 @@ public class GameClient extends ApplicationAdapter {
 		engine.dispose();
 		
 		log(this, "Disposing game systems.");
+		
 		lifeSys.dispose();
 		attackSys.dispose();
+		shieldSys.dispose();
+		
 		uiSys.dispose();
 	}
 	

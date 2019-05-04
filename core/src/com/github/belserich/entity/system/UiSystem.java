@@ -16,9 +16,12 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.github.belserich.GameClient;
 import com.github.belserich.asset.UiZones;
+import com.github.belserich.entity.component.AttackComponent;
+import com.github.belserich.entity.component.LifeComponent;
+import com.github.belserich.entity.component.ShieldComponent;
 import com.github.belserich.entity.component.UiComponent;
 import com.github.belserich.entity.core.EntityEvSystem;
-import com.github.belserich.entity.event.attack.CardAttackLpEvent;
+import com.github.belserich.entity.event.base.CardAttackBaseEvent;
 import com.github.belserich.entity.event.core.EventQueue;
 import com.github.belserich.entity.event.interact.CardInteractEvent;
 import com.github.belserich.entity.event.select.CardSelectEvent;
@@ -116,14 +119,42 @@ public class UiSystem extends EntityEvSystem<UiComponent> {
 		return indices;
 	}
 	
+	private static String cardLogString(Entity entity) {
+		UiComponent uic = entity.getComponent(UiComponent.class);
+		return uic.displayName + ";" + uic.lpStr + ";" + uic.apStr + ";" + uic.spStr;
+	}
+	
 	@Override
 	public synchronized void justAdded(Entity entity) {
 		
 		comp = mapper.get(entity);
 		int index = zones.get(comp.zone).freeIndex(entity);
 		if (index != -1) {
-			setCardAt(index, entity);
+			updateCard(index, entity);
 		}
+	}
+	
+	private synchronized void updateCard(int cellIndex, Entity entity) {
+		
+		UiComponent uic = entity.getComponent(UiComponent.class); // create central Mapper-collection-class when this call gets too slow
+		
+		LifeComponent lc = entity.getComponent(LifeComponent.class);
+		AttackComponent ac = entity.getComponent(AttackComponent.class);
+		ShieldComponent sc = entity.getComponent(ShieldComponent.class);
+		
+		uic.lpStr = lc != null ? String.valueOf(Math.max(0f, lc.pts)) : "?";
+		uic.apStr = lc != null ? String.valueOf(Math.max(0f, ac.pts)) : "?";
+		uic.spStr = lc != null ? String.valueOf(Math.max(0f, sc.pts)) : "?";
+		
+		String cardString = uic.displayName + "\nLP: " + uic.lpStr + "\nAP: " + uic.apStr + "\nSP: " + uic.spStr;
+		
+		Label.LabelStyle style = new Label.LabelStyle(font, Color.BLACK);
+		Label cardText = new Label(cardString, style);
+		cardText.addListener(new CardClickListener(entity));
+		cardText.setAlignment(Align.center);
+		cardText.setWrap(true);
+		
+		cardCells[cellIndex].setActor(cardText);
 	}
 	
 	private synchronized void click(CardClickListener listener, Entity entity) {
@@ -163,14 +194,27 @@ public class UiSystem extends EntityEvSystem<UiComponent> {
 		}
 	}
 	
-	@Override
-	public synchronized void justRemoved(Entity entity) {
-		super.justRemoved(entity);
+	@Subscribe // TODO synchronized loswerden (Zugriff auf comp und mapper durch parallele Threads verhindern)
+	public synchronized void on(CardAttackBaseEvent ev) {
+		
+		Entity attacked = ev.destCard();
+		if (mapper.has(attacked)) {
+			ZoneMeta meta = zones.get(comp.zone);
+			updateCard(meta.indexOf(attacked), attacked);
+			
+			primaryCard = Optional.absent();
+			secondaryCards.clear();
+			unselectAll();
+		}
 	}
 	
-	private static String cardLogString(Entity entity) {
-		UiComponent comp = entity.getComponent(UiComponent.class);
-		return comp.displayName + ";" + comp.lpStr + ";" + comp.apStr + ";" + comp.spStr;
+	private void unselectAll() {
+		
+		for (Cell cell : cardCells) {
+			if (cell.getActor() != null) {
+				((CardClickListener) cell.getActor().getListeners().get(0)).selected = false;
+			}
+		}
 	}
 	
 	private void logSelected() {
@@ -181,38 +225,6 @@ public class UiSystem extends EntityEvSystem<UiComponent> {
 			logString += cardLogString(otherCard) + " ";
 		}
 		GameClient.log(this, logString);
-	}
-	
-	public void resize(int width, int height) {
-		// TODO
-	}
-	
-	@Subscribe
-	public synchronized void on(CardAttackLpEvent ev) {
-		
-		Entity attacked = ev.destCard();
-		if (mapper.has(attacked)) {
-			
-			comp = mapper.get(attacked);
-			comp.lpStr = String.valueOf(Math.max(0, ev.newLp()));
-			ZoneMeta meta = zones.get(comp.zone);
-			setCardAt(meta.indexOf(attacked), attacked);
-		}
-	}
-	
-	private synchronized void setCardAt(int cellIndex, Entity entity) {
-		
-		comp = mapper.get(entity);
-		
-		String cardString = comp.displayName + "\nLP: " + comp.lpStr + "\nAP: " + comp.apStr + "\nSP: " + comp.spStr;
-		Label.LabelStyle style = new Label.LabelStyle(font, Color.BLACK);
-		
-		Label cardText = new Label(cardString, style);
-		cardText.addListener(new CardClickListener(entity));
-		cardText.setAlignment(Align.center);
-		cardText.setWrap(true);
-		
-		cardCells[cellIndex].setActor(cardText);
 	}
 	
 	@Override
@@ -246,6 +258,10 @@ public class UiSystem extends EntityEvSystem<UiComponent> {
 		secondaryCards = null;
 		
 		zoneIndex = 0;
+	}
+	
+	public void resize(int width, int height) {
+		// TODO
 	}
 	
 	class ZoneMeta {
