@@ -5,14 +5,14 @@ import com.github.belserich.entity.event.base.CardAttackBaseEvent;
 
 public final class CardDestroySpEvent extends CardAttackBaseEvent {
 	
-	private final float shieldPoints;
+	private final float prevSp;
 	
-	public CardDestroySpEvent(Entity sourceCard, Entity destCard, float attackPts, float shieldPoints, Entity... others) {
+	public CardDestroySpEvent(Entity sourceCard, Entity destCard, float attackPts, float prevSp, Entity... others) {
 		super(sourceCard, destCard, attackPts, others);
-		this.shieldPoints = shieldPoints;
+		this.prevSp = prevSp;
 	}
 	
-	public float shieldPoints() {
-		return shieldPoints;
+	public float prevSp() {
+		return prevSp;
 	}
 }
