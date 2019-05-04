@@ -6,6 +6,7 @@ import com.github.belserich.entity.component.LifeComponent;
 import com.github.belserich.entity.core.EntityEvSystem;
 import com.github.belserich.entity.event.attack.CardAttackLpEvent;
 import com.github.belserich.entity.event.attack.CardAttackNoSpEvent;
+import com.github.belserich.entity.event.attack.CardDestroyLpEvent;
 import com.github.belserich.entity.event.core.EventQueue;
 import com.google.common.eventbus.Subscribe;
 
@@ -27,6 +28,11 @@ public class LifeSystem extends EntityEvSystem<LifeComponent> {
 			
 			GameClient.log(this, "! Life attack. Old LP: " + oldPts + "; New LP: " + comp.pts);
 			queueEvent(new CardAttackLpEvent(ev, oldPts, comp.pts));
+			
+			if (comp.pts <= 0) {
+				GameClient.log(this, "! Card death.");
+				queueEvent(new CardDestroyLpEvent(ev.primary(), ev.destCard(), ev.attackPts(), oldPts, ev.secondary()));
+			}
 		}
 	}
 }

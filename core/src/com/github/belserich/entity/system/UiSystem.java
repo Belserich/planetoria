@@ -21,6 +21,7 @@ import com.github.belserich.entity.component.LifeComponent;
 import com.github.belserich.entity.component.ShieldComponent;
 import com.github.belserich.entity.component.UiComponent;
 import com.github.belserich.entity.core.EntityEvSystem;
+import com.github.belserich.entity.event.attack.CardDestroyLpEvent;
 import com.github.belserich.entity.event.base.CardAttackBaseEvent;
 import com.github.belserich.entity.event.core.EventQueue;
 import com.github.belserich.entity.event.interact.CardInteractEvent;
@@ -128,13 +129,10 @@ public class UiSystem extends EntityEvSystem<UiComponent> {
 	public synchronized void justAdded(Entity entity) {
 		
 		comp = mapper.get(entity);
-		int index = zones.get(comp.zone).freeIndex(entity);
-		if (index != -1) {
-			updateCard(index, entity);
-		}
+		updateCard(entity);
 	}
 	
-	private synchronized void updateCard(int cellIndex, Entity entity) {
+	private synchronized void updateCard(Entity entity) {
 		
 		UiComponent uic = entity.getComponent(UiComponent.class); // create central Mapper-collection-class when this call gets too slow
 		
@@ -145,6 +143,14 @@ public class UiSystem extends EntityEvSystem<UiComponent> {
 		uic.lpStr = lc != null ? String.valueOf(Math.max(0f, lc.pts)) : "?";
 		uic.apStr = lc != null ? String.valueOf(Math.max(0f, ac.pts)) : "?";
 		uic.spStr = lc != null ? String.valueOf(Math.max(0f, sc.pts)) : "?";
+		
+		int cellIndex = zones.get(comp.zone).indexOf(entity);
+		if (cellIndex == -1) {
+			cellIndex = zones.get(comp.zone).freeIndex(entity);
+			if (cellIndex == -1) {
+				throw new RuntimeException("No free cell-ids in zone " + comp.zone);
+			}
+		}
 		
 		String cardString = uic.displayName + "\nLP: " + uic.lpStr + "\nAP: " + uic.apStr + "\nSP: " + uic.spStr;
 		
@@ -199,12 +205,26 @@ public class UiSystem extends EntityEvSystem<UiComponent> {
 		
 		Entity attacked = ev.destCard();
 		if (mapper.has(attacked)) {
-			ZoneMeta meta = zones.get(comp.zone);
-			updateCard(meta.indexOf(attacked), attacked);
 			
+			updateCard(attacked);
 			primaryCard = Optional.absent();
 			secondaryCards.clear();
 			unselectAll();
+		}
+	}
+	
+	@Subscribe
+	public synchronized void on(CardDestroyLpEvent ev) {
+		
+		Entity entity = ev.attacked();
+		if (mapper.has(entity)) {
+			
+			comp = mapper.get(entity);
+			int cellIndex = zones.get(comp.zone).indexOf(entity);
+			
+			cardCells[cellIndex].clearActor();
+			comp.zone = UiZones.yardZone((currPlayer + 1) % 2);
+			updateCard(entity);
 		}
 	}
 	
@@ -293,7 +313,8 @@ public class UiSystem extends EntityEvSystem<UiComponent> {
 		}
 		
 		int indexOf(Entity entity) {
-			return cellIds.get(entity);
+			Integer retVal = cellIds.get(entity);
+			return retVal == null ? -1 : retVal;
 		}
 	}
 	
