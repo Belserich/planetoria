@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.github.belserich.GameClient;
@@ -38,10 +39,20 @@ public class UiSystem extends EntityEvSystem<UiComponent> {
 	private static final float CARD_HEIGHT_FACTOR = 1.421f;
 	private static final float MIN_CARD_WIDTH = 75f * 1.5f;
 	
+	private static final int DECK_CARD_MAX = 8;
+	
 	private Stage stage;
-	private Table table;
-	private Cell[] cardCells;
-	private BitmapFont font;
+	private VerticalGroup group;
+	
+	private Table mainTable;
+	private Label deckToggle;
+	private Cell[] mainCells;
+	
+	private Table deckTable;
+	private Cell[] deckCells;
+	
+	private BitmapFont font1;
+	private BitmapFont font2;
 	
 	private EnumMap<UiZones, ZoneMeta> zones;
 	
@@ -59,15 +70,23 @@ public class UiSystem extends EntityEvSystem<UiComponent> {
 		
 		FreeTypeFontGenerator fontGen = new FreeTypeFontGenerator(Gdx.files.internal("fonts/gugi.ttf"));
 		FreeTypeFontGenerator.FreeTypeFontParameter param = new FreeTypeFontGenerator.FreeTypeFontParameter();
+		
 		param.size = 18;
-		font = fontGen.generateFont(param);
+		font1 = fontGen.generateFont(param);
+		
+		param.size = 30;
+		font2 = fontGen.generateFont(param);
+		
 		fontGen.dispose();
 		
 		int cardCount = 0;
 		for (int i = 0; i < CARDS_PER_ROW.length; i++) {
 			cardCount += CARDS_PER_ROW[i];
 		}
-		cardCells = new Cell[cardCount];
+		
+		mainCells = new Cell[cardCount];
+		deckCells = new Cell[DECK_CARD_MAX];
+		
 		zones = new EnumMap<UiZones, ZoneMeta>(UiZones.class);
 		
 		currPlayer = 0;
@@ -90,24 +109,74 @@ public class UiSystem extends EntityEvSystem<UiComponent> {
 		zones.put(UiZones.P0_REPAIR, new ZoneMeta(genZoneIndices(5)));
 		zones.put(UiZones.P0_PLANET, new ZoneMeta(genZoneIndices(1)));
 		zones.put(UiZones.P0_YARD, new ZoneMeta(genZoneIndices(1)));
+		
+		zones.put(UiZones.P1_DECK, new ZoneMeta(genZoneIndices(DECK_CARD_MAX)));
+		zones.put(UiZones.P0_DECK, new ZoneMeta(genZoneIndices(DECK_CARD_MAX)));
 	}
 	
 	private void createUi() {
 		
+		float cardWidth = MIN_CARD_WIDTH;
+		float cardHeight = MIN_CARD_WIDTH * CARD_HEIGHT_FACTOR;
+		
 		stage.setDebugAll(true);
 		
-		table = new Table();
-		table.setFillParent(true);
+		group = new VerticalGroup();
+		group.setFillParent(true);
+		stage.addActor(group);
+		
+		mainTable = new Table();
+		mainTable.padTop(70);
+		mainTable.padBottom(20);
 		
 		int cardCount = 0;
 		for (int row = 0; row < CARDS_PER_ROW.length; row++) {
 			for (int col = 0; col < CARDS_PER_ROW[row]; col++, cardCount++) {
-				cardCells[cardCount] = table.add().width(MIN_CARD_WIDTH).height(MIN_CARD_WIDTH * CARD_HEIGHT_FACTOR).pad(10);
+				mainCells[cardCount] = mainTable.add().width(cardWidth).height(cardHeight).pad(10);
 			}
-			table.row();
+			mainTable.row();
 		}
 		
-		stage.addActor(table);
+		deckToggle = new Label("Hand", new Label.LabelStyle(font2, Color.BLACK));
+		deckToggle.addListener(new ClickListener() {
+			
+			private boolean toggled;
+			
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				super.clicked(event, x, y);
+				toggled = !toggled;
+				if (toggled) {
+					setDeckActivity();
+				} else setMainActivity();
+			}
+		});
+		
+		deckTable = new Table();
+		deckTable.pad(70);
+		
+		for (int index = 0; index < DECK_CARD_MAX; index++) {
+			deckCells[index] = deckTable.add().width(cardWidth).height(cardHeight).pad(10);
+			if (index % 8 == 0 && index != 0) {
+				deckTable.row();
+			}
+		}
+		
+		setMainActivity();
+	}
+	
+	private void setDeckActivity() {
+		
+		group.clearChildren();
+		group.addActor(deckTable);
+		group.addActor(deckToggle);
+	}
+	
+	private void setMainActivity() {
+		
+		group.clearChildren();
+		group.addActor(mainTable);
+		group.addActor(deckToggle);
 	}
 	
 	private int[] genZoneIndices(int count) {
@@ -132,38 +201,7 @@ public class UiSystem extends EntityEvSystem<UiComponent> {
 		updateCard(entity);
 	}
 	
-	private synchronized void updateCard(Entity entity) {
-		
-		UiComponent uic = entity.getComponent(UiComponent.class); // create central Mapper-collection-class when this call gets too slow
-		
-		LifeComponent lc = entity.getComponent(LifeComponent.class);
-		AttackComponent ac = entity.getComponent(AttackComponent.class);
-		ShieldComponent sc = entity.getComponent(ShieldComponent.class);
-		
-		uic.lpStr = lc != null ? String.valueOf(Math.max(0f, lc.pts)) : "?";
-		uic.apStr = lc != null ? String.valueOf(Math.max(0f, ac.pts)) : "?";
-		uic.spStr = lc != null ? String.valueOf(Math.max(0f, sc.pts)) : "?";
-		
-		int cellIndex = zones.get(comp.zone).indexOf(entity);
-		if (cellIndex == -1) {
-			cellIndex = zones.get(comp.zone).freeIndex(entity);
-			if (cellIndex == -1) {
-				throw new RuntimeException("No free cell-ids in zone " + comp.zone);
-			}
-		}
-		
-		String cardString = uic.displayName + "\nLP: " + uic.lpStr + "\nAP: " + uic.apStr + "\nSP: " + uic.spStr;
-		
-		Label.LabelStyle style = new Label.LabelStyle(font, Color.BLACK);
-		Label cardText = new Label(cardString, style);
-		cardText.addListener(new CardClickListener(entity));
-		cardText.setAlignment(Align.center);
-		cardText.setWrap(true);
-		
-		cardCells[cellIndex].setActor(cardText);
-	}
-	
-	private synchronized void click(CardClickListener listener, Entity entity) {
+	private synchronized void click(MainCardClickListener listener, Entity entity) {
 		
 		comp = mapper.get(entity);
 		if (comp.zone.playerNumber() == currPlayer) { // click came from active player
@@ -200,6 +238,21 @@ public class UiSystem extends EntityEvSystem<UiComponent> {
 		}
 	}
 	
+	@Subscribe
+	public synchronized void on(DestroyLp ev) {
+		
+		Entity entity = ev.attacked();
+		if (mapper.has(entity)) {
+			
+			comp = mapper.get(entity);
+			int cellIndex = zones.get(comp.zone).indexOf(entity);
+			
+			mainCells[cellIndex].clearActor();
+			comp.zone = UiZones.yardZone((currPlayer + 1) % 2);
+			updateCard(entity);
+		}
+	}
+	
 	@Subscribe // TODO synchronized loswerden (Zugriff auf comp und mapper durch parallele Threads verhindern)
 	public synchronized void on(AttackBase ev) {
 		
@@ -213,26 +266,41 @@ public class UiSystem extends EntityEvSystem<UiComponent> {
 		}
 	}
 	
-	@Subscribe
-	public synchronized void on(DestroyLp ev) {
+	private synchronized void updateCard(Entity entity) {
 		
-		Entity entity = ev.attacked();
-		if (mapper.has(entity)) {
-			
-			comp = mapper.get(entity);
-			int cellIndex = zones.get(comp.zone).indexOf(entity);
-			
-			cardCells[cellIndex].clearActor();
-			comp.zone = UiZones.yardZone((currPlayer + 1) % 2);
-			updateCard(entity);
+		UiComponent uic = entity.getComponent(UiComponent.class); // create central Mapper-collection-class when this call gets too slow
+		
+		LifeComponent lc = entity.getComponent(LifeComponent.class);
+		AttackComponent ac = entity.getComponent(AttackComponent.class);
+		ShieldComponent sc = entity.getComponent(ShieldComponent.class);
+		
+		uic.lpStr = lc != null ? String.valueOf(Math.max(0f, lc.pts)) : "?";
+		uic.apStr = lc != null ? String.valueOf(Math.max(0f, ac.pts)) : "?";
+		uic.spStr = lc != null ? String.valueOf(Math.max(0f, sc.pts)) : "?";
+		
+		int cellIndex = zones.get(comp.zone).indexOf(entity);
+		if (cellIndex == -1) {
+			cellIndex = zones.get(comp.zone).freeIndex(entity);
+			if (cellIndex == -1) {
+				throw new RuntimeException("No free cell-ids in zone " + comp.zone);
+			}
 		}
+		
+		String cardString = uic.displayName + "\nLP: " + uic.lpStr + "\nAP: " + uic.apStr + "\nSP: " + uic.spStr;
+		
+		Label cardText = new Label(cardString, new Label.LabelStyle(font1, Color.BLACK));
+		cardText.addListener(new MainCardClickListener(entity));
+		cardText.setAlignment(Align.center);
+		cardText.setWrap(true);
+		
+		mainCells[cellIndex].setActor(cardText);
 	}
 	
 	private void unselectAll() {
 		
-		for (Cell cell : cardCells) {
+		for (Cell cell : mainCells) {
 			if (cell.getActor() != null) {
-				((CardClickListener) cell.getActor().getListeners().get(0)).selected = false;
+				((MainCardClickListener) cell.getActor().getListeners().get(0)).selected = false;
 			}
 		}
 	}
@@ -262,11 +330,11 @@ public class UiSystem extends EntityEvSystem<UiComponent> {
 	public synchronized void dispose() {
 		super.dispose();
 		
-		cardCells = null;
-		table = null;
+		mainCells = null;
+		mainTable = null;
 		stage = null;
 		
-		font = null;
+		font1 = null;
 		
 		zones.clear();
 		zones = null;
@@ -318,12 +386,12 @@ public class UiSystem extends EntityEvSystem<UiComponent> {
 		}
 	}
 	
-	class CardClickListener extends ClickListener {
+	class MainCardClickListener extends ClickListener {
 		
 		Entity entity;
 		boolean selected;
 		
-		public CardClickListener(Entity entity) {
+		public MainCardClickListener(Entity entity) {
 			this.entity = entity;
 		}
 		
