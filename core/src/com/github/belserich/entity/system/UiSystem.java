@@ -194,7 +194,7 @@ public class UiSystem extends EntityEvSystem<UiComponent> {
 		if (mapper.has(attacked)) {
 			
 			comp = mapper.get(attacked);
-			comp.lpStr = String.valueOf(ev.newLp());
+			comp.lpStr = String.valueOf(Math.max(0, ev.newLp()));
 			ZoneMeta meta = zones.get(comp.zone);
 			setCardAt(meta.indexOf(attacked), attacked);
 		}
@@ -229,7 +229,23 @@ public class UiSystem extends EntityEvSystem<UiComponent> {
 	@Override
 	public synchronized void dispose() {
 		super.dispose();
+		
+		cardCells = null;
+		table = null;
+		stage = null;
+		
+		font = null;
+		
 		zones.clear();
+		zones = null;
+		
+		currPlayer = 0;
+		
+		primaryCard = null;
+		secondaryCards.clear();
+		secondaryCards = null;
+		
+		zoneIndex = 0;
 	}
 	
 	class ZoneMeta {
