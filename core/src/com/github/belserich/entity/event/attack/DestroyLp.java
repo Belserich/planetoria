@@ -1,13 +1,13 @@
 package com.github.belserich.entity.event.attack;
 
 import com.badlogic.ashley.core.Entity;
-import com.github.belserich.entity.event.base.CardAttackBaseEvent;
+import com.github.belserich.entity.event.base.AttackBase;
 
-public class CardDestroyLpEvent extends CardAttackBaseEvent {
+public class DestroyLp extends AttackBase {
 	
 	private final float prevLp;
 	
-	public CardDestroyLpEvent(Entity primary, Entity destCard, float attackPts, float prevLp, Entity... others) {
+	public DestroyLp(Entity primary, Entity destCard, float attackPts, float prevLp, Entity... others) {
 		super(primary, destCard, attackPts, others);
 		this.prevLp = prevLp;
 	}

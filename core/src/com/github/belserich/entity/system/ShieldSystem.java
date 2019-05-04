@@ -4,9 +4,9 @@ import com.badlogic.ashley.core.Entity;
 import com.github.belserich.GameClient;
 import com.github.belserich.entity.component.ShieldComponent;
 import com.github.belserich.entity.core.EntityEvSystem;
-import com.github.belserich.entity.event.attack.CardAttackEvent;
-import com.github.belserich.entity.event.attack.CardAttackNoSpEvent;
-import com.github.belserich.entity.event.attack.CardDestroySpEvent;
+import com.github.belserich.entity.event.attack.Attack;
+import com.github.belserich.entity.event.attack.AttackNoSp;
+import com.github.belserich.entity.event.attack.DestroySp;
 import com.github.belserich.entity.event.core.EventQueue;
 import com.google.common.eventbus.Subscribe;
 
@@ -17,7 +17,7 @@ public class ShieldSystem extends EntityEvSystem<ShieldComponent> {
 	}
 	
 	@Subscribe
-	public void on(CardAttackEvent ev) {
+	public void on(Attack ev) {
 		
 		Entity attacked = ev.attacked();
 		if (mapper.has(attacked)) {
@@ -28,7 +28,7 @@ public class ShieldSystem extends EntityEvSystem<ShieldComponent> {
 			
 			if (comp.pts <= 0) {
 				
-				queueEvent(new CardAttackNoSpEvent(
+				queueEvent(new AttackNoSp(
 						ev.sourceCard(),
 						ev.destCard(),
 						ev.attackPts(),
@@ -39,7 +39,7 @@ public class ShieldSystem extends EntityEvSystem<ShieldComponent> {
 				comp.pts = 0;
 				
 				GameClient.log(this, "! Shield break. " + specLog);
-				queueEvent(new CardDestroySpEvent(
+				queueEvent(new DestroySp(
 						ev.sourceCard(),
 						ev.destCard(),
 						ev.attackPts(),

@@ -4,9 +4,9 @@ import com.badlogic.ashley.core.Entity;
 import com.github.belserich.GameClient;
 import com.github.belserich.entity.component.AttackComponent;
 import com.github.belserich.entity.core.EntityEvSystem;
-import com.github.belserich.entity.event.attack.CardAttackEvent;
+import com.github.belserich.entity.event.attack.Attack;
 import com.github.belserich.entity.event.core.EventQueue;
-import com.github.belserich.entity.event.interact.CardInteractEvent;
+import com.github.belserich.entity.event.interact.Interact;
 import com.google.common.eventbus.Subscribe;
 
 public class AttackSystem extends EntityEvSystem<AttackComponent> {
@@ -16,7 +16,7 @@ public class AttackSystem extends EntityEvSystem<AttackComponent> {
 	}
 	
 	@Subscribe
-	public void on(CardInteractEvent ev) {
+	public void on(Interact ev) {
 		
 		Entity source = ev.sourceCard();
 		if (mapper.has(source)) {
@@ -38,7 +38,7 @@ public class AttackSystem extends EntityEvSystem<AttackComponent> {
 				comp.attCount--;
 			}
 			
-			queueEvent(new CardAttackEvent(ev, attackPts));
+			queueEvent(new Attack(ev, attackPts));
 			GameClient.log(this, "! Attack. Attackers: " + attackers.length + "; Attack points: " + attackPts);
 		}
 	}

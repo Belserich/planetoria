@@ -21,11 +21,11 @@ import com.github.belserich.entity.component.LifeComponent;
 import com.github.belserich.entity.component.ShieldComponent;
 import com.github.belserich.entity.component.UiComponent;
 import com.github.belserich.entity.core.EntityEvSystem;
-import com.github.belserich.entity.event.attack.CardDestroyLpEvent;
-import com.github.belserich.entity.event.base.CardAttackBaseEvent;
+import com.github.belserich.entity.event.attack.DestroyLp;
+import com.github.belserich.entity.event.base.AttackBase;
 import com.github.belserich.entity.event.core.EventQueue;
-import com.github.belserich.entity.event.interact.CardInteractEvent;
-import com.github.belserich.entity.event.select.CardSelectEvent;
+import com.github.belserich.entity.event.interact.Interact;
+import com.github.belserich.entity.event.select.Select;
 import com.google.common.base.Optional;
 import com.google.common.eventbus.Subscribe;
 
@@ -178,7 +178,7 @@ public class UiSystem extends EntityEvSystem<UiComponent> {
 				
 				primaryCard = Optional.of(entity); // set new primary card as selected card
 				
-				queueEvent(new CardSelectEvent(entity));
+				queueEvent(new Select(entity));
 				GameClient.log(this, "Card " + cardLogString(entity) + " selected.");
 				
 			} else { // card been unselected
@@ -196,12 +196,12 @@ public class UiSystem extends EntityEvSystem<UiComponent> {
 			
 		} else if (primaryCard.isPresent()) {
 			
-			queueEvent(new CardInteractEvent(primaryCard.get(), entity, secondaryCards.toArray(new Entity[0])));
+			queueEvent(new Interact(primaryCard.get(), entity, secondaryCards.toArray(new Entity[0])));
 		}
 	}
 	
 	@Subscribe // TODO synchronized loswerden (Zugriff auf comp und mapper durch parallele Threads verhindern)
-	public synchronized void on(CardAttackBaseEvent ev) {
+	public synchronized void on(AttackBase ev) {
 		
 		Entity attacked = ev.destCard();
 		if (mapper.has(attacked)) {
@@ -214,7 +214,7 @@ public class UiSystem extends EntityEvSystem<UiComponent> {
 	}
 	
 	@Subscribe
-	public synchronized void on(CardDestroyLpEvent ev) {
+	public synchronized void on(DestroyLp ev) {
 		
 		Entity entity = ev.attacked();
 		if (mapper.has(entity)) {

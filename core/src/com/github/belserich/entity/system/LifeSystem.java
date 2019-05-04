@@ -4,9 +4,9 @@ import com.badlogic.ashley.core.Entity;
 import com.github.belserich.GameClient;
 import com.github.belserich.entity.component.LifeComponent;
 import com.github.belserich.entity.core.EntityEvSystem;
-import com.github.belserich.entity.event.attack.CardAttackLpEvent;
-import com.github.belserich.entity.event.attack.CardAttackNoSpEvent;
-import com.github.belserich.entity.event.attack.CardDestroyLpEvent;
+import com.github.belserich.entity.event.attack.AttackLp;
+import com.github.belserich.entity.event.attack.AttackNoSp;
+import com.github.belserich.entity.event.attack.DestroyLp;
 import com.github.belserich.entity.event.core.EventQueue;
 import com.google.common.eventbus.Subscribe;
 
@@ -17,7 +17,7 @@ public class LifeSystem extends EntityEvSystem<LifeComponent> {
 	}
 	
 	@Subscribe
-	public void on(CardAttackNoSpEvent ev) {
+	public void on(AttackNoSp ev) {
 		
 		Entity attacked = ev.attacked();
 		if (mapper.has(attacked)) {
@@ -27,11 +27,11 @@ public class LifeSystem extends EntityEvSystem<LifeComponent> {
 			comp.pts = comp.pts - ev.attackPts();
 			
 			GameClient.log(this, "! Life attack. Old LP: " + oldPts + "; New LP: " + comp.pts);
-			queueEvent(new CardAttackLpEvent(ev, oldPts, comp.pts));
+			queueEvent(new AttackLp(ev, oldPts, comp.pts));
 			
 			if (comp.pts <= 0) {
 				GameClient.log(this, "! Card death.");
-				queueEvent(new CardDestroyLpEvent(ev.primary(), ev.destCard(), ev.attackPts(), oldPts, ev.secondary()));
+				queueEvent(new DestroyLp(ev.primary(), ev.destCard(), ev.attackPts(), oldPts, ev.secondary()));
 			}
 		}
 	}
