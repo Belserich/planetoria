@@ -26,7 +26,7 @@ public class UiSystem extends EntityEvSystem<UiComponent> {
 	}
 	
 	@Override
-	public synchronized void justAdded(Entity entity) {
+	public void justAdded(Entity entity) {
 		
 		comp = mapper.get(entity);
 		
@@ -47,7 +47,7 @@ public class UiSystem extends EntityEvSystem<UiComponent> {
 	}
 	
 	@Override
-	public synchronized void dispose() {
+	public void dispose() {
 		super.dispose();
 	}
 	
