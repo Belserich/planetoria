@@ -3,6 +3,7 @@ package com.github.belserich;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.github.belserich.asset.GameUi;
 import com.github.belserich.asset.UiZones;
 import com.github.belserich.entity.component.*;
 import com.github.belserich.entity.core.EntityEvEngine;
@@ -13,6 +14,7 @@ public class GameClient extends ApplicationAdapter {
 	
 	private EntityEvEngine engine;
 	private EventQueue queue;
+	private GameUi gameUi;
 	
 	private LifeSystem lifeSys;
 	private AttackSystem attackSys;
@@ -26,6 +28,7 @@ public class GameClient extends ApplicationAdapter {
 		
 		engine = new EntityEvEngine();
 		queue = new EventQueue();
+		gameUi = new GameUi();
 		
 		createEntities();
 		createSystems();
@@ -78,7 +81,7 @@ public class GameClient extends ApplicationAdapter {
 		selectionSys = new SelectionSystem(queue);
 		engine.addSystem(selectionSys);
 		
-		uiSys = new UiSystem(queue);
+		uiSys = new UiSystem(queue, gameUi);
 		engine.addSystem(uiSys);
 	}
 	
