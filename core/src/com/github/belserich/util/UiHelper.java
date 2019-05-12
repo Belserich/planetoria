@@ -25,16 +25,18 @@ public class UiHelper {
 		fontGen.dispose();
 	}
 	
-	public static HorizontalGroup horizontalGroup(Actor... actors) {
+	public static HorizontalGroup horizontalGroup(float spacing, Actor... actors) {
 		HorizontalGroup group = new HorizontalGroup();
+		group.space(spacing);
 		for (Actor actor : actors) {
 			group.addActor(actor);
 		}
 		return group;
 	}
 	
-	public static VerticalGroup verticalGroup(Actor... actors) {
+	public static VerticalGroup verticalGroup(float spacing, Actor... actors) {
 		VerticalGroup group = new VerticalGroup();
+		group.space(spacing);
 		for (Actor actor : actors) {
 			group.addActor(actor);
 		}
