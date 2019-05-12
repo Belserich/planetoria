@@ -1,15 +1,14 @@
 package com.github.belserich.entity.system;
 
 import com.badlogic.ashley.core.Entity;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.scenes.scene2d.ui.Container;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.utils.Align;
+import com.github.belserich.GameClient;
+import com.github.belserich.asset.CardUi;
 import com.github.belserich.asset.GameUi;
 import com.github.belserich.entity.component.UiComponent;
 import com.github.belserich.entity.core.EntityEvSystem;
 import com.github.belserich.entity.event.core.EventQueue;
-import com.github.belserich.util.UiHelper;
+import com.github.belserich.entity.event.select.Select;
+import com.google.common.eventbus.Subscribe;
 
 public class UiSystem extends EntityEvSystem<UiComponent> {
 	
@@ -32,14 +31,18 @@ public class UiSystem extends EntityEvSystem<UiComponent> {
 		comp = mapper.get(entity);
 		
 		String text = comp.displayName + "\nLP: " + comp.lpStr + "\nAP: " + comp.apStr + "\nSP: " + comp.spStr;
+		CardUi cardUi = new CardUi(text);
 		
-		Label label = new Label(text, new Label.LabelStyle(UiHelper.smallFont, Color.BLACK));
-		label.setAlignment(Align.center);
-		label.setWrap(true);
+		if (!gameUi.getZoneUi(comp.zone).tryAddCardUi(cardUi)) {
+			GameClient.log(this, "Couldn't add card ui, no unoccupied fields remaining.");
+		}
+	}
+	
+	@Subscribe
+	public void on(Select ev) {
 		
-		Container<Label> fieldUi = gameUi.getZoneUi(comp.zone).nextFreeFieldUi();
-		if (fieldUi != null) {
-			fieldUi.setActor(label);
+		Entity entity = ev.entity();
+		if (mapper.has(entity)) {
 		}
 	}
 	
