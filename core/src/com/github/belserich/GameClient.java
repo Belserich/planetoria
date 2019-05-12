@@ -4,16 +4,10 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.github.belserich.asset.UiZones;
-import com.github.belserich.entity.component.AttackComponent;
-import com.github.belserich.entity.component.LifeComponent;
-import com.github.belserich.entity.component.ShieldComponent;
-import com.github.belserich.entity.component.UiComponent;
+import com.github.belserich.entity.component.*;
 import com.github.belserich.entity.core.EntityEvEngine;
 import com.github.belserich.entity.event.core.EventQueue;
-import com.github.belserich.entity.system.AttackSystem;
-import com.github.belserich.entity.system.LifeSystem;
-import com.github.belserich.entity.system.ShieldSystem;
-import com.github.belserich.entity.system.UiSystem;
+import com.github.belserich.entity.system.*;
 
 public class GameClient extends ApplicationAdapter {
 	
@@ -23,6 +17,8 @@ public class GameClient extends ApplicationAdapter {
 	private LifeSystem lifeSys;
 	private AttackSystem attackSys;
 	private ShieldSystem shieldSys;
+	private SelectionSystem selectionSys;
+	
 	private UiSystem uiSys;
 	
 	@Override
@@ -39,14 +35,26 @@ public class GameClient extends ApplicationAdapter {
 		
 		log(this, "Initializing game entities.");
 		
+		Entity p0b0 = new Entity();
+		p0b0.add(new SelectionComponent(UiZones.P0_BATTLE));
+		
+		Entity p0b1 = new Entity();
+		p0b1.add(new SelectionComponent(UiZones.P0_BATTLE));
+		
+		Entity p0b2 = new Entity();
+		p0b2.add(new SelectionComponent(UiZones.P0_BATTLE));
+		
+		Entity p0b3 = new Entity();
+		p0b3.add(new SelectionComponent(UiZones.P0_BATTLE));
+		
 		engine.addEntity(createShipA(new Entity(), UiZones.P0_DECK));
 		engine.addEntity(createShipA(new Entity(), UiZones.P0_DECK));
 		engine.addEntity(createShipA(new Entity(), UiZones.P0_DECK));
 		engine.addEntity(createShipA(new Entity(), UiZones.P0_DECK));
-		engine.addEntity(createShipB(new Entity(), UiZones.P0_BATTLE));
-		engine.addEntity(createShipB(new Entity(), UiZones.P0_BATTLE));
-		engine.addEntity(createShipA(new Entity(), UiZones.P0_BATTLE));
-		engine.addEntity(createShipA(new Entity(), UiZones.P0_BATTLE));
+		engine.addEntity(createShipB(p0b0, UiZones.P0_BATTLE));
+		engine.addEntity(createShipB(p0b1, UiZones.P0_BATTLE));
+		engine.addEntity(createShipA(p0b2, UiZones.P0_BATTLE));
+		engine.addEntity(createShipA(p0b3, UiZones.P0_BATTLE));
 		
 		engine.addEntity(createShipA(new Entity(), UiZones.P1_BATTLE));
 		engine.addEntity(createShipA(new Entity(), UiZones.P1_BATTLE));
@@ -66,6 +74,9 @@ public class GameClient extends ApplicationAdapter {
 		
 		shieldSys = new ShieldSystem(queue);
 		engine.addSystem(shieldSys);
+		
+		selectionSys = new SelectionSystem(queue);
+		engine.addSystem(selectionSys);
 		
 		uiSys = new UiSystem(queue);
 		engine.addSystem(uiSys);
