@@ -5,6 +5,8 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.github.belserich.asset.GameUi;
 import com.github.belserich.asset.UiZones;
+import com.github.belserich.data.selection.LifoSelection;
+import com.github.belserich.data.selection.Selection;
 import com.github.belserich.entity.component.*;
 import com.github.belserich.entity.core.EntityEvEngine;
 import com.github.belserich.entity.event.core.EventQueue;
@@ -34,35 +36,8 @@ public class GameClient extends ApplicationAdapter {
 		createSystems();
 	}
 	
-	private void createEntities() {
-		
-		log(this, "Initializing game entities.");
-		
-		Entity p0b0 = new Entity();
-		p0b0.add(new SelectionComponent(UiZones.P0_BATTLE));
-		
-		Entity p0b1 = new Entity();
-		p0b1.add(new SelectionComponent(UiZones.P0_BATTLE));
-		
-		Entity p0b2 = new Entity();
-		p0b2.add(new SelectionComponent(UiZones.P0_BATTLE));
-		
-		Entity p0b3 = new Entity();
-		p0b3.add(new SelectionComponent(UiZones.P0_BATTLE));
-		
-		engine.addEntity(createShipA(new Entity(), UiZones.P0_DECK));
-		engine.addEntity(createShipA(new Entity(), UiZones.P0_DECK));
-		engine.addEntity(createShipA(new Entity(), UiZones.P0_DECK));
-		engine.addEntity(createShipA(new Entity(), UiZones.P0_DECK));
-		engine.addEntity(createShipB(p0b0, UiZones.P0_BATTLE));
-		engine.addEntity(createShipB(p0b1, UiZones.P0_BATTLE));
-		engine.addEntity(createShipA(p0b2, UiZones.P0_BATTLE));
-		engine.addEntity(createShipA(p0b3, UiZones.P0_BATTLE));
-		
-		engine.addEntity(createShipA(new Entity(), UiZones.P1_BATTLE));
-		engine.addEntity(createShipA(new Entity(), UiZones.P1_BATTLE));
-		engine.addEntity(createShipA(new Entity(), UiZones.P1_BATTLE));
-		engine.addEntity(createShipB(new Entity(), UiZones.P1_BATTLE));
+	public static void error(Object obj, String message) {
+		log(obj, message);
 	}
 	
 	private void createSystems() {
@@ -135,5 +110,38 @@ public class GameClient extends ApplicationAdapter {
 	
 	public static void log(Object obj, String message) {
 		Gdx.app.log(obj.getClass().getSimpleName(), message);
+	}
+	
+	private void createEntities() {
+		
+		log(this, "Initializing game entities.");
+		
+		Selection<Entity> p0bSelection = new LifoSelection<Entity>(Entity.class);
+		
+		Entity p0b0 = new Entity();
+		p0b0.add(new SelectionComponent(gameUi.getZoneUi(UiZones.P0_BATTLE).getFieldUi(0), p0bSelection));
+		
+		Entity p0b1 = new Entity();
+		p0b1.add(new SelectionComponent(gameUi.getZoneUi(UiZones.P0_BATTLE).getFieldUi(1), p0bSelection));
+		
+		Entity p0b2 = new Entity();
+		p0b2.add(new SelectionComponent(gameUi.getZoneUi(UiZones.P0_BATTLE).getFieldUi(2), p0bSelection));
+		
+		Entity p0b3 = new Entity();
+		p0b3.add(new SelectionComponent(gameUi.getZoneUi(UiZones.P0_BATTLE).getFieldUi(3), p0bSelection));
+		
+		engine.addEntity(createShipA(new Entity(), UiZones.P0_DECK));
+		engine.addEntity(createShipA(new Entity(), UiZones.P0_DECK));
+		engine.addEntity(createShipA(new Entity(), UiZones.P0_DECK));
+		engine.addEntity(createShipA(new Entity(), UiZones.P0_DECK));
+		engine.addEntity(createShipB(p0b0, UiZones.P0_BATTLE));
+		engine.addEntity(createShipB(p0b1, UiZones.P0_BATTLE));
+		engine.addEntity(createShipA(p0b2, UiZones.P0_BATTLE));
+		engine.addEntity(createShipA(p0b3, UiZones.P0_BATTLE));
+		
+		engine.addEntity(createShipA(new Entity(), UiZones.P1_BATTLE));
+		engine.addEntity(createShipA(new Entity(), UiZones.P1_BATTLE));
+		engine.addEntity(createShipA(new Entity(), UiZones.P1_BATTLE));
+		engine.addEntity(createShipB(new Entity(), UiZones.P1_BATTLE));
 	}
 }

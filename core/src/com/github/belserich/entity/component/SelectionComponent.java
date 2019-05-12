@@ -1,13 +1,20 @@
 package com.github.belserich.entity.component;
 
 import com.badlogic.ashley.core.Component;
-import com.github.belserich.asset.UiZones;
+import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.github.belserich.data.selection.Selection;
+import com.github.belserich.entity.system.SelectionSystem;
 
 public class SelectionComponent implements Component {
 	
-	public UiZones type;
+	public Actor observable;
+	public SelectionSystem.SelectionNotifier notifier;
 	
-	public SelectionComponent(UiZones type) {
-		this.type = type;
+	public Selection<Entity> selection;
+	
+	public SelectionComponent(Actor observable, Selection<Entity> selection) {
+		this.selection = selection;
+		this.observable = observable;
 	}
 }
