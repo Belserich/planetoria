@@ -139,6 +139,11 @@ public class LifoSelection<T> implements Selection<T> {
 		}
 	}
 	
+	@Override
+	public int count() {
+		return selection.size();
+	}
+	
 	private void remove(int index) {
 		
 		if (index != -1) {

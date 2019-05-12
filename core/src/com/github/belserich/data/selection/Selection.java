@@ -27,4 +27,6 @@ public interface Selection<T> extends SelectionObservable<T> {
 	T[] all();
 	
 	void removeAll();
+	
+	int count();
 }
