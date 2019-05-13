@@ -32,7 +32,6 @@ public class AttackableSystem extends EntitySystem implements EntityListener {
 	@Override
 	public void entityAdded(Entity entity) {
 		
-		System.out.println("ADD");
 		AttackableComponent comp = entity.getComponent(AttackableComponent.class);
 		comp.notifier = new TouchNotifier(this, entity);
 		comp.uiObs.addListener(comp.notifier);
@@ -47,7 +46,6 @@ public class AttackableSystem extends EntitySystem implements EntityListener {
 	}
 	
 	private void touched(Entity entity) {
-		System.out.println("HAII");
 	}
 	
 	public class TouchNotifier extends ClickListener {

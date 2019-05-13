@@ -1,7 +1,7 @@
 package com.github.belserich;
 
+import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
-import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.github.belserich.asset.UiZones;
@@ -13,16 +13,9 @@ import com.github.belserich.ui.GameUi;
 
 public class GameClient extends ApplicationAdapter {
 	
-	private EntityEvEngine engine;
+	private Engine engine;
 	private EventQueue queue;
 	private GameUi gameUi;
-	
-	private LifeSystem lifeSys;
-	private AttackSystem attackSys;
-	private ShieldSystem shieldSys;
-	private EntitySystem attackableSys;
-	
-	private UiSystem uiSys;
 	
 	@Override
 	public void create () {
@@ -41,22 +34,11 @@ public class GameClient extends ApplicationAdapter {
 	
 	private void createSystems() {
 		
-		log(this, "Initializing entity systems.");
-		
-		lifeSys = new LifeSystem(queue);
-		engine.addSystem(lifeSys);
-		
-		attackSys = new AttackSystem(queue);
-		engine.addSystem(attackSys);
-		
-		shieldSys = new ShieldSystem(queue);
-		engine.addSystem(shieldSys);
-		
-		attackableSys = new AttackableSystem();
-		engine.addSystem(attackableSys);
-		
-		uiSys = new UiSystem(queue, gameUi);
-		engine.addSystem(uiSys);
+		engine.addSystem(new LifeSystem(queue));
+		engine.addSystem(new AttackSystem(queue));
+		engine.addSystem(new ShieldSystem(queue));
+		engine.addSystem(new AttackableSystem());
+		engine.addSystem(new UiSystem(queue, gameUi));
 	}
 	
 	private Entity createShipA(Entity entity, UiZones zone) {
@@ -79,7 +61,7 @@ public class GameClient extends ApplicationAdapter {
 	
 	@Override
 	public void resize(int width, int height) {
-		uiSys.resize(width, height);
+		// TODO gameUi.resize(width, height);
 	}
 	
 	@Override
@@ -96,15 +78,8 @@ public class GameClient extends ApplicationAdapter {
 	public void dispose () {
 		
 		log(this, "Disposing game entities.");
-		engine.dispose();
-		
-		log(this, "Disposing game systems.");
-		
-		lifeSys.dispose();
-		attackSys.dispose();
-		shieldSys.dispose();
-		
-		uiSys.dispose();
+		engine.removeAllEntities();
+		engine = null;
 	}
 	
 	public static void log(Object obj, String message) {
@@ -113,7 +88,7 @@ public class GameClient extends ApplicationAdapter {
 	
 	private void createEntities() {
 		
-		log(this, "Initializing game entities.");
+		log(this, "Creating game entities.");
 		
 		Entity p0b0 = new Entity();
 		Entity p0b1 = new Entity();
