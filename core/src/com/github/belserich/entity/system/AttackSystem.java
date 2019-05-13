@@ -9,6 +9,8 @@ import com.github.belserich.entity.component.AttackerComponent;
 
 public class AttackSystem extends EntitySystem implements EntityListener {
 	
+	private Engine engine;
+	
 	private Family fam;
 	private Family selection;
 	
@@ -27,9 +29,27 @@ public class AttackSystem extends EntitySystem implements EntityListener {
 	}
 	
 	@Override
+	public void addedToEngine(Engine engine) {
+		this.engine = engine;
+		engine.addEntityListener(fam, this);
+		for (Entity entity : engine.getEntitiesFor(fam)) {
+			entityAdded(entity);
+		}
+	}
+	
+	@Override
+	public void removedFromEngine(Engine engine) {
+		this.engine = null;
+		engine.removeEntityListener(this);
+		for (Entity entity : engine.getEntitiesFor(fam)) {
+			entityRemoved(entity);
+		}
+	}
+	
+	@Override
 	public void entityAdded(Entity entity) {
 		
-		ImmutableArray<Entity> sel = getEngine().getEntitiesFor(selection);
+		ImmutableArray<Entity> sel = engine.getEntitiesFor(selection);
 		AttackComponent comp;
 		float attackPts = 0f;
 		
@@ -61,19 +81,7 @@ public class AttackSystem extends EntitySystem implements EntityListener {
 	public void entityRemoved(Entity entity) {
 	
 	}
-	
-	@Override
-	public void addedToEngine(Engine engine) {
-		super.addedToEngine(engine);
-		engine.addEntityListener(fam, this);
-	}
-	
-	@Override
-	public void removedFromEngine(Engine engine) {
-		super.removedFromEngine(engine);
-		engine.addEntityListener(fam, this);
-	}
-	
+
 //	@Subscribe
 //	public void on(Interact ev) {
 //
