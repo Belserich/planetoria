@@ -1,19 +1,14 @@
 package com.github.belserich;
 
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.github.belserich.asset.UiZones;
-import com.github.belserich.entity.component.AttackComponent;
-import com.github.belserich.entity.component.LifeComponent;
-import com.github.belserich.entity.component.ShieldComponent;
-import com.github.belserich.entity.component.UiComponent;
+import com.github.belserich.entity.component.*;
 import com.github.belserich.entity.core.EntityEvEngine;
 import com.github.belserich.entity.event.core.EventQueue;
-import com.github.belserich.entity.system.AttackSystem;
-import com.github.belserich.entity.system.LifeSystem;
-import com.github.belserich.entity.system.ShieldSystem;
-import com.github.belserich.entity.system.UiSystem;
+import com.github.belserich.entity.system.*;
 import com.github.belserich.ui.GameUi;
 
 public class GameClient extends ApplicationAdapter {
@@ -25,6 +20,7 @@ public class GameClient extends ApplicationAdapter {
 	private LifeSystem lifeSys;
 	private AttackSystem attackSys;
 	private ShieldSystem shieldSys;
+	private EntitySystem attackableSys;
 	
 	private UiSystem uiSys;
 	
@@ -55,6 +51,9 @@ public class GameClient extends ApplicationAdapter {
 		
 		shieldSys = new ShieldSystem(queue);
 		engine.addSystem(shieldSys);
+		
+		attackableSys = new AttackableSystem();
+		engine.addSystem(attackableSys);
 		
 		uiSys = new UiSystem(queue, gameUi);
 		engine.addSystem(uiSys);
@@ -130,6 +129,7 @@ public class GameClient extends ApplicationAdapter {
 		Entity p1b1 = new Entity();
 		Entity p1b2 = new Entity();
 		Entity p1b3 = new Entity();
+		p1b3.add(new AttackableComponent(gameUi.getZoneUi(UiZones.P1_BATTLE).getFieldUi(0)));
 		
 		engine.addEntity(createShipA(p1b0, UiZones.P1_BATTLE));
 		engine.addEntity(createShipA(p1b1, UiZones.P1_BATTLE));
