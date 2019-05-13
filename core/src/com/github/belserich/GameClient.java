@@ -3,14 +3,18 @@ package com.github.belserich;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
-import com.github.belserich.asset.GameUi;
 import com.github.belserich.asset.UiZones;
-import com.github.belserich.data.selection.LifoSelection;
-import com.github.belserich.data.selection.Selection;
-import com.github.belserich.entity.component.*;
+import com.github.belserich.entity.component.AttackComponent;
+import com.github.belserich.entity.component.LifeComponent;
+import com.github.belserich.entity.component.ShieldComponent;
+import com.github.belserich.entity.component.UiComponent;
 import com.github.belserich.entity.core.EntityEvEngine;
 import com.github.belserich.entity.event.core.EventQueue;
-import com.github.belserich.entity.system.*;
+import com.github.belserich.entity.system.AttackSystem;
+import com.github.belserich.entity.system.LifeSystem;
+import com.github.belserich.entity.system.ShieldSystem;
+import com.github.belserich.entity.system.UiSystem;
+import com.github.belserich.ui.GameUi;
 
 public class GameClient extends ApplicationAdapter {
 	
@@ -21,7 +25,6 @@ public class GameClient extends ApplicationAdapter {
 	private LifeSystem lifeSys;
 	private AttackSystem attackSys;
 	private ShieldSystem shieldSys;
-	private SelectionSystem selectionSys;
 	
 	private UiSystem uiSys;
 	
@@ -52,9 +55,6 @@ public class GameClient extends ApplicationAdapter {
 		
 		shieldSys = new ShieldSystem(queue);
 		engine.addSystem(shieldSys);
-		
-		selectionSys = new SelectionSystem(queue);
-		engine.addSystem(selectionSys);
 		
 		uiSys = new UiSystem(queue, gameUi);
 		engine.addSystem(uiSys);
@@ -116,19 +116,27 @@ public class GameClient extends ApplicationAdapter {
 		
 		log(this, "Initializing game entities.");
 		
-		Selection<Entity> p0bSelection = new LifoSelection<Entity>(Entity.class);
-		
 		Entity p0b0 = new Entity();
 		p0b0.add(new SelectionComponent(gameUi.getZoneUi(UiZones.P0_BATTLE).getFieldUi(0), p0bSelection));
 		
 		Entity p0b1 = new Entity();
-		p0b1.add(new SelectionComponent(gameUi.getZoneUi(UiZones.P0_BATTLE).getFieldUi(1), p0bSelection));
-		
 		Entity p0b2 = new Entity();
-		p0b2.add(new SelectionComponent(gameUi.getZoneUi(UiZones.P0_BATTLE).getFieldUi(2), p0bSelection));
-		
 		Entity p0b3 = new Entity();
-		p0b3.add(new SelectionComponent(gameUi.getZoneUi(UiZones.P0_BATTLE).getFieldUi(3), p0bSelection));
+		
+		engine.addEntity(createShipB(p0b0, UiZones.P0_BATTLE));
+		engine.addEntity(createShipB(p0b1, UiZones.P0_BATTLE));
+		engine.addEntity(createShipA(p0b2, UiZones.P0_BATTLE));
+		engine.addEntity(createShipA(p0b3, UiZones.P0_BATTLE));
+		
+		Entity p1b0 = new Entity();
+		Entity p1b1 = new Entity();
+		Entity p1b2 = new Entity();
+		Entity p1b3 = new Entity();
+		
+		engine.addEntity(createShipA(p1b0, UiZones.P1_BATTLE));
+		engine.addEntity(createShipA(p1b1, UiZones.P1_BATTLE));
+		engine.addEntity(createShipA(p1b2, UiZones.P1_BATTLE));
+		engine.addEntity(createShipB(p1b3, UiZones.P1_BATTLE));
 		
 		engine.addEntity(createShipA(new Entity(), UiZones.P0_DECK));
 		engine.addEntity(createShipA(new Entity(), UiZones.P0_DECK));
