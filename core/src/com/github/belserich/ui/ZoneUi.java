@@ -35,7 +35,7 @@ public class ZoneUi extends HorizontalGroup {
 	}
 	
 	public FieldUi getFieldUi(int index) {
-		if (index > 0 && index < fieldCount()) {
+		if (index >= 0 && index < fieldCount()) {
 			return fields.get(index);
 		} else GameClient.error(this, "Field index " + index + " out of bounds (max: " + fieldCount() + ")! Returning first field.");
 		return fields.get(0);
