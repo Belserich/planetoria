@@ -1,9 +1,10 @@
-package com.github.belserich.asset;
+package com.github.belserich.ui;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
+import com.github.belserich.asset.UiZones;
 import com.github.belserich.util.UiHelper;
 
 import java.util.HashMap;

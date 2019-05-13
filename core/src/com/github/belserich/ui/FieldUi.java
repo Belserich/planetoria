@@ -1,4 +1,4 @@
-package com.github.belserich.asset;
+package com.github.belserich.ui;
 
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;

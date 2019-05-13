@@ -117,8 +117,6 @@ public class GameClient extends ApplicationAdapter {
 		log(this, "Initializing game entities.");
 		
 		Entity p0b0 = new Entity();
-		p0b0.add(new SelectionComponent(gameUi.getZoneUi(UiZones.P0_BATTLE).getFieldUi(0), p0bSelection));
-		
 		Entity p0b1 = new Entity();
 		Entity p0b2 = new Entity();
 		Entity p0b3 = new Entity();
@@ -142,14 +140,5 @@ public class GameClient extends ApplicationAdapter {
 		engine.addEntity(createShipA(new Entity(), UiZones.P0_DECK));
 		engine.addEntity(createShipA(new Entity(), UiZones.P0_DECK));
 		engine.addEntity(createShipA(new Entity(), UiZones.P0_DECK));
-		engine.addEntity(createShipB(p0b0, UiZones.P0_BATTLE));
-		engine.addEntity(createShipB(p0b1, UiZones.P0_BATTLE));
-		engine.addEntity(createShipA(p0b2, UiZones.P0_BATTLE));
-		engine.addEntity(createShipA(p0b3, UiZones.P0_BATTLE));
-		
-		engine.addEntity(createShipA(new Entity(), UiZones.P1_BATTLE));
-		engine.addEntity(createShipA(new Entity(), UiZones.P1_BATTLE));
-		engine.addEntity(createShipA(new Entity(), UiZones.P1_BATTLE));
-		engine.addEntity(createShipB(new Entity(), UiZones.P1_BATTLE));
 	}
 }

@@ -2,12 +2,12 @@ package com.github.belserich.entity.system;
 
 import com.badlogic.ashley.core.Entity;
 import com.github.belserich.GameClient;
-import com.github.belserich.asset.CardUi;
-import com.github.belserich.asset.GameUi;
 import com.github.belserich.entity.component.UiComponent;
 import com.github.belserich.entity.core.EntityEvSystem;
 import com.github.belserich.entity.event.core.EventQueue;
 import com.github.belserich.entity.event.select.Select;
+import com.github.belserich.ui.CardUi;
+import com.github.belserich.ui.GameUi;
 import com.google.common.eventbus.Subscribe;
 
 public class UiSystem extends EntityEvSystem<UiComponent> {

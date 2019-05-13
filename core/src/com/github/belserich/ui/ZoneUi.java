@@ -1,4 +1,4 @@
-package com.github.belserich.asset;
+package com.github.belserich.ui;
 
 import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.github.belserich.GameClient;
