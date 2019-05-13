@@ -12,4 +12,7 @@ public class AttackableComponent implements Component {
 	public AttackableComponent(Actor uiObs) {
 		this.uiObs = uiObs;
 	}
+	
+	public static class Attacked implements Component {
+	}
 }

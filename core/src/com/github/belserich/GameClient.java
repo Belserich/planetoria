@@ -24,8 +24,8 @@ public class GameClient extends ApplicationAdapter {
 		queue = new EventQueue();
 		gameUi = new GameUi();
 		
-		createEntities();
 		createSystems();
+		createEntities();
 	}
 	
 	public static void error(Object obj, String message) {
@@ -34,10 +34,13 @@ public class GameClient extends ApplicationAdapter {
 	
 	private void createSystems() {
 		
+		engine.addSystem(new AttackerSystem());
+		engine.addSystem(new AttackableSystem());
+		
 		engine.addSystem(new LifeSystem(queue));
 		engine.addSystem(new AttackSystem(queue));
 		engine.addSystem(new ShieldSystem(queue));
-		engine.addSystem(new AttackableSystem());
+		
 		engine.addSystem(new UiSystem(queue, gameUi));
 	}
 	
@@ -96,6 +99,7 @@ public class GameClient extends ApplicationAdapter {
 		Entity p0b3 = new Entity();
 		
 		engine.addEntity(createShipB(p0b0, UiZones.P0_BATTLE));
+		p0b0.add(new AttackerComponent(gameUi.getZoneUi(UiZones.P0_BATTLE).getFieldUi(0)));
 		engine.addEntity(createShipB(p0b1, UiZones.P0_BATTLE));
 		engine.addEntity(createShipA(p0b2, UiZones.P0_BATTLE));
 		engine.addEntity(createShipA(p0b3, UiZones.P0_BATTLE));
