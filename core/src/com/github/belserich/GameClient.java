@@ -39,7 +39,7 @@ public class GameClient extends ApplicationAdapter {
 		
 		engine.addSystem(new LifeSystem(queue));
 		engine.addSystem(new AttackSystem());
-		engine.addSystem(new ShieldSystem(queue));
+		engine.addSystem(new ShieldSystem());
 		
 		engine.addSystem(new UiSystem(queue, gameUi));
 	}
