@@ -13,6 +13,6 @@ public class AttackerComponent implements Component {
 		this.uiObs = uiObs;
 	}
 	
-	public static class Select implements Component {
+	public static class Selected implements Component {
 	}
 }

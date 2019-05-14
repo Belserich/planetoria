@@ -31,7 +31,7 @@ public class AttackerSystem extends EntitySystem implements EntityListener {
 	
 	private void touched(Entity entity) {
 		
-		entity.add(new AttackerComponent.Select());
+		entity.add(new AttackerComponent.Selected());
 	}
 	
 	@Override

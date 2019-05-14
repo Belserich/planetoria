@@ -14,5 +14,14 @@ public class AttackableComponent implements Component {
 	}
 	
 	public static class Attacked implements Component {
+		
+		public float pts;
+		
+		public Attacked(float pts) {
+			this.pts = pts;
+		}
+	}
+	
+	public static class Touched implements Component {
 	}
 }

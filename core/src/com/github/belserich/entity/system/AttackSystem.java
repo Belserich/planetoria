@@ -18,13 +18,13 @@ public class AttackSystem extends EntitySystem implements EntityListener {
 		
 		fam = Family.all(
 				AttackableComponent.class,
-				AttackableComponent.Attacked.class
+				AttackableComponent.Touched.class
 		).get();
 		
 		selection = Family.all(
 				AttackComponent.class,
 				AttackerComponent.class,
-				AttackerComponent.Select.class
+				AttackerComponent.Selected.class
 		).get();
 	}
 	
@@ -68,12 +68,14 @@ public class AttackSystem extends EntitySystem implements EntityListener {
 			
 			if (attackPts != -1) {
 				GameClient.log(this, "! Attack. Attackers: " + sel.size() + "; Attack points: " + attackPts);
+				entity.add(new AttackableComponent.Attacked(attackPts));
+				
 			} else GameClient.log(this, "* Attack. Not all selected entities have remaining attacks!");
 		}
 		
-		entity.remove(AttackableComponent.Attacked.class);
+		entity.remove(AttackableComponent.Touched.class);
 		for (Entity other : sel) {
-			other.remove(AttackerComponent.Select.class);
+			other.remove(AttackerComponent.Selected.class);
 		}
 	}
 	
