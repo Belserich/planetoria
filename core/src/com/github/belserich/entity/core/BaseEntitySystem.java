@@ -10,6 +10,12 @@ public abstract class BaseEntitySystem extends EntitySystem implements EntityLis
 	private Family fam;
 	
 	public BaseEntitySystem(Family fam) {
+		super();
+		this.fam = fam;
+	}
+	
+	public BaseEntitySystem(Family fam, int priority) {
+		super(priority);
 		this.fam = fam;
 	}
 	
