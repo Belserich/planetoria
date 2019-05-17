@@ -29,11 +29,19 @@ public abstract class BaseEntitySystem extends EntitySystem {
 	}
 	
 	@Override
+	public void removedFromEngine(Engine engine) {
+		super.addedToEngine(engine);
+		entities = null;
+	}
+	
+	@Override
 	public void update(float delta) {
 		this.delta = delta;
 		super.update(delta);
-		for (Entity entity : entities) {
-			update(entity);
+		if (entities != null) {
+			for (Entity entity : entities) {
+				update(entity);
+			}
 		}
 	}
 	
