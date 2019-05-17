@@ -33,12 +33,13 @@ public class GameClient extends ApplicationAdapter {
 		
 		engine.addSystem(new AttackerSystem());
 		engine.addSystem(new AttackableSystem());
+		engine.addSystem(new ZoneParentSystem());
 		
 		engine.addSystem(new LifeSystem());
 		engine.addSystem(new AttackSystem());
 		engine.addSystem(new ShieldSystem());
 		
-		engine.addSystem(new UiSystem());
+		engine.addSystem(new UiSystem(gameUi));
 	}
 	
 	private void createEntities() {
@@ -106,9 +107,10 @@ public class GameClient extends ApplicationAdapter {
 		entity.add(new Lp(1));
 		entity.add(new Sp(1));
 		entity.add(new Ap(1, 2));
+		entity.add(new ZoneParent(UiZones.P0_BATTLE));
 		
 		CardUi ui = new CardUi("Raumschiff A", "1.0", "1.0", "1.0");
-		gameUi.getZoneUi(zone).tryAddCardUi(ui);
+		gameUi.getZoneUi(zone).addCardUi(ui);
 		entity.add(new Ui.Card(ui));
 		
 		return ui;
@@ -119,9 +121,10 @@ public class GameClient extends ApplicationAdapter {
 		entity.add(new Lp(2));
 		entity.add(new Sp(2));
 		entity.add(new Ap(2, 2));
+		entity.add(new ZoneParent(UiZones.P0_BATTLE));
 		
 		CardUi ui = new CardUi("Raumschiff B", "2.0", "2.0", "2.0");
-		gameUi.getZoneUi(zone).tryAddCardUi(ui);
+		gameUi.getZoneUi(zone).addCardUi(ui);
 		entity.add(new Ui.Card(ui));
 		
 		return ui;
