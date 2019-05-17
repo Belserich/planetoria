@@ -1,32 +1,36 @@
 package com.github.belserich.entity.system;
 
 import com.badlogic.ashley.core.*;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.github.belserich.entity.component.Attacker;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class AttackerSystem extends EntitySystem implements EntityListener {
 	
 	private Family fam;
+	private Map<Entity, AttackerSystem.TouchNotifier> notifiers;
 	
 	public AttackerSystem() {
 		fam = Family.all(Attacker.class).get();
+		notifiers = new HashMap<Entity, AttackerSystem.TouchNotifier>();
 	}
 	
 	@Override
 	public void entityAdded(Entity entity) {
 		
 		Attacker comp = entity.getComponent(Attacker.class);
-		comp.notifier = new AttackerSystem.TouchNotifier(this, entity);
-		comp.uiObs.addListener(comp.notifier);
+		AttackerSystem.TouchNotifier notifier = new AttackerSystem.TouchNotifier(entity, comp.uiObs);
+		notifiers.put(entity, notifier);
 	}
 	
 	@Override
 	public void entityRemoved(Entity entity) {
 		
-		Attacker comp = entity.getComponent(Attacker.class);
-		comp.uiObs.removeListener(comp.notifier);
-		comp.notifier = null;
+		notifiers.get(entity).tryUnregister();
 	}
 	
 	private void touched(Entity entity) {
@@ -48,17 +52,23 @@ public class AttackerSystem extends EntitySystem implements EntityListener {
 	
 	public class TouchNotifier extends ClickListener {
 		
-		private AttackerSystem sys;
 		private Entity entity;
+		private Actor obs;
 		
-		public TouchNotifier(AttackerSystem sys, Entity entity) {
-			this.sys = sys;
+		public TouchNotifier(Entity entity, Actor obs) {
 			this.entity = entity;
+			obs.addListener(this);
+		}
+		
+		private void tryUnregister() {
+			if (obs != null) {
+				obs.removeListener(this);
+			}
 		}
 		
 		@Override
-		public void clicked(InputEvent event, float x, float y) {
-			sys.touched(entity);
+		public void clicked(InputEvent ev, float x, float y) {
+			touched(entity);
 		}
 	}
 }
