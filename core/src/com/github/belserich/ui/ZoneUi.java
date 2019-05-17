@@ -21,13 +21,24 @@ public class ZoneUi extends HorizontalGroup {
 		}
 	}
 	
-	public boolean tryAddCardUi(CardUi cardUi) {
+	public boolean addCardUi(CardUi cardUi) {
 		
 		Iterator<FieldUi> it = fields.iterator();
 		while (it.hasNext()) {
 			FieldUi next = it.next();
 			if (!next.hasChildren()) {
 				next.setActor(cardUi);
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public boolean removeCardUi(CardUi cardUi) {
+		
+		for (FieldUi fieldUi : fields) {
+			if (fieldUi.getActor() == cardUi) {
+				fieldUi.removeActor(cardUi);
 				return true;
 			}
 		}
