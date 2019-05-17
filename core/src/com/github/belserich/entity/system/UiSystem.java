@@ -2,29 +2,29 @@ package com.github.belserich.entity.system;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
-import com.github.belserich.entity.component.LifeComponent;
-import com.github.belserich.entity.component.ShieldComponent;
-import com.github.belserich.entity.component.UiComponent;
+import com.github.belserich.entity.component.Lp;
+import com.github.belserich.entity.component.Sp;
+import com.github.belserich.entity.component.Ui;
 import com.github.belserich.entity.core.BaseEntitySystem;
 
 public class UiSystem extends BaseEntitySystem {
 	
 	public UiSystem() {
 		super(Family.all(
-				UiComponent.Card.class
+				Ui.Card.class
 		).one(
-				ShieldComponent.Broke.class,
-				LifeComponent.Changed.class
+				Sp.Broke.class,
+				Lp.Changed.class
 		).get(), 10);
 	}
 	
 	@Override
 	public void update(Entity entity) {
 		
-		UiComponent.Card uic = entity.getComponent(UiComponent.Card.class);
+		Ui.Card uic = entity.getComponent(Ui.Card.class);
 		
-		ShieldComponent sc = entity.getComponent(ShieldComponent.class);
-		LifeComponent lc = entity.getComponent(LifeComponent.class);
+		Sp sc = entity.getComponent(Sp.class);
+		Lp lc = entity.getComponent(Lp.class);
 		
 		if (sc != null) {
 			uic.ui.setSp(String.valueOf(sc.pts));

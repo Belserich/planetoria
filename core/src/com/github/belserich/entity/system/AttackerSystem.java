@@ -3,20 +3,20 @@ package com.github.belserich.entity.system;
 import com.badlogic.ashley.core.*;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.github.belserich.entity.component.AttackerComponent;
+import com.github.belserich.entity.component.Attacker;
 
 public class AttackerSystem extends EntitySystem implements EntityListener {
 	
 	private Family fam;
 	
 	public AttackerSystem() {
-		fam = Family.all(AttackerComponent.class).get();
+		fam = Family.all(Attacker.class).get();
 	}
 	
 	@Override
 	public void entityAdded(Entity entity) {
 		
-		AttackerComponent comp = entity.getComponent(AttackerComponent.class);
+		Attacker comp = entity.getComponent(Attacker.class);
 		comp.notifier = new AttackerSystem.TouchNotifier(this, entity);
 		comp.uiObs.addListener(comp.notifier);
 	}
@@ -24,14 +24,14 @@ public class AttackerSystem extends EntitySystem implements EntityListener {
 	@Override
 	public void entityRemoved(Entity entity) {
 		
-		AttackerComponent comp = entity.getComponent(AttackerComponent.class);
+		Attacker comp = entity.getComponent(Attacker.class);
 		comp.uiObs.removeListener(comp.notifier);
 		comp.notifier = null;
 	}
 	
 	private void touched(Entity entity) {
 		
-		entity.add(new AttackerComponent.Selected());
+		entity.add(new Attacker.Selected());
 	}
 	
 	@Override
