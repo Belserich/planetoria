@@ -1,57 +1,37 @@
 package com.github.belserich.entity.system;
 
 import com.badlogic.ashley.core.Entity;
-import com.github.belserich.GameClient;
+import com.badlogic.ashley.core.Family;
+import com.github.belserich.entity.component.LifeComponent;
+import com.github.belserich.entity.component.ShieldComponent;
 import com.github.belserich.entity.component.UiComponent;
-import com.github.belserich.entity.core.EntityEvSystem;
-import com.github.belserich.entity.event.core.EventQueue;
-import com.github.belserich.entity.event.select.Select;
-import com.github.belserich.ui.CardUi;
-import com.github.belserich.ui.GameUi;
-import com.google.common.eventbus.Subscribe;
+import com.github.belserich.entity.core.BaseEntitySystem;
 
-public class UiSystem extends EntityEvSystem<UiComponent> {
+public class UiSystem extends BaseEntitySystem {
 	
-	private GameUi gameUi;
-	
-	public UiSystem(EventQueue eventBus, GameUi gameUi) {
-		super(eventBus, true, UiComponent.class);
-		this.gameUi = gameUi;
+	public UiSystem() {
+		super(Family.all(
+				UiComponent.Card.class
+		).one(
+				ShieldComponent.Broke.class,
+				LifeComponent.Changed.class
+		).get(), 10);
 	}
 	
 	@Override
-	protected void update() {
-		super.update();
-		gameUi.update(delta);
-	}
-	
-	@Override
-	public void justAdded(Entity entity) {
+	public void update(Entity entity) {
 		
-		comp = mapper.get(entity);
+		UiComponent.Card uic = entity.getComponent(UiComponent.Card.class);
 		
-		String text = comp.displayName + "\nLP: " + comp.lpStr + "\nAP: " + comp.apStr + "\nSP: " + comp.spStr;
-		CardUi cardUi = new CardUi(text);
+		ShieldComponent sc = entity.getComponent(ShieldComponent.class);
+		LifeComponent lc = entity.getComponent(LifeComponent.class);
 		
-		if (!gameUi.getZoneUi(comp.zone).tryAddCardUi(cardUi)) {
-			GameClient.log(this, "Couldn't add card ui, no unoccupied fields remaining.");
-		}
-	}
-	
-	@Subscribe
-	public void on(Select ev) {
+		if (sc != null) {
+			uic.ui.setSp(String.valueOf(sc.pts));
+		} else uic.ui.setSp(String.valueOf(0f));
 		
-		Entity entity = ev.entity();
-		if (mapper.has(entity)) {
-		}
-	}
-	
-	@Override
-	public void dispose() {
-		super.dispose();
-	}
-	
-	public void resize(int width, int height) {
-		// TODO
+		if (lc != null) {
+			uic.ui.setLp(String.valueOf(lc.pts));
+		} else uic.ui.setLp(String.valueOf(0f));
 	}
 }

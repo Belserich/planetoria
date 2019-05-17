@@ -1,17 +1,20 @@
 package com.github.belserich.entity.core;
 
 import com.badlogic.ashley.core.Engine;
-import com.badlogic.ashley.core.EntityListener;
+import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
+import com.badlogic.ashley.utils.ImmutableArray;
 
-public abstract class BaseEntitySystem extends EntitySystem implements EntityListener {
+public abstract class BaseEntitySystem extends EntitySystem {
 	
-	private Family fam;
+	protected Family fam;
+	protected ImmutableArray<Entity> entities;
+	
+	private float delta;
 	
 	public BaseEntitySystem(Family fam) {
-		super();
-		this.fam = fam;
+		this(fam, 10);
 	}
 	
 	public BaseEntitySystem(Family fam, int priority) {
@@ -22,12 +25,22 @@ public abstract class BaseEntitySystem extends EntitySystem implements EntityLis
 	@Override
 	public void addedToEngine(Engine engine) {
 		super.addedToEngine(engine);
-		engine.addEntityListener(fam, this);
+		entities = engine.getEntitiesFor(fam);
 	}
 	
 	@Override
-	public void removedFromEngine(Engine engine) {
-		super.removedFromEngine(engine);
-		engine.removeEntityListener(this);
+	public void update(float delta) {
+		this.delta = delta;
+		super.update(delta);
+		for (Entity entity : entities) {
+			update(entity);
+		}
+	}
+	
+	public void update(Entity entity) {
+	}
+	
+	public float delta() {
+		return delta;
 	}
 }

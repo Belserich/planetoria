@@ -9,4 +9,7 @@ public class ShieldComponent implements Component {
 	public ShieldComponent(float pts) {
 		this.pts = pts;
 	}
+	
+	public static class Broke implements Component {
+	}
 }

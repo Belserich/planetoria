@@ -23,10 +23,7 @@ public class AttackableSystem extends EntitySystem implements EntityListener {
 	
 	@Override
 	public void entityRemoved(Entity entity) {
-		
-		AttackableComponent comp = entity.getComponent(AttackableComponent.class);
-		comp.uiObs.removeListener(comp.notifier);
-		comp.notifier = null;
+		// TODO
 	}
 	
 	private void touched(Entity entity) {

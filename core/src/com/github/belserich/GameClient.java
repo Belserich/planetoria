@@ -6,22 +6,19 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.github.belserich.asset.UiZones;
 import com.github.belserich.entity.component.*;
-import com.github.belserich.entity.core.EntityEvEngine;
-import com.github.belserich.entity.event.core.EventQueue;
 import com.github.belserich.entity.system.*;
+import com.github.belserich.ui.CardUi;
 import com.github.belserich.ui.GameUi;
 
 public class GameClient extends ApplicationAdapter {
 	
 	private Engine engine;
-	private EventQueue queue;
 	private GameUi gameUi;
 	
 	@Override
 	public void create () {
 		
-		engine = new EntityEvEngine();
-		queue = new EventQueue();
+		engine = new Engine();
 		gameUi = new GameUi();
 		
 		createSystems();
@@ -37,11 +34,11 @@ public class GameClient extends ApplicationAdapter {
 		engine.addSystem(new AttackerSystem());
 		engine.addSystem(new AttackableSystem());
 		
-		engine.addSystem(new LifeSystem(queue));
+		engine.addSystem(new LifeSystem());
 		engine.addSystem(new AttackSystem());
 		engine.addSystem(new ShieldSystem());
 		
-		engine.addSystem(new UiSystem(queue, gameUi));
+		engine.addSystem(new UiSystem());
 	}
 	
 	private Entity createShipA(Entity entity, UiZones zone) {
@@ -83,6 +80,7 @@ public class GameClient extends ApplicationAdapter {
 	
 	public void update(float delta) {
 		engine.update(delta);
+		gameUi.update(delta);
 	}
 	
 	@Override

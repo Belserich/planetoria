@@ -1,25 +1,26 @@
 package com.github.belserich.entity.system;
 
-import com.badlogic.ashley.core.*;
+import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.github.belserich.GameClient;
 import com.github.belserich.entity.component.AttackComponent;
 import com.github.belserich.entity.component.AttackableComponent;
 import com.github.belserich.entity.component.AttackerComponent;
+import com.github.belserich.entity.core.EventSystem;
 
-public class AttackSystem extends EntitySystem implements EntityListener {
+public class AttackSystem extends EventSystem {
 	
-	private Engine engine;
-	
-	private Family fam;
 	private Family selection;
 	
 	public AttackSystem() {
 		
-		fam = Family.all(
+		super(Family.all(
 				AttackableComponent.class,
 				AttackableComponent.Touched.class
-		).get();
+				).get(),
+				AttackableComponent.Attacked.class,
+				AttackableComponent.Touched.class);
 		
 		selection = Family.all(
 				AttackComponent.class,
@@ -29,27 +30,9 @@ public class AttackSystem extends EntitySystem implements EntityListener {
 	}
 	
 	@Override
-	public void addedToEngine(Engine engine) {
-		this.engine = engine;
-		engine.addEntityListener(fam, this);
-		for (Entity entity : engine.getEntitiesFor(fam)) {
-			entityAdded(entity);
-		}
-	}
-	
-	@Override
-	public void removedFromEngine(Engine engine) {
-		this.engine = null;
-		engine.removeEntityListener(this);
-		for (Entity entity : engine.getEntitiesFor(fam)) {
-			entityRemoved(entity);
-		}
-	}
-	
-	@Override
-	public void entityAdded(Entity entity) {
+	public void update(Entity entity) {
 		
-		ImmutableArray<Entity> sel = engine.getEntitiesFor(selection);
+		ImmutableArray<Entity> sel = getEngine().getEntitiesFor(selection);
 		AttackComponent comp;
 		float attackPts = 0f;
 		
@@ -73,42 +56,8 @@ public class AttackSystem extends EntitySystem implements EntityListener {
 			} else GameClient.log(this, "* Attack. Not all selected entities have remaining attacks!");
 		}
 		
-		entity.remove(AttackableComponent.Touched.class);
 		for (Entity other : sel) {
 			other.remove(AttackerComponent.Selected.class);
 		}
 	}
-	
-	@Override
-	public void entityRemoved(Entity entity) {
-	
-	}
-
-//	@Subscribe
-//	public void on(Interact ev) {
-//
-//		Entity source = ev.sourceCard();
-//		if (mapper.has(source)) {
-//
-//			Entity[] attackers = ev.all();
-//			float attackPts = 0;
-//
-//			// ensure all selected entities can attack
-//			for (Entity att : attackers) {
-//				comp = mapper.get(att);
-//				if (comp.attCount <= 0) {
-//					return;
-//				}
-//			}
-//
-//			for (Entity att : attackers) {
-//				comp = mapper.get(att);
-//				attackPts += comp.pts;
-//				comp.attCount--;
-//			}
-//
-//			queueEvent(new Attack(ev, attackPts));
-//			GameClient.log(this, "! Attack. Attackers: " + attackers.length + "; Attack points: " + attackPts);
-//		}
-//	}
 }

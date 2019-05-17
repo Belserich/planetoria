@@ -9,4 +9,7 @@ public class LifeComponent implements Component {
 	public LifeComponent(float pts) {
 		this.pts = pts;
 	}
+	
+	public static class Changed implements Component {
+	}
 }
