@@ -50,30 +50,71 @@ public class GameClient extends ApplicationAdapter {
 		Entity p0b2 = new Entity();
 		Entity p0b3 = new Entity();
 		
-		engine.addEntity(createShipB(p0b0, UiZones.P0_BATTLE));
-		p0b0.add(new Attacker(gameUi.getZoneUi(UiZones.P0_BATTLE).getFieldUi(0)));
-		engine.addEntity(createShipB(p0b1, UiZones.P0_BATTLE));
-		engine.addEntity(createShipA(p0b2, UiZones.P0_BATTLE));
-		engine.addEntity(createShipA(p0b3, UiZones.P0_BATTLE));
+		engine.addEntity(createShipB(p0b0, UiZones.P0_BATTLE, false));
+		engine.addEntity(createShipB(p0b1, UiZones.P0_BATTLE, false));
+		engine.addEntity(createShipA(p0b2, UiZones.P0_BATTLE, false));
+		engine.addEntity(createShipA(p0b3, UiZones.P0_BATTLE, false));
 		
 		Entity p1b0 = new Entity();
 		Entity p1b1 = new Entity();
 		Entity p1b2 = new Entity();
 		Entity p1b3 = new Entity();
-		p1b3.add(new Attackable(gameUi.getZoneUi(UiZones.P1_BATTLE).getFieldUi(0)));
 		
-		engine.addEntity(createShipA(p1b0, UiZones.P1_BATTLE));
-		engine.addEntity(createShipA(p1b1, UiZones.P1_BATTLE));
-		engine.addEntity(createShipA(p1b2, UiZones.P1_BATTLE));
-		engine.addEntity(createShipB(p1b3, UiZones.P1_BATTLE));
+		engine.addEntity(createShipA(p1b0, UiZones.P1_BATTLE, true));
+		engine.addEntity(createShipA(p1b1, UiZones.P1_BATTLE, true));
+		engine.addEntity(createShipA(p1b2, UiZones.P1_BATTLE, true));
+		engine.addEntity(createShipB(p1b3, UiZones.P1_BATTLE, true));
 		
-		engine.addEntity(createShipA(new Entity(), UiZones.P0_DECK));
-		engine.addEntity(createShipA(new Entity(), UiZones.P0_DECK));
-		engine.addEntity(createShipA(new Entity(), UiZones.P0_DECK));
-		engine.addEntity(createShipA(new Entity(), UiZones.P0_DECK));
+		Entity de0 = new Entity();
+		Entity de1 = new Entity();
+		Entity de2 = new Entity();
+		Entity de3 = new Entity();
+		
+		createDeckShipA(de0, UiZones.P0_DECK);
+		createDeckShipA(de1, UiZones.P0_DECK);
+		createDeckShipA(de2, UiZones.P0_DECK);
+		createDeckShipA(de3, UiZones.P0_DECK);
+		
+		engine.addEntity(de0);
+		engine.addEntity(de1);
+		engine.addEntity(de2);
+		engine.addEntity(de3);
 	}
 	
-	private Entity createShipB(Entity entity, UiZones zone) {
+	private Entity createShipB(Entity entity, UiZones zone, boolean attackable) {
+		
+		CardUi ui = createDeckShipB(entity, zone);
+		if (attackable) {
+			entity.add(new Attackable(ui));
+		} else entity.add(new Attacker(ui));
+		
+		return entity;
+	}
+	
+	private Entity createShipA(Entity entity, UiZones zone, boolean attackable) {
+		
+		CardUi ui = createDeckShipA(entity, zone);
+		if (attackable) {
+			entity.add(new Attackable(ui));
+		} else entity.add(new Attacker(ui));
+		
+		return entity;
+	}
+	
+	private CardUi createDeckShipA(Entity entity, UiZones zone) {
+		
+		entity.add(new Lp(1));
+		entity.add(new Sp(1));
+		entity.add(new Ap(1, 2));
+		
+		CardUi ui = new CardUi("Raumschiff A", "1.0", "1.0", "1.0");
+		gameUi.getZoneUi(zone).tryAddCardUi(ui);
+		entity.add(new Ui.Card(ui));
+		
+		return ui;
+	}
+	
+	private CardUi createDeckShipB(Entity entity, UiZones zone) {
 		
 		entity.add(new Lp(2));
 		entity.add(new Sp(2));
@@ -83,7 +124,7 @@ public class GameClient extends ApplicationAdapter {
 		gameUi.getZoneUi(zone).tryAddCardUi(ui);
 		entity.add(new Ui.Card(ui));
 		
-		return entity;
+		return ui;
 	}
 	
 	@Override
@@ -112,18 +153,5 @@ public class GameClient extends ApplicationAdapter {
 	
 	public static void log(Object obj, String message) {
 		Gdx.app.log(obj.getClass().getSimpleName(), message);
-	}
-	
-	private Entity createShipA(Entity entity, UiZones zone) {
-		
-		entity.add(new Lp(1));
-		entity.add(new Sp(1));
-		entity.add(new Ap(1, 2));
-		
-		CardUi ui = new CardUi("Raumschiff A", "1.0", "1.0", "1.0");
-		gameUi.getZoneUi(zone).tryAddCardUi(ui);
-		entity.add(new Ui.Card(ui));
-		
-		return entity;
 	}
 }
