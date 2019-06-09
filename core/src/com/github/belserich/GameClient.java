@@ -31,8 +31,8 @@ public class GameClient extends ApplicationAdapter {
 	private void createSystems() {
 		
 		engine.addSystem(new AttackerSystem());
-		engine.addSystem(new AttackableSystem());
 		engine.addSystem(new ZoneParentSystem());
+		engine.addSystem(new TouchableSystem());
 
 		engine.addSystem(new LifeSystem());
 		engine.addSystem(new AttackSystem());

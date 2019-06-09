@@ -46,6 +46,7 @@ public class CardBuilder {
 		if (isAttackable) {
 			entity.add(new Attackable(ui));
 		}
+		entity.add(new Touchable(ui));
 		
 		return entity;
 	}
