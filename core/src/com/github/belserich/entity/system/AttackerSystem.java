@@ -16,7 +16,7 @@ public class AttackerSystem extends EntitySystem implements EntityListener {
 	
 	public AttackerSystem() {
 		fam = Family.all(Attacker.class).get();
-		notifiers = new HashMap<Entity, AttackerSystem.TouchNotifier>();
+		notifiers = new HashMap<>();
 	}
 	
 	@Override
@@ -57,6 +57,7 @@ public class AttackerSystem extends EntitySystem implements EntityListener {
 		
 		public TouchNotifier(Entity entity, Actor obs) {
 			this.entity = entity;
+			this.obs = obs;
 			obs.addListener(this);
 		}
 		

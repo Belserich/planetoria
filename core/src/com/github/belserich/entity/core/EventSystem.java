@@ -11,7 +11,14 @@ import java.util.Map;
 
 public class EventSystem extends BaseEntitySystem {
 	
+	/**
+	 * References all entities with certain components
+	 */
 	private Map<Class<? extends Component>, ImmutableArray<Entity>> eventEntities;
+	
+	/**
+	 * Indicates event component types for cyclic removal
+	 */
 	private Class<? extends Component>[] eventTypes;
 	
 	public EventSystem(Family fam, Class<? extends Component>... eventTypes) {
@@ -21,7 +28,7 @@ public class EventSystem extends BaseEntitySystem {
 	public EventSystem(Family fam, int priority, Class<? extends Component>... eventTypes) {
 		super(fam, priority);
 		this.eventTypes = eventTypes;
-		this.eventEntities = new HashMap<Class<? extends Component>, ImmutableArray<Entity>>();
+		this.eventEntities = new HashMap<>();
 	}
 	
 	@Override
@@ -32,6 +39,11 @@ public class EventSystem extends BaseEntitySystem {
 		}
 	}
 	
+	/**
+	 * Removes all event components from entities before updating.
+	 *
+	 * @param delta time since last update
+	 */
 	@Override
 	public void update(float delta) {
 		
