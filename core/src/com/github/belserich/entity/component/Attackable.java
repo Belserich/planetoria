@@ -19,7 +19,4 @@ public class Attackable implements Component {
 			this.pts = pts;
 		}
 	}
-	
-	public static class Touched implements Component {
-	}
 }
