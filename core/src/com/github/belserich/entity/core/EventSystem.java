@@ -9,7 +9,7 @@ import com.badlogic.ashley.utils.ImmutableArray;
 import java.util.HashMap;
 import java.util.Map;
 
-public class EventSystem extends BaseEntitySystem {
+public class EventSystem extends EntitySystem {
 	
 	/**
 	 * References all entities with certain components

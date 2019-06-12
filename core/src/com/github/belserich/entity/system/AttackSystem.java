@@ -4,10 +4,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.github.belserich.GameClient;
-import com.github.belserich.entity.component.Ap;
-import com.github.belserich.entity.component.Attackable;
-import com.github.belserich.entity.component.Attacker;
-import com.github.belserich.entity.component.Touchable;
+import com.github.belserich.entity.component.*;
 import com.github.belserich.entity.core.EventSystem;
 
 public class AttackSystem extends EventSystem {
@@ -25,7 +22,7 @@ public class AttackSystem extends EventSystem {
 		selection = Family.all(
 				Ap.class,
 				Attacker.class,
-				Attacker.Selected.class
+				Selectable.Selected.class
 		).get();
 	}
 	
@@ -62,7 +59,7 @@ public class AttackSystem extends EventSystem {
 		}
 		
 		for (Entity other : sel) {
-			other.remove(Attacker.Selected.class);
+			other.remove(Selectable.Selected.class);
 		}
 	}
 }

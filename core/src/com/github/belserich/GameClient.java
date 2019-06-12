@@ -4,21 +4,18 @@ import com.badlogic.ashley.core.Engine;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.github.belserich.asset.Cards;
-import com.github.belserich.asset.UiZones;
-import com.github.belserich.entity.builder.CardBuilder;
+import com.github.belserich.asset.Zones;
+import com.github.belserich.entity.builder.EntityBuilder;
 import com.github.belserich.entity.system.*;
-import com.github.belserich.ui.GameUi;
 
 public class GameClient extends ApplicationAdapter {
 	
 	private Engine engine;
-	private GameUi gameUi;
 	
 	@Override
 	public void create () {
 		
 		engine = new Engine();
-		gameUi = new GameUi();
 		
 		createSystems();
 		createEntities();
@@ -30,40 +27,17 @@ public class GameClient extends ApplicationAdapter {
 	
 	private void createSystems() {
 		
-		engine.addSystem(new AttackerSystem());
-		engine.addSystem(new ZoneParentSystem());
+		engine.addSystem(new CardUiSystem());
+		engine.addSystem(new CardAttChangeSystem());
+		engine.addSystem(new ZoneChangeSystem());
+		
+		engine.addSystem(new ZoneSystem());
 		engine.addSystem(new TouchableSystem());
+		engine.addSystem(new SelectableSystem());
 
 		engine.addSystem(new LifeSystem());
 		engine.addSystem(new AttackSystem());
 		engine.addSystem(new ShieldSystem());
-		
-		engine.addSystem(new UiSystem(gameUi));
-	}
-	
-	private void createEntities() {
-		
-		log(this, "Creating game entities.");
-		
-		CardBuilder card = new CardBuilder(gameUi);
-		
-		card.reset().type(Cards.SPACESHIP_B).zone(UiZones.P0_BATTLE).attacker();
-		engine.addEntity(card.build());
-		engine.addEntity(card.build());
-		engine.addEntity(card.build());
-		engine.addEntity(card.build());
-		
-		card.reset().type(Cards.SPACESHIP_B).zone(UiZones.P1_BATTLE).attackable();
-		engine.addEntity(card.build());
-		engine.addEntity(card.build());
-		engine.addEntity(card.build());
-		engine.addEntity(card.build());
-		
-		card.reset().type(Cards.SPACESHIP_A).zone(UiZones.P0_DECK);
-		engine.addEntity(card.build());
-		engine.addEntity(card.build());
-		engine.addEntity(card.build());
-		engine.addEntity(card.build());
 	}
 	
 	@Override
@@ -72,14 +46,31 @@ public class GameClient extends ApplicationAdapter {
 	}
 	
 	@Override
-	public void render () {
+	public void render() {
 		float delta = Gdx.graphics.getDeltaTime();
 		update(delta);
 	}
 	
-	public void update(float delta) {
-		engine.update(delta);
-		gameUi.update(delta);
+	private void createEntities() {
+		
+		log(this, "Creating game entities.");
+		
+		EntityBuilder builder = new EntityBuilder();
+		
+		builder.reset().card(Cards.SPACESHIP_B, Zones.P0_BATTLE).attacker();
+		for (int i = 0; i < 4; i++) {
+			engine.addEntity(builder.build());
+		}
+		
+		builder.reset().card(Cards.SPACESHIP_B, Zones.P1_BATTLE).attackable();
+		for (int i = 0; i < 4; i++) {
+			engine.addEntity(builder.build());
+		}
+		
+		builder.reset().card(Cards.SPACESHIP_A, Zones.P0_DECK).playable();
+		for (int i = 0; i < 4; i++) {
+			engine.addEntity(builder.build());
+		}
 	}
 	
 	@Override
@@ -93,5 +84,10 @@ public class GameClient extends ApplicationAdapter {
 	
 	public static void log(Object obj, String message) {
 		Gdx.app.log(obj.getClass().getSimpleName(), message);
+	}
+	
+	public void update(float delta) {
+		engine.update(delta);
+		Services.getUiService().update(delta);
 	}
 }
