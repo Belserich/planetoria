@@ -27,13 +27,15 @@ public class GameClient extends ApplicationAdapter {
 	
 	private void createSystems() {
 		
-		engine.addSystem(new CardUiSystem());
-		engine.addSystem(new CardAttChangeSystem());
+		engine.addSystem(new CardHandleSystem());
+		engine.addSystem(new CardLpChangeSystem());
+		engine.addSystem(new CardSpChangeSystem());
 		engine.addSystem(new ZoneChangeSystem());
 		
 		engine.addSystem(new ZoneSystem());
-		engine.addSystem(new TouchableSystem());
+		
 		engine.addSystem(new SelectableSystem());
+		engine.addSystem(new TouchableSystem());
 
 		engine.addSystem(new LifeSystem());
 		engine.addSystem(new AttackSystem());
@@ -47,8 +49,15 @@ public class GameClient extends ApplicationAdapter {
 	
 	@Override
 	public void render() {
+		
 		float delta = Gdx.graphics.getDeltaTime();
 		update(delta);
+		
+		try {
+			Thread.sleep(2);
+		} catch (InterruptedException ex) {
+			ex.printStackTrace();
+		}
 	}
 	
 	private void createEntities() {

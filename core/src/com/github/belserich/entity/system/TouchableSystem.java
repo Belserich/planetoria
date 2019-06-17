@@ -5,20 +5,28 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.ashley.core.Family;
 import com.github.belserich.Services;
+import com.github.belserich.entity.component.CardHandle;
 import com.github.belserich.entity.component.Touchable;
 import com.github.belserich.entity.core.EventSystem;
 import com.github.belserich.ui.core.UiService;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
 public class TouchableSystem extends EventSystem implements EntityListener {
 	
 	private UiService uiService;
+	private Set<Entity> touchedEntities;
 	
 	public TouchableSystem() {
 		super(Family.all(
+				CardHandle.class,
 				Touchable.class
 		).get(), Touchable.Touched.class);
 		
 		uiService = Services.getUiService();
+		touchedEntities = Collections.synchronizedSet(new HashSet<>());
 	}
 	
 	@Override
@@ -35,19 +43,26 @@ public class TouchableSystem extends EventSystem implements EntityListener {
 	
 	@Override
 	public void entityAdded(Entity entity) {
-//		uiService.setCardTouchCallback(entity); TODO
+		
+		CardHandle hc = entity.getComponent(CardHandle.class);
+		
+		uiService.setCardTouchCallback(hc.handle, () -> touchedEntities.add(entity));
 	}
 	
 	@Override
 	public void entityRemoved(Entity entity) {
-//		uiService.removeCardTouchCallback(entity);
+		
+		CardHandle hc = entity.getComponent(CardHandle.class);
+		
+		uiService.removeCardTouchCallback(hc.handle);
 	}
 	
 	@Override
-	public void update(float delta) {
-		super.update(delta);
-//		for (Entity entity : Services.getUiService().touchedEntities()) {
-//			entity.add(new Touchable.Touched());
-//		}
+	public void updateSystemEntities() {
+		
+		for (Entity entity : touchedEntities) {
+			entity.add(new Touchable.Touched());
+		}
+		touchedEntities.clear();
 	}
 }

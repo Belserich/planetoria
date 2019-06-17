@@ -4,24 +4,24 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.github.belserich.Services;
 import com.github.belserich.entity.component.CardHandle;
-import com.github.belserich.entity.component.Zone;
+import com.github.belserich.entity.component.Sp;
 import com.github.belserich.entity.core.EntitySystem;
 
-public class ZoneChangeSystem extends EntitySystem {
+public class CardSpChangeSystem extends EntitySystem {
 	
-	public ZoneChangeSystem() {
+	public CardSpChangeSystem() {
 		super(Family.all(
-				CardHandle.class,
-				Zone.Changed.class
+				CardHandle.class
+		).one(
+				Sp.Broke.class
 		).get());
 	}
 	
 	@Override
 	public void update(Entity entity) {
 		
-		CardHandle hc = entity.getComponent(CardHandle.class);
-		Zone.Changed zc = entity.getComponent(Zone.Changed.class);
+		CardHandle cc = entity.getComponent(CardHandle.class);
 		
-		Services.getUiService().changeCardZone(hc.handle, zc.now.ordinal());
+		Services.getUiService().updateCardSp(cc.handle, 0);
 	}
 }

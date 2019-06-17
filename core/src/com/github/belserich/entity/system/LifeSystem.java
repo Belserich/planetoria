@@ -27,11 +27,11 @@ public class LifeSystem extends EventSystem {
 		Lp lc = entity.getComponent(Lp.class);
 		Attackable.Attacked ac = entity.getComponent(Attackable.Attacked.class);
 		
-		float oldPts = lc.pts;
+		float last = lc.pts;
 		lc.pts -= ac.pts;
 		
-		GameClient.log(this, "! Life attack. Old LP: " + oldPts + "; New LP: " + lc.pts);
-		entity.add(new Lp.Changed());
+		GameClient.log(this, "! Life attack. Old LP: " + last + "; New LP: " + lc.pts);
+		entity.add(new Lp.Changed(last, lc.pts));
 		
 		if (lc.pts <= 0) {
 			GameClient.log(this, "! Card death.");

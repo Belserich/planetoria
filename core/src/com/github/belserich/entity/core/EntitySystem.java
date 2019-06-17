@@ -35,8 +35,12 @@ public abstract class EntitySystem extends com.badlogic.ashley.core.EntitySystem
 	
 	@Override
 	public void update(float delta) {
-		this.delta = delta;
 		super.update(delta);
+		this.delta = delta;
+		updateSystemEntities();
+	}
+	
+	public void updateSystemEntities() {
 		if (entities != null) {
 			for (Entity entity : entities) {
 				update(entity);
