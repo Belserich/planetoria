@@ -11,5 +11,12 @@ public class Lp implements Component {
 	}
 	
 	public static class Changed implements Component {
+		
+		public float last, now;
+		
+		public Changed(float last, float now) {
+			this.last = last;
+			this.now = now;
+		}
 	}
 }
