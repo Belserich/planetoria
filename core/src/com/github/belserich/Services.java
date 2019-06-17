@@ -1,7 +1,7 @@
 package com.github.belserich;
 
-import com.github.belserich.ui.UiService;
-import com.github.belserich.ui.UiServiceImpl;
+import com.github.belserich.ui.StdUiService;
+import com.github.belserich.ui.core.UiService;
 
 public class Services {
 	
@@ -9,7 +9,7 @@ public class Services {
 	
 	public static UiService getUiService() {
 		if (uiService == null) {
-			uiService = new UiServiceImpl();
+			uiService = new StdUiService();
 		}
 		return uiService;
 	}

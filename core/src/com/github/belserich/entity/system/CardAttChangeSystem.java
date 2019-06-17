@@ -2,7 +2,6 @@ package com.github.belserich.entity.system;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
-import com.github.belserich.Services;
 import com.github.belserich.entity.component.Card;
 import com.github.belserich.entity.component.Lp;
 import com.github.belserich.entity.component.Sp;
@@ -21,6 +20,6 @@ public class CardAttChangeSystem extends EntitySystem {
 	
 	@Override
 	public void update(Entity entity) {
-		Services.getUiService().updateCard(entity);
+//		Services.getUiService().updateCard(entity); TODO
 	}
 }

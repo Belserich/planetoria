@@ -2,7 +2,6 @@ package com.github.belserich.entity.system;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
-import com.github.belserich.Services;
 import com.github.belserich.entity.component.Zone;
 import com.github.belserich.entity.core.EntitySystem;
 
@@ -16,6 +15,6 @@ public class ZoneChangeSystem extends EntitySystem {
 	
 	@Override
 	public void update(Entity entity) {
-		Services.getUiService().changeZone(entity);
+//		Services.getUiService().changeCardZone(entity); TODO
 	}
 }

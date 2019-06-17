@@ -7,7 +7,7 @@ import com.badlogic.ashley.core.Family;
 import com.github.belserich.Services;
 import com.github.belserich.entity.component.Touchable;
 import com.github.belserich.entity.core.EventSystem;
-import com.github.belserich.ui.UiService;
+import com.github.belserich.ui.core.UiService;
 
 public class TouchableSystem extends EventSystem implements EntityListener {
 	
@@ -35,19 +35,19 @@ public class TouchableSystem extends EventSystem implements EntityListener {
 	
 	@Override
 	public void entityAdded(Entity entity) {
-		uiService.addTouchNotifier(entity);
+//		uiService.setCardTouchCallback(entity); TODO
 	}
 	
 	@Override
 	public void entityRemoved(Entity entity) {
-		uiService.removeTouchNotifier(entity);
+//		uiService.removeCardTouchCallback(entity);
 	}
 	
 	@Override
 	public void update(float delta) {
 		super.update(delta);
-		for (Entity entity : Services.getUiService().touchedEntities()) {
-			entity.add(new Touchable.Touched());
-		}
+//		for (Entity entity : Services.getUiService().touchedEntities()) {
+//			entity.add(new Touchable.Touched());
+//		}
 	}
 }
