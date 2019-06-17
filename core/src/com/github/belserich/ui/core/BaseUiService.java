@@ -73,7 +73,7 @@ public abstract class BaseUiService implements UiService {
 		
 		CardActor card = validateCardActor(handle);
 		if (card != null) {
-			updateCard(card, card.getName(), lp, card.getAp(), card.getSp());
+			updateCard(card, card.getTitle(), lp, card.getAp(), card.getSp());
 		}
 	}
 	
@@ -82,7 +82,7 @@ public abstract class BaseUiService implements UiService {
 		
 		CardActor card = validateCardActor(handle);
 		if (card != null) {
-			updateCard(card, card.getName(), card.getLp(), ap, card.getSp());
+			updateCard(card, card.getTitle(), card.getLp(), ap, card.getSp());
 		}
 	}
 	
@@ -91,7 +91,7 @@ public abstract class BaseUiService implements UiService {
 		
 		CardActor card = validateCardActor(handle);
 		if (card != null) {
-			updateCard(card, card.getName(), card.getLp(), card.getAp(), sp);
+			updateCard(card, card.getTitle(), card.getLp(), card.getAp(), sp);
 		}
 	}
 	
