@@ -57,7 +57,7 @@ public class EntityBuilder {
 				break;
 		}
 		
-		suppliers.add(Card::new);
+		suppliers.add(CardHandle::new);
 		zone(zone);
 		return this;
 	}
@@ -76,6 +76,7 @@ public class EntityBuilder {
 	
 	public EntityBuilder attacker() {
 		
+		suppliers.add(Touchable::new);
 		suppliers.add(Selectable::new);
 		suppliers.add(Attacker::new);
 		return this;
