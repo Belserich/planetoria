@@ -47,16 +47,24 @@ public class GameClient extends ApplicationAdapter {
 		// TODO gameUi.resize(width, height);
 	}
 	
+	float timer;
+	
 	@Override
 	public void render() {
 		
 		float delta = Gdx.graphics.getDeltaTime();
 		update(delta);
 		
+		timer += delta;
+		
 		try {
 			Thread.sleep(2);
 		} catch (InterruptedException ex) {
 			ex.printStackTrace();
+		}
+		
+		if (timer >= 5) {
+			Services.getUiService().setActivePlayer(1);
 		}
 	}
 	

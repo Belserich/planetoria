@@ -18,6 +18,8 @@ public abstract class BaseUiService implements UiService {
 	private Map<Actor, TouchNotifier> notifiers;
 	private int nextCardHandle;
 	
+	private int activePlayer;
+	
 	public BaseUiService() {
 		
 		zoneStrat = new StdZoneStrategy();
