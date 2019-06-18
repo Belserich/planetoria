@@ -50,6 +50,10 @@ public class EntityBuilder {
 				suppliers.add(() -> new Name("Raumschiff B"));
 				
 				break;
+			
+			case STRATEGY_1:
+				
+				suppliers.add(() -> new Name("Strategie 1"));
 				
 			default:
 				

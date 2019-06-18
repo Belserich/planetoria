@@ -99,6 +99,11 @@ public class GameClient extends ApplicationAdapter {
 			engine.addEntity(builder.build());
 		}
 		
+		builder.reset().card(Cards.STRATEGY_1, Zones.P0_DECK, 0).playable();
+		for (int i = 0; i < 4; i++) {
+			engine.addEntity(builder.build());
+		}
+		
 		builder.reset().zone(Zones.P0_BATTLE);
 		for (int i = 0; i < 7; i++) {
 			engine.addEntity(builder.field(i).build());
