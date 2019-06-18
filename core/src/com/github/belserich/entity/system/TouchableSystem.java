@@ -4,6 +4,8 @@ import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.ashley.core.Family;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.github.belserich.Services;
 import com.github.belserich.entity.component.CardHandle;
 import com.github.belserich.entity.component.FieldId;
@@ -61,9 +63,9 @@ public class TouchableSystem extends EventSystem implements EntityListener {
 		CardHandle hc = entity.getComponent(CardHandle.class);
 		
 		if (hc != null) {
-			uiService.setCardTouchCallback(hc.handle, () -> touched(entity));
+			uiService.setCardClickCallback(hc.handle, new TouchNotifier(entity));
 		} else {
-			uiService.setFieldTouchCallback(zc.id, fc.id, () -> touched(entity));
+			uiService.setFieldClickCallback(zc.id, fc.id, new TouchNotifier(entity));
 		}
 	}
 	
@@ -75,14 +77,13 @@ public class TouchableSystem extends EventSystem implements EntityListener {
 		CardHandle hc = entity.getComponent(CardHandle.class);
 		
 		if (hc != null) {
-			uiService.removeCardTouchCallback(hc.handle);
+			uiService.removeCardClickCallback(hc.handle);
 		} else {
-			uiService.removeFieldTouchCallback(zc.id, fc.id);
+			uiService.removeFieldClickCallback(zc.id, fc.id);
 		}
 	}
 	
 	public void touched(Entity entity) {
-		
 		synchronized (touchedEntities) {
 			touchedEntities.add(entity);
 		}
@@ -97,6 +98,21 @@ public class TouchableSystem extends EventSystem implements EntityListener {
 				entity.add(new Touchable.Touched());
 			}
 			touchedEntities.clear();
+		}
+	}
+	
+	private class TouchNotifier extends ClickListener {
+		
+		private Entity entity;
+		
+		TouchNotifier(Entity entity) {
+			this.entity = entity;
+		}
+		
+		@Override
+		public void clicked(InputEvent event, float x, float y) {
+			super.clicked(event, x, y);
+			touched(entity);
 		}
 	}
 }

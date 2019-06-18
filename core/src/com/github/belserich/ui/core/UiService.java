@@ -1,8 +1,8 @@
 package com.github.belserich.ui.core;
 
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+
 public interface UiService {
-	
-	void setActivePlayer(int playerId);
 	
 	int addCard(int zoneId, int fieldId, String name, float lp, float ap, float sp);
 	
@@ -22,13 +22,17 @@ public interface UiService {
 	
 	boolean isFieldUnoccupied(int zoneId, int fieldId);
 	
-	void setCardTouchCallback(int cardHandle, Runnable run);
+	void setTurnCallback(Runnable clb);
 	
-	void removeCardTouchCallback(int cardHandle);
+	void removeTurnCallback();
 	
-	void setFieldTouchCallback(int zoneId, int fieldId, Runnable run);
+	void setCardClickCallback(int cardHandle, ClickListener clb);
 	
-	void removeFieldTouchCallback(int zoneid, int fieldId);
+	void removeCardClickCallback(int cardHandle);
+	
+	void setFieldClickCallback(int zoneId, int fieldId, ClickListener clb);
+	
+	void removeFieldClickCallback(int zoneid, int fieldId);
 	
 	void update(float delta);
 	

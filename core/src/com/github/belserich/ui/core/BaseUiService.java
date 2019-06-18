@@ -1,7 +1,6 @@
 package com.github.belserich.ui.core;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.IntMap;
 import com.github.belserich.ui.StdZoneStrategy;
@@ -15,16 +14,16 @@ public abstract class BaseUiService implements UiService {
 	protected ZoneStrategy zoneStrat;
 	
 	private IntMap<CardActor> cardActors;
-	private Map<Actor, TouchNotifier> notifiers;
+	private Map<Actor, ClickListener> clickListeners;
 	private int nextCardHandle;
 	
-	private int activePlayer;
+	private Runnable turnCallback;
 	
 	public BaseUiService() {
 		
 		zoneStrat = new StdZoneStrategy();
 		cardActors = new IntMap<>();
-		notifiers = new HashMap<>();
+		clickListeners = new HashMap<>();
 		nextCardHandle = 0;
 	}
 	
@@ -131,52 +130,69 @@ public abstract class BaseUiService implements UiService {
 	}
 	
 	@Override
-	public void setCardTouchCallback(int cardHandle, Runnable run) {
+	public void setTurnCallback(Runnable clb) {
+		
+		this.turnCallback = clb;
+	}
+	
+	@Override
+	public void removeTurnCallback() {
+		
+		this.turnCallback = null;
+	}
+	
+	@Override
+	public void setCardClickCallback(int cardHandle, ClickListener clb) {
 		
 		CardActor card = validateCardActor(cardHandle);
 		if (card != null) {
 			
-			TouchNotifier notifier = new TouchNotifier(run);
-			notifiers.put(card, notifier);
-			card.addListener(notifier);
+			clickListeners.put(card, clb);
+			card.addListener(clb);
 		}
 	}
 	
 	@Override
-	public void removeCardTouchCallback(int cardHandle) {
+	public void removeCardClickCallback(int cardHandle) {
 		
 		CardActor card = validateCardActor(cardHandle);
 		if (card != null) {
 			
-			TouchNotifier notifier = notifiers.remove(card);
-			if (notifier != null) {
-				card.removeListener(notifier);
+			ClickListener clb = clickListeners.remove(card);
+			if (clb != null) {
+				card.removeListener(clb);
 			} else debug("Failed to remove touch callback. No instance associated with the specified card handle.");
 		}
 	}
 	
 	@Override
-	public void setFieldTouchCallback(int zoneId, int fieldId, Runnable run) {
+	public void setFieldClickCallback(int zoneId, int fieldId, ClickListener clb) {
 		
 		FieldActor field = validateFieldActor(zoneId, fieldId);
 		if (field != null) {
 			
-			TouchNotifier notifier = new TouchNotifier(run);
-			notifiers.put(field, notifier);
-			field.addListener(notifier);
+			clickListeners.put(field, clb);
+			field.addListener(clb);
 		}
 	}
 	
 	@Override
-	public void removeFieldTouchCallback(int zoneId, int fieldId) {
+	public void removeFieldClickCallback(int zoneId, int fieldId) {
 		
 		FieldActor field = validateFieldActor(zoneId, fieldId);
 		if (field != null) {
 			
-			TouchNotifier notifier = notifiers.remove(field);
-			if (notifier != null) {
-				field.removeListener(notifier);
+			ClickListener clb = clickListeners.remove(field);
+			if (clb != null) {
+				field.removeListener(clb);
 			} else debug("Failed to remove touch callback. No instance associated with the specified field id (%d).", fieldId);
+		}
+	}
+	
+	protected void fireTurnCallbacks() {
+		
+		if (turnCallback != null) {
+			turnCallback.run();
 		}
 	}
 	
@@ -234,20 +250,5 @@ public abstract class BaseUiService implements UiService {
 	
 	private static void debug(String fstr, Object... args) {
 		System.err.println(String.format(Locale.getDefault(), fstr, args));
-	}
-	
-	class TouchNotifier extends ClickListener {
-		
-		private Runnable runnable;
-		
-		public TouchNotifier(Runnable runnable) {
-			this.runnable = runnable;
-		}
-		
-		@Override
-		public void clicked(InputEvent event, float x, float y) {
-			super.clicked(event, x, y);
-			runnable.run();
-		}
 	}
 }

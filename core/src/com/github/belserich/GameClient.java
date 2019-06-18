@@ -1,6 +1,7 @@
 package com.github.belserich;
 
 import com.badlogic.ashley.core.Engine;
+import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.github.belserich.asset.Cards;
@@ -11,6 +12,8 @@ import com.github.belserich.entity.system.*;
 public class GameClient extends ApplicationAdapter {
 	
 	private Engine engine;
+	
+	private Entity thisPlayer, opponentPlayer;
 	
 	@Override
 	public void create () {
@@ -27,6 +30,7 @@ public class GameClient extends ApplicationAdapter {
 	
 	private void createSystems() {
 		
+		engine.addSystem(new TurnChangeSystem());
 		engine.addSystem(new CardHandleSystem());
 		engine.addSystem(new LpChangeSystem());
 		engine.addSystem(new SpChangeSystem());
@@ -64,8 +68,9 @@ public class GameClient extends ApplicationAdapter {
 			ex.printStackTrace();
 		}
 		
-		if (timer >= 5) {
-			Services.getUiService().setActivePlayer(1);
+		if ((timer += delta) >= 5) {
+//			thisPlayer.remove(Turn.class);
+//			opponentPlayer.add(new Turn());
 		}
 	}
 	
@@ -75,17 +80,20 @@ public class GameClient extends ApplicationAdapter {
 		
 		EntityBuilder builder = new EntityBuilder();
 		
-		builder.reset().card(Cards.SPACESHIP_B, Zones.P0_BATTLE).attacker();
+		thisPlayer = builder.reset().player(0).turn().build();
+		opponentPlayer = builder.reset().player(1).build();
+		
+		builder.reset().card(Cards.SPACESHIP_B, Zones.P0_BATTLE, 0);
 		for (int i = 0; i < 4; i++) {
 			engine.addEntity(builder.build());
 		}
 		
-		builder.reset().card(Cards.SPACESHIP_B, Zones.P1_BATTLE).attackable();
+		builder.reset().card(Cards.SPACESHIP_B, Zones.P1_BATTLE, 1);
 		for (int i = 0; i < 4; i++) {
 			engine.addEntity(builder.build());
 		}
 		
-		builder.reset().card(Cards.SPACESHIP_A, Zones.P0_DECK).playable();
+		builder.reset().card(Cards.SPACESHIP_A, Zones.P0_DECK, 0).playable();
 		for (int i = 0; i < 4; i++) {
 			engine.addEntity(builder.build());
 		}
@@ -94,6 +102,9 @@ public class GameClient extends ApplicationAdapter {
 		for (int i = 0; i < 7; i++) {
 			engine.addEntity(builder.field(i).build());
 		}
+		
+		engine.addEntity(thisPlayer);
+		engine.addEntity(opponentPlayer);
 	}
 	
 	@Override
