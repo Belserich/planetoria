@@ -28,14 +28,15 @@ public class GameClient extends ApplicationAdapter {
 	private void createSystems() {
 		
 		engine.addSystem(new CardHandleSystem());
-		engine.addSystem(new CardLpChangeSystem());
-		engine.addSystem(new CardSpChangeSystem());
+		engine.addSystem(new LpChangeSystem());
+		engine.addSystem(new SpChangeSystem());
 		engine.addSystem(new ZoneChangeSystem());
 		
-		engine.addSystem(new ZoneSystem());
+		engine.addSystem(new ZoneIdChangedSystem());
 		
 		engine.addSystem(new SelectableSystem());
 		engine.addSystem(new TouchableSystem());
+		engine.addSystem(new PlayCardFromHandSystem());
 
 		engine.addSystem(new LifeSystem());
 		engine.addSystem(new AttackSystem());

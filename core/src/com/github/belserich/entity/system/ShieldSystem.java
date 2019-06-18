@@ -13,8 +13,7 @@ public class ShieldSystem extends EventSystem {
 		super(Family.all(
 				Sp.class,
 				Attackable.Attacked.class
-				).get(), 1,
-				Sp.Broke.class);
+		).get(), Sp.Broke.class);
 	}
 	
 	@Override

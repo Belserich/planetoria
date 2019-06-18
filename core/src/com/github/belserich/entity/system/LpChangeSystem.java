@@ -7,9 +7,9 @@ import com.github.belserich.entity.component.CardHandle;
 import com.github.belserich.entity.component.Lp;
 import com.github.belserich.entity.core.EntitySystem;
 
-public class CardLpChangeSystem extends EntitySystem {
+public class LpChangeSystem extends EntitySystem {
 	
-	public CardLpChangeSystem() {
+	public LpChangeSystem() {
 		super(Family.all(
 				CardHandle.class,
 				Lp.Changed.class

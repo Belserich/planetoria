@@ -14,11 +14,10 @@ public class LifeSystem extends EventSystem {
 		super(Family.all(
 				Lp.class,
 				Attackable.Attacked.class
-				).exclude(
+		).exclude(
 				Sp.class,
 				Sp.Broke.class
-				).get(), 0,
-				Lp.Changed.class);
+		).get(), Lp.Changed.class);
 	}
 	
 	@Override
