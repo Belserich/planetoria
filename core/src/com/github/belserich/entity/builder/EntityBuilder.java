@@ -29,7 +29,7 @@ public class EntityBuilder {
 		return entity;
 	}
 	
-	public EntityBuilder card(Cards template, Zones zone) {
+	public EntityBuilder card(Cards template, Zones zone, int ownerId) {
 		
 		switch (template) {
 			
@@ -60,6 +60,10 @@ public class EntityBuilder {
 		suppliers.add(CardHandle::new);
 		zone(zone);
 		field(-1);
+		
+		suppliers.add(Touchable::new);
+		suppliers.add(() -> new PlayerOwned(ownerId));
+		
 		return this;
 	}
 	
@@ -76,26 +80,23 @@ public class EntityBuilder {
 		return this;
 	}
 	
-	public EntityBuilder attacker() {
-		
-		suppliers.add(Touchable::new);
-		suppliers.add(Selectable::new);
-		suppliers.add(Attacker::new);
-		return this;
-	}
-	
-	public EntityBuilder attackable() {
-		
-		suppliers.add(Touchable::new);
-		suppliers.add(Attackable::new);
-		return this;
-	}
-	
 	public EntityBuilder playable() {
 		
 		suppliers.add(Touchable::new);
 		suppliers.add(Selectable::new);
 		suppliers.add(Playable::new);
+		return this;
+	}
+	
+	public EntityBuilder player(int playerId) {
+		
+		suppliers.add(() -> new PlayerId(playerId));
+		return this;
+	}
+	
+	public EntityBuilder turn() {
+		
+		suppliers.add(Turn::new);
 		return this;
 	}
 	
