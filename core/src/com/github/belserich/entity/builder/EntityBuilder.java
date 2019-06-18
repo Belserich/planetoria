@@ -54,6 +54,7 @@ public class EntityBuilder {
 			case STRATEGY_1:
 				
 				suppliers.add(() -> new Name("Strategie 1"));
+				suppliers.add(Modification::new);
 				
 			default:
 				
