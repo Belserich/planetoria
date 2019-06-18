@@ -28,26 +28,26 @@ public abstract class BaseUiService implements UiService {
 	}
 	
 	@Override
-	public int addCard(int zoneId, int fieldId, String name, float lp, float ap, float sp) {
+	public int addCard(int zoneId, int fieldId, String name, float lp, float ap, float sp, boolean isCovered) {
 		
 		ZoneActor zone = zoneStrat.get(zoneId);
 		
 		if (zone != null) {
-			return addCard(zone, fieldId, name, lp, ap, sp);
+			return addCard(zone, fieldId, name, lp, ap, sp, isCovered);
 		} else GameClient.error(this, "Failed to add card '%s'. Invalid zone id (%d).", name, zoneId);
 		
 		return -1;
 	}
 	
 	@Override
-	public int addCard(int zoneId, String name, float lp, float ap, float sp) {
+	public int addCard(int zoneId, String name, float lp, float ap, float sp, boolean isCovered) {
 		
 		ZoneActor zone = zoneStrat.get(zoneId);
 		
 		if (zone != null) {
 			int fieldId = zone.nextFreeFieldId();
 			if (fieldId != -1) {
-				return addCard(zone, fieldId, name, lp, ap, sp);
+				return addCard(zone, fieldId, name, lp, ap, sp, isCovered);
 			} else GameClient.error(this, "Failed to add card '%s'. Zone %d is fully occupied.", name, zoneId);
 		} else GameClient.error(this, "Failed to add card '%s'. Invalid zone id (%d).", name, zoneId);
 		
@@ -68,7 +68,8 @@ public abstract class BaseUiService implements UiService {
 		
 		CardActor card = validateCardActor(handle);
 		if (card != null) {
-			updateCard(card, name, card.getLp(), card.getAp(), card.getSp());
+			card.setName(name);
+			card.update();
 		}
 	}
 	
@@ -77,7 +78,8 @@ public abstract class BaseUiService implements UiService {
 		
 		CardActor card = validateCardActor(handle);
 		if (card != null) {
-			updateCard(card, card.getTitle(), lp, card.getAp(), card.getSp());
+			card.setLp(lp);
+			card.update();
 		}
 	}
 	
@@ -86,7 +88,8 @@ public abstract class BaseUiService implements UiService {
 		
 		CardActor card = validateCardActor(handle);
 		if (card != null) {
-			updateCard(card, card.getTitle(), card.getLp(), ap, card.getSp());
+			card.setAp(ap);
+			card.update();
 		}
 	}
 	
@@ -95,7 +98,18 @@ public abstract class BaseUiService implements UiService {
 		
 		CardActor card = validateCardActor(handle);
 		if (card != null) {
-			updateCard(card, card.getTitle(), card.getLp(), card.getAp(), sp);
+			card.setSp(sp);
+			card.update();
+		}
+	}
+	
+	@Override
+	public void updateCardCovered(int handle, boolean isCovered) {
+		
+		CardActor card = validateCardActor(handle);
+		if (card != null) {
+			card.setCovered(isCovered);
+			card.update();
 		}
 	}
 	
@@ -209,15 +223,6 @@ public abstract class BaseUiService implements UiService {
 		} else return null;
 	}
 	
-	private void updateCard(CardActor card, String name, float lp, float ap, float sp) {
-		
-		card.setTitle(name);
-		card.setLp(lp);
-		card.setAp(ap);
-		card.setSp(sp);
-		card.update();
-	}
-	
 	private ZoneActor validateZoneActor(int zoneId) {
 		
 		ZoneActor zone = zoneStrat.get(zoneId);
@@ -236,9 +241,9 @@ public abstract class BaseUiService implements UiService {
 		} else return card;
 	}
 	
-	private int addCard(ZoneActor zone, int fieldId, String name, float lp, float ap, float sp) {
+	private int addCard(ZoneActor zone, int fieldId, String name, float lp, float ap, float sp, boolean isCovered) {
 		
-		CardActor card = new CardActor(name, lp, ap, sp);
+		CardActor card = new CardActor(name, lp, ap, sp, isCovered);
 		
 		if (zone.addCardActor(fieldId, card)) {
 			cardActors.put(nextCardHandle, card);

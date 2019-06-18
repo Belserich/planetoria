@@ -13,8 +13,9 @@ public class CardActor extends Label {
 	
 	private String title;
 	private float lp, ap, sp;
+	private boolean isCovered;
 	
-	public CardActor(String title, float lp, float ap, float sp) {
+	public CardActor(String title, float lp, float ap, float sp, boolean isCovered) {
 		super("", new Label.LabelStyle(UiHelper.smallFont, Color.BLACK));
 		super.setAlignment(Align.center);
 		super.setWrap(true);
@@ -23,12 +24,15 @@ public class CardActor extends Label {
 		this.lp = lp;
 		this.ap = ap;
 		this.sp = sp;
+		this.isCovered = isCovered;
 		
 		update();
 	}
 	
 	public void update() {
-		super.setText(title + "\nLP: " + lp + "\nAP: " + ap + "\nSP: " + sp);
+		if (!isCovered) {
+			super.setText(title + "\nLP: " + lp + "\nAP: " + ap + "\nSP: " + sp);
+		} else super.setText("COVERED");
 	}
 	
 	public String getTitle() {
@@ -61,5 +65,13 @@ public class CardActor extends Label {
 	
 	public void setSp(float sp) {
 		this.sp = sp;
+	}
+	
+	public boolean isCovered() {
+		return isCovered;
+	}
+	
+	public void setCovered(boolean covered) {
+		isCovered = covered;
 	}
 }

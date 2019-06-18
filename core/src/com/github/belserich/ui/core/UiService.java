@@ -4,9 +4,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 public interface UiService {
 	
-	int addCard(int zoneId, int fieldId, String name, float lp, float ap, float sp);
+	int addCard(int zoneId, int fieldId, String name, float lp, float ap, float sp, boolean isCovered);
 	
-	int addCard(int zoneId, String name, float lp, float ap, float sp);
+	int addCard(int zoneId, String name, float lp, float ap, float sp, boolean isCovered);
 	
 	void removeCard(int handle);
 	
@@ -17,6 +17,8 @@ public interface UiService {
 	void updateCardAp(int handle, float ap);
 	
 	void updateCardSp(int handle, float sp);
+	
+	void updateCardCovered(int handle, boolean isCovered);
 	
 	boolean changeCardField(int handle, int toZone, int toField);
 	
