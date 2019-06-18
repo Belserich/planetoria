@@ -6,7 +6,11 @@ public interface UiService {
 	
 	int addCard(int zoneId, int fieldId, String name, float lp, float ap, float sp, boolean isCovered);
 	
+	int addCard(int zoneId, int fieldId, String name, String effect, boolean isCovered);
+	
 	int addCard(int zoneId, String name, float lp, float ap, float sp, boolean isCovered);
+	
+	int addCard(int zoneId, String name, String effect, boolean isCovered);
 	
 	void removeCard(int handle);
 	

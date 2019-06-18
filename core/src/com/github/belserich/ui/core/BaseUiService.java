@@ -33,7 +33,19 @@ public abstract class BaseUiService implements UiService {
 		ZoneActor zone = zoneStrat.get(zoneId);
 		
 		if (zone != null) {
-			return addCard(zone, fieldId, name, lp, ap, sp, isCovered);
+			return addCard(new CardActor(name, lp, ap, sp, isCovered), zone, fieldId);
+		} else GameClient.error(this, "Failed to add card '%s'. Invalid zone id (%d).", name, zoneId);
+		
+		return -1;
+	}
+	
+	@Override
+	public int addCard(int zoneId, int fieldId, String name, String effect, boolean isCovered) {
+		
+		ZoneActor zone = zoneStrat.get(zoneId);
+		
+		if (zone != null) {
+			return addCard(new CardActor(name, effect, isCovered), zone, fieldId);
 		} else GameClient.error(this, "Failed to add card '%s'. Invalid zone id (%d).", name, zoneId);
 		
 		return -1;
@@ -47,7 +59,22 @@ public abstract class BaseUiService implements UiService {
 		if (zone != null) {
 			int fieldId = zone.nextFreeFieldId();
 			if (fieldId != -1) {
-				return addCard(zone, fieldId, name, lp, ap, sp, isCovered);
+				return addCard(new CardActor(name, lp, ap, sp, isCovered), zone, fieldId);
+			} else GameClient.error(this, "Failed to add card '%s'. Zone %d is fully occupied.", name, zoneId);
+		} else GameClient.error(this, "Failed to add card '%s'. Invalid zone id (%d).", name, zoneId);
+		
+		return -1;
+	}
+	
+	@Override
+	public int addCard(int zoneId, String name, String effect, boolean isCovered) {
+		
+		ZoneActor zone = zoneStrat.get(zoneId);
+		
+		if (zone != null) {
+			int fieldId = zone.nextFreeFieldId();
+			if (fieldId != -1) {
+				return addCard(new CardActor(name, effect, isCovered), zone, fieldId);
 			} else GameClient.error(this, "Failed to add card '%s'. Zone %d is fully occupied.", name, zoneId);
 		} else GameClient.error(this, "Failed to add card '%s'. Invalid zone id (%d).", name, zoneId);
 		
@@ -241,14 +268,12 @@ public abstract class BaseUiService implements UiService {
 		} else return card;
 	}
 	
-	private int addCard(ZoneActor zone, int fieldId, String name, float lp, float ap, float sp, boolean isCovered) {
-		
-		CardActor card = new CardActor(name, lp, ap, sp, isCovered);
+	private int addCard(CardActor card, ZoneActor zone, int fieldId) {
 		
 		if (zone.addCardActor(fieldId, card)) {
 			cardActors.put(nextCardHandle, card);
 			return nextCardHandle++;
-		} else GameClient.error(this, "Failed to add card '%s'. Field %d on zone %d is already occupied or doesn't exist.", name, fieldId, zone.id());
+		} else GameClient.error(this, "Failed to add card. Field %d on zone %d is already occupied or doesn't exist.", fieldId, zone.id());
 		
 		return -1;
 	}
