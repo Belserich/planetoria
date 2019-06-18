@@ -31,7 +31,7 @@ public class GameClient extends ApplicationAdapter {
 	private void createSystems() {
 		
 		engine.addSystem(new TurnChangeSystem());
-		engine.addSystem(new CardHandleSystem());
+		engine.addSystem(new CardUiCreationSystem());
 		engine.addSystem(new LpChangeSystem());
 		engine.addSystem(new SpChangeSystem());
 		engine.addSystem(new CardCoveredSystem());

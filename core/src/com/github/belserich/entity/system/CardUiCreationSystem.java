@@ -6,9 +6,9 @@ import com.github.belserich.Services;
 import com.github.belserich.entity.component.*;
 import com.github.belserich.entity.core.EntityMaintainer;
 
-public class CardHandleSystem extends EntityMaintainer {
+public class CardUiCreationSystem extends EntityMaintainer {
 	
-	public CardHandleSystem() {
+	public CardUiCreationSystem() {
 		
 		super(Family.all(
 				ZoneId.class,
