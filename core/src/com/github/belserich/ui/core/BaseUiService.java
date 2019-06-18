@@ -3,10 +3,10 @@ package com.github.belserich.ui.core;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.IntMap;
+import com.github.belserich.GameClient;
 import com.github.belserich.ui.StdZoneStrategy;
 
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 public abstract class BaseUiService implements UiService {
@@ -34,7 +34,7 @@ public abstract class BaseUiService implements UiService {
 		
 		if (zone != null) {
 			return addCard(zone, fieldId, name, lp, ap, sp);
-		} else debug("Failed to add card '%s'. Invalid zone id (%d).", name, zoneId);
+		} else GameClient.error(this, "Failed to add card '%s'. Invalid zone id (%d).", name, zoneId);
 		
 		return -1;
 	}
@@ -48,8 +48,8 @@ public abstract class BaseUiService implements UiService {
 			int fieldId = zone.nextFreeFieldId();
 			if (fieldId != -1) {
 				return addCard(zone, fieldId, name, lp, ap, sp);
-			} else debug("Failed to add card '%s'. Zone %d is fully occupied.", name, zoneId);
-		} else debug("Failed to add card '%s'. Invalid zone id (%d).", name, zoneId);
+			} else GameClient.error(this, "Failed to add card '%s'. Zone %d is fully occupied.", name, zoneId);
+		} else GameClient.error(this, "Failed to add card '%s'. Invalid zone id (%d).", name, zoneId);
 		
 		return -1;
 	}
@@ -60,7 +60,7 @@ public abstract class BaseUiService implements UiService {
 		CardActor card = cardActors.remove(handle);
 		if (card != null) {
 			card.remove();
-		} else debug("Failed to remove card. Invalid handle (%d).", handle);
+		} else GameClient.error(this, "Failed to remove card. Invalid handle (%d).", handle);
 	}
 	
 	@Override
@@ -161,7 +161,7 @@ public abstract class BaseUiService implements UiService {
 			ClickListener clb = clickListeners.remove(card);
 			if (clb != null) {
 				card.removeListener(clb);
-			} else debug("Failed to remove touch callback. No instance associated with the specified card handle.");
+			} else GameClient.error(this, "Failed to remove touch callback. No instance associated with the specified card handle.");
 		}
 	}
 	
@@ -185,7 +185,7 @@ public abstract class BaseUiService implements UiService {
 			ClickListener clb = clickListeners.remove(field);
 			if (clb != null) {
 				field.removeListener(clb);
-			} else debug("Failed to remove touch callback. No instance associated with the specified field id (%d).", fieldId);
+			} else GameClient.error(this, "Failed to remove touch callback. No instance associated with the specified field id (%d).", fieldId);
 		}
 	}
 	
@@ -196,13 +196,17 @@ public abstract class BaseUiService implements UiService {
 		}
 	}
 	
-	private CardActor validateCardActor(int handle) {
+	private FieldActor validateFieldActor(int zoneId, int fieldId) {
 		
-		CardActor card = cardActors.get(handle);
-		if (card == null) {
-			debug("Failed to retrieve card. Invalid handle (%d).", handle);
-			return null;
-		} else return card;
+		ZoneActor zone = validateZoneActor(zoneId);
+		if (zone != null) {
+			
+			FieldActor field = zone.getFieldActor(fieldId);
+			if (field == null) {
+				GameClient.error(this, "Failed to retrieve field actor (zid: %d, fid: %d)", zoneId, fieldId);
+				return null;
+			} else return field;
+		} else return null;
 	}
 	
 	private void updateCard(CardActor card, String name, float lp, float ap, float sp) {
@@ -214,26 +218,22 @@ public abstract class BaseUiService implements UiService {
 		card.update();
 	}
 	
-	private FieldActor validateFieldActor(int zoneId, int fieldId) {
-		
-		ZoneActor zone = validateZoneActor(zoneId);
-		if (zone != null) {
-			
-			FieldActor field = zone.getFieldActor(fieldId);
-			if (field == null) {
-				debug("Failed to retrieve field actor (zid: %d, fid: %d)", zoneId, fieldId);
-				return null;
-			} else return field;
-		} else return null;
-	}
-	
 	private ZoneActor validateZoneActor(int zoneId) {
 		
 		ZoneActor zone = zoneStrat.get(zoneId);
 		if (zone == null) {
-			debug("Failed to retrieve zone actor (id: %d)", zoneId);
+			GameClient.error(this, "Failed to retrieve zone actor (id: %d)", zoneId);
 			return null;
 		} else return zone;
+	}
+	
+	private CardActor validateCardActor(int handle) {
+		
+		CardActor card = cardActors.get(handle);
+		if (card == null) {
+			GameClient.error(this, "Failed to retrieve card. Invalid handle (%d).", handle);
+			return null;
+		} else return card;
 	}
 	
 	private int addCard(ZoneActor zone, int fieldId, String name, float lp, float ap, float sp) {
@@ -243,12 +243,8 @@ public abstract class BaseUiService implements UiService {
 		if (zone.addCardActor(fieldId, card)) {
 			cardActors.put(nextCardHandle, card);
 			return nextCardHandle++;
-		} else debug("Failed to add card '%s'. Field %d on zone %d is already occupied or doesn't exist.", name, fieldId, zone.id());
+		} else GameClient.error(this, "Failed to add card '%s'. Field %d on zone %d is already occupied or doesn't exist.", name, fieldId, zone.id());
 		
 		return -1;
-	}
-	
-	private static void debug(String fstr, Object... args) {
-		System.err.println(String.format(Locale.getDefault(), fstr, args));
 	}
 }

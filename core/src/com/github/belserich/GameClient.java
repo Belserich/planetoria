@@ -24,8 +24,8 @@ public class GameClient extends ApplicationAdapter {
 		createEntities();
 	}
 	
-	public static void error(Object obj, String message) {
-		log(obj, message);
+	public static void error(Object obj, String message, Object... args) {
+		log(obj, String.format(message, args));
 	}
 	
 	private void createSystems() {
@@ -116,8 +116,8 @@ public class GameClient extends ApplicationAdapter {
 		engine = null;
 	}
 	
-	public static void log(Object obj, String message) {
-		Gdx.app.log(obj.getClass().getSimpleName(), message);
+	public static void log(Object obj, String message, Object... args) {
+		Gdx.app.log(obj.getClass().getSimpleName(), String.format(message, args));
 	}
 	
 	public void update(float delta) {

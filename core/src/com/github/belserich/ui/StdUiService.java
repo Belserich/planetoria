@@ -16,8 +16,6 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.github.belserich.ui.core.BaseUiService;
 import com.github.belserich.util.UiHelper;
 
-import java.util.Locale;
-
 import static com.github.belserich.asset.Zones.*;
 
 public class StdUiService extends BaseUiService {
@@ -136,9 +134,5 @@ public class StdUiService extends BaseUiService {
 	public void resize(int width, int height) {
 		view.update(width, height);
 		cam.update();
-	}
-	
-	private static void debug(String fstr, Object... args) {
-		System.err.println(String.format(Locale.getDefault(), fstr, args));
 	}
 }
