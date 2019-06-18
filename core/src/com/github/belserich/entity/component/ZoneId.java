@@ -3,12 +3,16 @@ package com.github.belserich.entity.component;
 import com.badlogic.ashley.core.Component;
 import com.github.belserich.asset.Zones;
 
-public class Zone implements Component {
+public class ZoneId implements Component {
 	
-	public Zones zone;
+	public int id;
 	
-	public Zone(Zones zone) {
-		this.zone = zone;
+	public ZoneId(int id) {
+		this.id = id;
+	}
+	
+	public ZoneId(Zones zone) {
+		this.id = zone.ordinal();
 	}
 	
 	public static class Changed implements Component {
