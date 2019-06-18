@@ -30,8 +30,8 @@ public class GameClient extends ApplicationAdapter {
 		engine.addSystem(new CardHandleSystem());
 		engine.addSystem(new LpChangeSystem());
 		engine.addSystem(new SpChangeSystem());
-		engine.addSystem(new ZoneChangeSystem());
 		
+		engine.addSystem(new ZoneChangeSystem());
 		engine.addSystem(new ZoneIdChangedSystem());
 		
 		engine.addSystem(new SelectableSystem());
@@ -45,7 +45,7 @@ public class GameClient extends ApplicationAdapter {
 	
 	@Override
 	public void resize(int width, int height) {
-		// TODO gameUi.resize(width, height);
+		Services.getUiService().resize(width, height);
 	}
 	
 	@Override

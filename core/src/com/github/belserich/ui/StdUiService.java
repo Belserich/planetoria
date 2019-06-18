@@ -1,13 +1,17 @@
 package com.github.belserich.ui;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import com.github.belserich.ui.core.BaseUiService;
 import com.github.belserich.util.UiHelper;
 
@@ -16,6 +20,9 @@ import static com.github.belserich.asset.Zones.*;
 public class StdUiService extends BaseUiService {
 	
 	private Stage stage;
+	private Viewport view;
+	private Camera cam;
+	
 	private VerticalGroup rootGroup;
 	
 	private VerticalGroup mainGroup;
@@ -25,8 +32,16 @@ public class StdUiService extends BaseUiService {
 	private boolean toggled;
 	
 	public StdUiService() {
+		
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
+		
+		view = new FitViewport(1200, 900);
+		stage.setViewport(view);
+		
+		cam = new OrthographicCamera();
+		cam.translate(600, 450, 0);
+		view.setCamera(cam);
 		
 		createBoardUi();
 	}
@@ -92,7 +107,15 @@ public class StdUiService extends BaseUiService {
 		Gdx.gl20.glClearColor(1f, 1f, 1f, 1f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
+		cam.update();
+		
 		stage.act(delta);
 		stage.draw();
+	}
+	
+	@Override
+	public void resize(int width, int height) {
+		view.update(width, height);
+		cam.update();
 	}
 }

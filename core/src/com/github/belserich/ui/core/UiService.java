@@ -29,4 +29,6 @@ public interface UiService {
 	void removeFieldTouchCallback(int zoneid, int fieldId);
 	
 	void update(float delta);
+	
+	void resize(int width, int height);
 }
