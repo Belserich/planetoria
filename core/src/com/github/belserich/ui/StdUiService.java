@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -29,6 +30,8 @@ public class StdUiService extends BaseUiService {
 	
 	private VerticalGroup mainGroup;
 	private VerticalGroup deckGroup;
+	
+	private HorizontalGroup optionGroup;
 	
 	private Label deckToggle;
 	private boolean toggled;
@@ -84,27 +87,34 @@ public class StdUiService extends BaseUiService {
 		
 		// ---
 		
-		deckToggle = new Label("Hand", new Label.LabelStyle(UiHelper.largeFont, Color.BLACK));
-		deckToggle.addListener(new ClickListener() {
+		{
+			optionGroup = new HorizontalGroup();
+			optionGroup.space(300);
 			
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				super.clicked(event, x, y);
-				toggleDeck();
-			}
-		});
-		
-		turnLabel = new Label("Turn", new Label.LabelStyle(UiHelper.largeFont, Color.BLACK));
-		turnLabel.addListener(new ClickListener() {
+			deckToggle = new Label("Hand", new Label.LabelStyle(UiHelper.largeFont, Color.BLACK));
+			deckToggle.addListener(new ClickListener() {
+				
+				@Override
+				public void clicked(InputEvent event, float x, float y) {
+					super.clicked(event, x, y);
+					toggleDeck();
+				}
+			});
+			optionGroup.addActor(deckToggle);
 			
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				super.clicked(event, x, y);
-				fireTurnCallbacks();
-			}
-		});
-		
-		rootGroup.addActor(UiHelper.horizontalGroup(300, deckToggle, turnLabel));
+			turnLabel = new Label("Turn", new Label.LabelStyle(UiHelper.largeFont, Color.BLACK));
+			turnLabel.addListener(new ClickListener() {
+				
+				@Override
+				public void clicked(InputEvent event, float x, float y) {
+					super.clicked(event, x, y);
+					fireTurnCallbacks();
+				}
+			});
+			optionGroup.addActor(turnLabel);
+			
+			rootGroup.addActor(optionGroup);
+		}
 	}
 	
 	private void toggleDeck() {
@@ -112,10 +122,10 @@ public class StdUiService extends BaseUiService {
 		toggled = !toggled;
 		if (toggled) {
 			rootGroup.removeActor(mainGroup);
-			rootGroup.addActorBefore(deckToggle, deckGroup);
+			rootGroup.addActorBefore(optionGroup, deckGroup);
 		} else {
 			rootGroup.removeActor(deckGroup);
-			rootGroup.addActorBefore(deckToggle, mainGroup);
+			rootGroup.addActorBefore(optionGroup, mainGroup);
 		}
 	}
 	

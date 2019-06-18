@@ -89,7 +89,7 @@ public class GameClient extends ApplicationAdapter {
 			engine.addEntity(builder.build());
 		}
 		
-		builder.reset().card(Cards.SPACESHIP_B, Zones.P1_BATTLE, 1);
+		builder.reset().card(Cards.SPACESHIP_B, Zones.P1_BATTLE, 1).covered();
 		for (int i = 0; i < 4; i++) {
 			engine.addEntity(builder.build());
 		}

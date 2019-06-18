@@ -26,13 +26,15 @@ public class CardHandleSystem extends EntityMaintainer {
 		Lp lc = entity.getComponent(Lp.class);
 		Ap ac = entity.getComponent(Ap.class);
 		Sp sc = entity.getComponent(Sp.class);
+		Covered cc = entity.getComponent(Covered.class);
 		
 		String name = nc != null ? nc.name : "???";
 		float lp = lc != null ? lc.pts : -1;
 		float ap = ac != null ? ac.pts : -1;
 		float sp = sc != null ? sc.pts : -1;
+		boolean isCovered = cc != null;
 		
-		hc.handle = Services.getUiService().addCard(zc.id, name, lp, ap, sp, true);
+		hc.handle = Services.getUiService().addCard(zc.id, name, lp, ap, sp, isCovered);
 	}
 	
 	@Override
