@@ -1,7 +1,6 @@
 package com.github.belserich.ui;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -31,6 +30,8 @@ public class StdUiService extends BaseUiService {
 	private Label deckToggle;
 	private boolean toggled;
 	
+	private int activePlayer;
+	
 	public StdUiService() {
 		
 		stage = new Stage();
@@ -43,10 +44,15 @@ public class StdUiService extends BaseUiService {
 		cam.translate(600, 450, 0);
 		view.setCamera(cam);
 		
-		createBoardUi();
+		createBoardUi(0);
 	}
 	
-	private void createBoardUi() {
+	private void createBoardUi(int activePlayer) {
+		
+		if (activePlayer != 0 && activePlayer != 1) {
+			System.err.println("Invalid player id (" + activePlayer + ").");
+			return;
+		}
 		
 		rootGroup = new VerticalGroup();
 		rootGroup.setFillParent(true);
@@ -57,12 +63,24 @@ public class StdUiService extends BaseUiService {
 			mainGroup.pad(70);
 			mainGroup.space(10);
 			
-			mainGroup.addActor(UiHelper.horizontalGroup(10, zoneStrat.get(P1_YARD.ordinal()), zoneStrat.get(P1_PLANET.ordinal()), zoneStrat.get(P1_REPAIR.ordinal()),
-					zoneStrat.get(P1_MOTHER.ordinal())));
-			mainGroup.addActor(UiHelper.horizontalGroup(10, zoneStrat.get(P1_BATTLE.ordinal())));
-			mainGroup.addActor(UiHelper.horizontalGroup(10, zoneStrat.get(P0_BATTLE.ordinal())));
-			mainGroup.addActor(UiHelper.horizontalGroup(10, zoneStrat.get(P0_MOTHER.ordinal()), zoneStrat.get(P0_REPAIR.ordinal()), zoneStrat.get(P0_PLANET.ordinal()),
-					zoneStrat.get(P0_YARD.ordinal())));
+			if (activePlayer == 0) {
+				
+				mainGroup.addActor(UiHelper.horizontalGroup(10, zoneStrat.get(P1_YARD.ordinal()), zoneStrat.get(P1_PLANET.ordinal()), zoneStrat.get(P1_REPAIR.ordinal()),
+						zoneStrat.get(P1_MOTHER.ordinal())));
+				mainGroup.addActor(UiHelper.horizontalGroup(10, zoneStrat.get(P1_BATTLE.ordinal())));
+				mainGroup.addActor(UiHelper.horizontalGroup(10, zoneStrat.get(P0_BATTLE.ordinal())));
+				mainGroup.addActor(UiHelper.horizontalGroup(10, zoneStrat.get(P0_MOTHER.ordinal()), zoneStrat.get(P0_REPAIR.ordinal()), zoneStrat.get(P0_PLANET.ordinal()),
+						zoneStrat.get(P0_YARD.ordinal())));
+			}
+			else {
+				
+				mainGroup.addActor(UiHelper.horizontalGroup(10, zoneStrat.get(P0_MOTHER.ordinal()), zoneStrat.get(P0_REPAIR.ordinal()), zoneStrat.get(P0_PLANET.ordinal()),
+						zoneStrat.get(P0_YARD.ordinal())));
+				mainGroup.addActor(UiHelper.horizontalGroup(10, zoneStrat.get(P0_BATTLE.ordinal())));
+				mainGroup.addActor(UiHelper.horizontalGroup(10, zoneStrat.get(P1_BATTLE.ordinal())));
+				mainGroup.addActor(UiHelper.horizontalGroup(10, zoneStrat.get(P1_YARD.ordinal()), zoneStrat.get(P1_PLANET.ordinal()), zoneStrat.get(P1_REPAIR.ordinal()),
+						zoneStrat.get(P1_MOTHER.ordinal())));
+			}
 			
 			rootGroup.addActor(mainGroup);
 		}
@@ -72,8 +90,14 @@ public class StdUiService extends BaseUiService {
 			deckGroup.pad(70);
 			deckGroup.space(100);
 			
-			deckGroup.addActor(UiHelper.horizontalGroup(10, zoneStrat.get(P0_DECK.ordinal())));
-			deckGroup.addActor(UiHelper.horizontalGroup(10, zoneStrat.get(P1_DECK.ordinal())));
+			if (activePlayer == 0) {
+				deckGroup.addActor(UiHelper.horizontalGroup(10, zoneStrat.get(P0_DECK.ordinal())));
+				deckGroup.addActor(UiHelper.horizontalGroup(10, zoneStrat.get(P1_DECK.ordinal())));
+			}
+			else {
+				deckGroup.addActor(UiHelper.horizontalGroup(10, zoneStrat.get(P1_DECK.ordinal())));
+				deckGroup.addActor(UiHelper.horizontalGroup(10, zoneStrat.get(P0_DECK.ordinal())));
+			}
 		}
 		
 		// ---
@@ -100,6 +124,23 @@ public class StdUiService extends BaseUiService {
 			rootGroup.removeActor(deckGroup);
 			rootGroup.addActorBefore(deckToggle, mainGroup);
 		}
+	}
+	
+	@Override
+	public void setActivePlayer(int playerId) {
+		
+		int oldId = this.activePlayer;
+		this.activePlayer = playerId;
+		
+		if (oldId != activePlayer) {
+			switchView(playerId);
+		}
+	}
+	
+	private void switchView(int playerId) {
+	
+		stage.clear();
+		createBoardUi(playerId);
 	}
 	
 	@Override

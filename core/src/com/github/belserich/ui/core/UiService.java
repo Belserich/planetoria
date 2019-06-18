@@ -2,6 +2,8 @@ package com.github.belserich.ui.core;
 
 public interface UiService {
 	
+	void setActivePlayer(int playerId);
+	
 	int addCard(int zoneId, int fieldId, String name, float lp, float ap, float sp);
 	
 	int addCard(int zoneId, String name, float lp, float ap, float sp);
