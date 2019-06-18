@@ -87,6 +87,7 @@ public class StdUiService extends BaseUiService {
 		}
 	}
 	
+	@Override
 	public void update(float delta) {
 		Gdx.gl20.glClearColor(1f, 1f, 1f, 1f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);

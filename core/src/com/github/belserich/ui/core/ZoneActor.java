@@ -69,12 +69,12 @@ public class ZoneActor extends HorizontalGroup {
 	/**
 	 * Tries returning the field ui instance at a specified index.
 	 *
-	 * @param index the index
+	 * @param fieldId the index
 	 * @return field ui at {@code index} or null if index out of bounds
 	 */
-	private FieldActor getFieldActor(int index) {
-		if (index >= 0 && index < cap()) {
-			return fields.get(index);
+	public FieldActor getFieldActor(int fieldId) {
+		if (fieldId >= 0 && fieldId < cap()) {
+			return fields.get(fieldId);
 		}
 		return null;
 	}

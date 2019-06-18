@@ -16,11 +16,17 @@ public interface UiService {
 	
 	void updateCardSp(int handle, float sp);
 	
-	boolean changeCardZone(int handle, int toZone);
+	boolean changeCardField(int handle, int toZone, int toField);
+	
+	boolean isFieldUnoccupied(int zoneId, int fieldId);
 	
 	void setCardTouchCallback(int cardHandle, Runnable run);
 	
 	void removeCardTouchCallback(int cardHandle);
+	
+	void setFieldTouchCallback(int zoneId, int fieldId, Runnable run);
+	
+	void removeFieldTouchCallback(int zoneid, int fieldId);
 	
 	void update(float delta);
 }

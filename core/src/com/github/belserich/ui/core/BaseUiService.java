@@ -1,25 +1,28 @@
 package com.github.belserich.ui.core;
 
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.IntMap;
 import com.github.belserich.ui.StdZoneStrategy;
 
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 public abstract class BaseUiService implements UiService {
 	
 	protected ZoneStrategy zoneStrat;
 	
 	private IntMap<CardActor> cardActors;
-	private IntMap<TouchNotifier> notifiers;
+	private Map<Actor, TouchNotifier> notifiers;
 	private int nextCardHandle;
 	
 	public BaseUiService() {
 		
 		zoneStrat = new StdZoneStrategy();
 		cardActors = new IntMap<>();
-		notifiers = new IntMap<>();
+		notifiers = new HashMap<>();
 		nextCardHandle = 0;
 	}
 	
@@ -96,20 +99,30 @@ public abstract class BaseUiService implements UiService {
 	}
 	
 	@Override
-	public boolean changeCardZone(int handle, int toZoneId) {
+	public boolean changeCardField(int handle, int toZoneId, int toFieldId) {
 		
 		CardActor card = validateCardActor(handle);
 		
 		if (card != null) {
 			
 			card.remove();
-			ZoneActor toZone = zoneStrat.get(toZoneId);
+			FieldActor toField = validateFieldActor(toZoneId, toFieldId);
 			
-			if (toZone != null) {
-				return toZone.addCardActor(card);
-			} else {
-				debug("Failed to move card. Invalid zone id (%d).", toZoneId);
+			if (toField != null) {
+				return toField.setCardIfEmpty(card);
 			}
+		}
+		
+		return false;
+	}
+	
+	@Override
+	public boolean isFieldUnoccupied(int zoneId, int fieldId) {
+		
+		FieldActor field = validateFieldActor(zoneId, fieldId);
+		
+		if (field != null) {
+			return !field.hasCard();
 		}
 		
 		return false;
@@ -120,8 +133,9 @@ public abstract class BaseUiService implements UiService {
 		
 		CardActor card = validateCardActor(cardHandle);
 		if (card != null) {
+			
 			TouchNotifier notifier = new TouchNotifier(run);
-			notifiers.put(cardHandle, notifier);
+			notifiers.put(card, notifier);
 			card.addListener(notifier);
 		}
 	}
@@ -131,10 +145,36 @@ public abstract class BaseUiService implements UiService {
 		
 		CardActor card = validateCardActor(cardHandle);
 		if (card != null) {
-			TouchNotifier notifier = notifiers.remove(cardHandle);
+			
+			TouchNotifier notifier = notifiers.remove(card);
 			if (notifier != null) {
 				card.removeListener(notifier);
-			} else debug("Failed to remove touch callback. No instance associated with the speicifed card handle.");
+			} else debug("Failed to remove touch callback. No instance associated with the specified card handle.");
+		}
+	}
+	
+	@Override
+	public void setFieldTouchCallback(int zoneId, int fieldId, Runnable run) {
+		
+		FieldActor field = validateFieldActor(zoneId, fieldId);
+		if (field != null) {
+			
+			TouchNotifier notifier = new TouchNotifier(run);
+			notifiers.put(field, notifier);
+			field.addListener(notifier);
+		}
+	}
+	
+	@Override
+	public void removeFieldTouchCallback(int zoneId, int fieldId) {
+		
+		FieldActor field = validateFieldActor(zoneId, fieldId);
+		if (field != null) {
+			
+			TouchNotifier notifier = notifiers.remove(field);
+			if (notifier != null) {
+				field.removeListener(notifier);
+			} else debug("Failed to remove touch callback. No instance associated with the specified field id (%d).", fieldId);
 		}
 	}
 	
@@ -142,7 +182,7 @@ public abstract class BaseUiService implements UiService {
 		
 		CardActor card = cardActors.get(handle);
 		if (card == null) {
-			debug("Failed to update card. Invalid handle (%d).", handle);
+			debug("Failed to retrieve card. Invalid handle (%d).", handle);
 			return null;
 		} else return card;
 	}
@@ -154,6 +194,28 @@ public abstract class BaseUiService implements UiService {
 		card.setAp(ap);
 		card.setSp(sp);
 		card.update();
+	}
+	
+	private FieldActor validateFieldActor(int zoneId, int fieldId) {
+		
+		ZoneActor zone = validateZoneActor(zoneId);
+		if (zone != null) {
+			
+			FieldActor field = zone.getFieldActor(fieldId);
+			if (field == null) {
+				debug("Failed to retrieve field actor (zid: %d, fid: %d)", zoneId, fieldId);
+				return null;
+			} else return field;
+		} else return null;
+	}
+	
+	private ZoneActor validateZoneActor(int zoneId) {
+		
+		ZoneActor zone = zoneStrat.get(zoneId);
+		if (zone == null) {
+			debug("Failed to retrieve zone actor (id: %d)", zoneId);
+			return null;
+		} else return zone;
 	}
 	
 	private int addCard(ZoneActor zone, int fieldId, String name, float lp, float ap, float sp) {

@@ -5,6 +5,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.github.belserich.GameClient;
+import com.github.belserich.Services;
 import com.github.belserich.asset.Zones;
 import com.github.belserich.entity.component.*;
 import com.github.belserich.entity.core.EntitySystem;
@@ -17,10 +18,10 @@ public class ZoneSystem extends EventSystem {
 	
 	public ZoneSystem() {
 		super(Family.all(
-				Zone.class,
+				ZoneId.class,
 				Lp.Changed.class
 				).get(),
-				Zone.Changed.class);
+				ZoneId.Changed.class);
 		
 		playSys = new PlayCard();
 	}
@@ -40,15 +41,15 @@ public class ZoneSystem extends EventSystem {
 	@Override
 	public void update(Entity entity) {
 		
-		Zone zc = Mappers.zoneParent.get(entity);
+		ZoneId zc = Mappers.zoneParent.get(entity);
 		
-		Zones last = zc.zone;
-		Zones now = Zones.yardZone(zc.zone.playerNumber());
+		Zones last = Zones.values()[zc.id];
+		Zones now = Zones.yardZone(Zones.values()[zc.id].playerNumber());
 		
-		zc.zone = now;
+		zc.id = now.ordinal();
 		
 		GameClient.log(this, "! Zone change. Old: " + last + " New: " + now);
-		entity.add(new Zone.Changed(last, 0, now, 0));
+		entity.add(new ZoneId.Changed(last, 0, now, 0));
 	}
 	
 	private class PlayCard extends EntitySystem {
@@ -58,13 +59,15 @@ public class ZoneSystem extends EventSystem {
 		public PlayCard() {
 			
 			super(Family.all(
-					Field.class,
-					Zone.class,
+					ZoneId.class,
+					FieldId.class,
 					Touchable.Touched.class
+			).exclude(
+					CardHandle.class
 			).get());
 			
 			selectionFam = Family.all(
-					Zone.class,
+					ZoneId.class,
 					Playable.class,
 					Selectable.Selected.class
 			).get();
@@ -77,16 +80,17 @@ public class ZoneSystem extends EventSystem {
 			if (selection.size() > 0) {
 				
 				Entity card = selection.first();
+				Zones last = Zones.values()[card.getComponent(ZoneId.class).id];
+				Zones now = Zones.values()[field.getComponent(ZoneId.class).id];
+				int fieldId = field.getComponent(FieldId.class).id;
 				
-				Zones last = card.getComponent(Zone.class).zone;
-				
-				Zones now = field.getComponent(Zone.class).zone;
-				int nowField = field.getComponent(Field.class).id;
-				
-				GameClient.log(this, "! Zone change. Old: " + last + " New: " + now);
-				card.add(new Zone.Changed(last, 0, now, nowField));
-				card.remove(Playable.class);
-				card.remove(Selectable.Selected.class);
+				if (Services.getUiService().isFieldUnoccupied(now.ordinal(), fieldId)) {
+					
+					GameClient.log(this, "! Zone change. Old: " + last + " New: " + now);
+					card.add(new ZoneId.Changed(last, 0, now, fieldId));
+					card.remove(Playable.class);
+					card.remove(Selectable.Selected.class);
+				} else GameClient.log(this, "* Zone change. Field already occupied!");
 			}
 		}
 	}

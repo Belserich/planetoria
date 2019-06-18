@@ -59,18 +59,20 @@ public class EntityBuilder {
 		
 		suppliers.add(CardHandle::new);
 		zone(zone);
+		field(-1);
 		return this;
 	}
 	
 	public EntityBuilder zone(Zones template) {
 		
-		suppliers.add(() -> new Zone(template));
+		suppliers.add(() -> new ZoneId(template));
 		return this;
 	}
 	
 	public EntityBuilder field(int index) {
 		
-		suppliers.add(() -> new Field(index));
+		suppliers.add(Touchable::new);
+		suppliers.add(() -> new FieldId(index));
 		return this;
 	}
 	
@@ -91,6 +93,8 @@ public class EntityBuilder {
 	
 	public EntityBuilder playable() {
 		
+		suppliers.add(Touchable::new);
+		suppliers.add(Selectable::new);
 		suppliers.add(Playable::new);
 		return this;
 	}

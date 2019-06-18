@@ -11,8 +11,8 @@ public class CardHandleSystem extends EntityMaintainer {
 	public CardHandleSystem() {
 		
 		super(Family.all(
-				CardHandle.class,
-				Zone.class
+				ZoneId.class,
+				CardHandle.class
 		).get());
 	}
 	
@@ -20,7 +20,7 @@ public class CardHandleSystem extends EntityMaintainer {
 	public void entityAdded(Entity entity) {
 		
 		CardHandle hc = entity.getComponent(CardHandle.class);
-		Zone zc = entity.getComponent(Zone.class);
+		ZoneId zc = entity.getComponent(ZoneId.class);
 		
 		Name nc = entity.getComponent(Name.class);
 		Lp lc = entity.getComponent(Lp.class);
@@ -32,7 +32,7 @@ public class CardHandleSystem extends EntityMaintainer {
 		float ap = ac != null ? ac.pts : -1;
 		float sp = sc != null ? sc.pts : -1;
 		
-		hc.handle = Services.getUiService().addCard(zc.zone.ordinal(), name, lp, ap, sp);
+		hc.handle = Services.getUiService().addCard(zc.id, name, lp, ap, sp);
 	}
 	
 	@Override
