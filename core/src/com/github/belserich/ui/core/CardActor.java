@@ -51,7 +51,7 @@ public class CardActor extends Label {
 				break;
 			
 			case STRATEGY:
-				super.setText(title + "\n" + effect);
+				super.setText(title + "\n---\n" + effect);
 		}
 	}
 	
