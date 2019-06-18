@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.github.belserich.GameClient;
 import com.github.belserich.entity.component.Attackable;
+import com.github.belserich.entity.component.Covered;
 import com.github.belserich.entity.component.Lp;
 import com.github.belserich.entity.component.Sp;
 import com.github.belserich.entity.core.EventSystem;
@@ -35,6 +36,7 @@ public class LifeSystem extends EventSystem {
 		if (lc.pts <= 0) {
 			GameClient.log(this, "! Card death.");
 			entity.remove(Lp.class);
+			entity.remove(Covered.class);
 		}
 	}
 }

@@ -64,6 +64,8 @@ public class EntityBuilder {
 		suppliers.add(Touchable::new);
 		suppliers.add(() -> new PlayerOwned(ownerId));
 		
+		suppliers.add(Covered::new);
+		
 		return this;
 	}
 	

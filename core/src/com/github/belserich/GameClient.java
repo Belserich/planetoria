@@ -34,6 +34,7 @@ public class GameClient extends ApplicationAdapter {
 		engine.addSystem(new CardHandleSystem());
 		engine.addSystem(new LpChangeSystem());
 		engine.addSystem(new SpChangeSystem());
+		engine.addSystem(new CardCoveredSystem());
 		
 		engine.addSystem(new ZoneChangeSystem());
 		engine.addSystem(new ZoneIdChangedSystem());

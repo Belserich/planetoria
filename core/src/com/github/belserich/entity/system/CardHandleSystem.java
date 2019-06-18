@@ -32,7 +32,7 @@ public class CardHandleSystem extends EntityMaintainer {
 		float ap = ac != null ? ac.pts : -1;
 		float sp = sc != null ? sc.pts : -1;
 		
-		hc.handle = Services.getUiService().addCard(zc.id, name, lp, ap, sp);
+		hc.handle = Services.getUiService().addCard(zc.id, name, lp, ap, sp, true);
 	}
 	
 	@Override

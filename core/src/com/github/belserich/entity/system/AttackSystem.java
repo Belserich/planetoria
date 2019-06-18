@@ -53,6 +53,7 @@ public class AttackSystem extends EventSystem {
 				}
 				
 				GameClient.log(this, "! Attack. Attackers: " + sel.size() + "; Attack points: " + attackPts);
+				entity.remove(Covered.class);
 				entity.add(new Attackable.Attacked(attackPts));
 				
 			} else GameClient.log(this, "* Attack. Not all selected entities have remaining attacks!");
@@ -60,6 +61,7 @@ public class AttackSystem extends EventSystem {
 		
 		for (Entity other : sel) {
 			other.remove(Selectable.Selected.class);
+			other.remove(Covered.class);
 		}
 	}
 }
