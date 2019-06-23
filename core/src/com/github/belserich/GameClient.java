@@ -83,52 +83,52 @@ public class GameClient extends ApplicationAdapter {
 		
 		// FIELDS
 		
-		builder.reset().field(Zones.P0_BATTLE);
+		builder.reset().field(Zones.P0_BATTLE, 0).occupiable();
 		for (int i = 0; i < 7; i++) {
 			engine.addEntity(builder.build());
 		}
 		
-		builder.reset().field(Zones.P0_REPAIR);
+		builder.reset().field(Zones.P0_REPAIR, 0);
 		for (int i = 0; i < 5; i++) {
 			engine.addEntity(builder.build());
 		}
 		
-		builder.reset().field(Zones.P0_DECK);
+		builder.reset().field(Zones.P0_DECK, 0).occupiable();
 		for (int i = 0; i < 8; i++) {
 			engine.addEntity(builder.build());
 		}
 		
-		builder.reset().field(Zones.P0_MOTHER);
+		builder.reset().field(Zones.P0_MOTHER, 0);
 		engine.addEntity(builder.build());
 		
-		builder.reset().field(Zones.P0_PLANET);
+		builder.reset().field(Zones.P0_PLANET, 0);
 		engine.addEntity(builder.build());
 		
-		builder.reset().field(Zones.P0_YARD);
+		builder.reset().field(Zones.P0_YARD, 0);
 		engine.addEntity(builder.build());
 		
-		builder.reset().field(Zones.P1_BATTLE);
+		builder.reset().field(Zones.P1_BATTLE, 1).occupiable();
 		for (int i = 0; i < 7; i++) {
 			engine.addEntity(builder.build());
 		}
 		
-		builder.reset().field(Zones.P1_REPAIR);
+		builder.reset().field(Zones.P1_REPAIR, 1);
 		for (int i = 0; i < 5; i++) {
 			engine.addEntity(builder.build());
 		}
 		
-		builder.reset().field(Zones.P1_DECK);
+		builder.reset().field(Zones.P1_DECK, 1);
 		for (int i = 0; i < 8; i++) {
 			engine.addEntity(builder.build());
 		}
 		
-		builder.reset().field(Zones.P1_MOTHER);
+		builder.reset().field(Zones.P1_MOTHER, 1);
 		engine.addEntity(builder.build());
 		
-		builder.reset().field(Zones.P1_PLANET);
+		builder.reset().field(Zones.P1_PLANET, 1);
 		engine.addEntity(builder.build());
 		
-		builder.reset().field(Zones.P1_YARD);
+		builder.reset().field(Zones.P1_YARD, 1);
 		engine.addEntity(builder.build());
 		
 		// CARDS

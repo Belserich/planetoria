@@ -82,21 +82,30 @@ public class EntityBuilder {
 	public EntityBuilder covered() {
 		
 		suppliers.add(Covered::new);
+		
+		return this;
+	}
+	
+	public EntityBuilder field(Zones zone, int ownerId) {
+		
+		suppliers.add((() -> new OwnedByPlayer(ownerId)));
+		ownedByZone(zone);
+		suppliers.add(FieldId.Request::new);
+		
+		suppliers.add(Touchable::new);
+		
 		return this;
 	}
 	
 	public EntityBuilder ownedByZone(Zones template) {
 		
 		suppliers.add(() -> new OwnedByZone(template));
+		
 		return this;
 	}
 	
-	public EntityBuilder field(Zones zone) {
+	public EntityBuilder occupiable() {
 		
-		ownedByZone(zone);
-		suppliers.add(FieldId.Request::new);
-		
-		suppliers.add(Touchable::new);
 		suppliers.add(Occupiable::new);
 		
 		return this;
@@ -107,18 +116,21 @@ public class EntityBuilder {
 		suppliers.add(Touchable::new);
 		suppliers.add(Selectable::new);
 		suppliers.add(Playable::new);
+		
 		return this;
 	}
 	
 	public EntityBuilder ownedByPlayer(int playerId) {
 		
 		suppliers.add(() -> new PlayerId(playerId));
+		
 		return this;
 	}
 	
 	public EntityBuilder turn() {
 		
 		suppliers.add(Turn::new);
+		
 		return this;
 	}
 	
