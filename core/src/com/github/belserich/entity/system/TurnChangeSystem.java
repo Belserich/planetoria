@@ -22,7 +22,7 @@ public class TurnChangeSystem extends EntityMaintainer {
 		).get());
 		
 		ownedByPlayer = Family.all(
-				PlayerOwned.class
+				OwnedByPlayer.class
 		).get();
 		
 		allPlayers = Family.all(
@@ -49,7 +49,7 @@ public class TurnChangeSystem extends EntityMaintainer {
 		ImmutableArray<Entity> ownedList = super.getEngine().getEntitiesFor(ownedByPlayer);
 		for (Entity owned : ownedList) {
 			
-			PlayerOwned pc = owned.getComponent(PlayerOwned.class);
+			OwnedByPlayer pc = owned.getComponent(OwnedByPlayer.class);
 			if (pc.id == pic.val) {
 				owned.remove(Attackable.class);
 				owned.add(new Selectable());

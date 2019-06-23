@@ -9,9 +9,9 @@ import com.github.belserich.entity.component.Lp;
 import com.github.belserich.entity.component.Sp;
 import com.github.belserich.entity.core.EventSystem;
 
-public class LifeSystem extends EventSystem {
+public class LpAttackSystem extends EventSystem {
 	
-	public LifeSystem() {
+	public LpAttackSystem() {
 		super(Family.all(
 				Lp.class,
 				Attackable.Attacked.class

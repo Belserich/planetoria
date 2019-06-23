@@ -13,4 +13,7 @@ public class FieldId implements Component {
 	public FieldId() {
 		this.id = -1;
 	}
+	
+	public static class Request implements Component {
+	}
 }

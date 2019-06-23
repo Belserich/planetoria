@@ -31,8 +31,9 @@ public class EntityBuilder {
 	
 	public EntityBuilder card(Cards template, Zones zone, int ownerId) {
 		
-		suppliers.add(CardId::new);
+		suppliers.add(CardId.Request::new);
 		suppliers.add(() -> new OwnedByPlayer(ownerId));
+		suppliers.add(OwnedByField.Request::new);
 		ownedByZone(zone);
 		
 		suppliers.add(Touchable::new);
@@ -63,6 +64,8 @@ public class EntityBuilder {
 				suppliers.add(Modification::new);
 				suppliers.add(() -> new Effect("Erhoeht AP um 2."));
 				
+				break;
+				
 			default:
 				
 				GameClient.error(this, "* Entity creation. Tried to create unregistered entity: " + template + ".");
@@ -84,10 +87,14 @@ public class EntityBuilder {
 		return this;
 	}
 	
-	public EntityBuilder field(int index) {
+	public EntityBuilder field(Zones zone) {
+		
+		ownedByZone(zone);
+		suppliers.add(FieldId.Request::new);
 		
 		suppliers.add(Touchable::new);
-		suppliers.add(() -> new FieldId(index));
+		suppliers.add(Occupiable::new);
+		
 		return this;
 	}
 	

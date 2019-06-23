@@ -30,20 +30,17 @@ public class GameClient extends ApplicationAdapter {
 	
 	private void createSystems() {
 		
-		engine.addSystem(new TurnChangeSystem());
-		engine.addSystem(new CardUiCreationSystem());
-		engine.addSystem(new LpChangeSystem());
-		engine.addSystem(new SpChangeSystem());
-		engine.addSystem(new CardCoveredSystem());
-		
-		engine.addSystem(new ZoneChangeSystem());
-		engine.addSystem(new ZoneIdChangedSystem());
+		engine.addSystem(new FieldUiSystem());
+		engine.addSystem(new CardUiSystem());
 		
 		engine.addSystem(new SelectableSystem());
 		engine.addSystem(new TouchableSystem());
+		
+		engine.addSystem(new TurnChangeSystem());
+		
 		engine.addSystem(new PlayCardFromHandSystem());
-
-		engine.addSystem(new LifeSystem());
+		
+		engine.addSystem(new LpAttackSystem());
 		engine.addSystem(new AttackSystem());
 		engine.addSystem(new ShieldSystem());
 	}
@@ -81,8 +78,60 @@ public class GameClient extends ApplicationAdapter {
 		
 		EntityBuilder builder = new EntityBuilder();
 		
-		thisPlayer = builder.reset().player(0).turn().build();
-		opponentPlayer = builder.reset().player(1).build();
+		thisPlayer = builder.reset().ownedByPlayer(0).turn().build();
+		opponentPlayer = builder.reset().ownedByPlayer(1).build();
+		
+		// FIELDS
+		
+		builder.reset().field(Zones.P0_BATTLE);
+		for (int i = 0; i < 7; i++) {
+			engine.addEntity(builder.build());
+		}
+		
+		builder.reset().field(Zones.P0_REPAIR);
+		for (int i = 0; i < 5; i++) {
+			engine.addEntity(builder.build());
+		}
+		
+		builder.reset().field(Zones.P0_DECK);
+		for (int i = 0; i < 8; i++) {
+			engine.addEntity(builder.build());
+		}
+		
+		builder.reset().field(Zones.P0_MOTHER);
+		engine.addEntity(builder.build());
+		
+		builder.reset().field(Zones.P0_PLANET);
+		engine.addEntity(builder.build());
+		
+		builder.reset().field(Zones.P0_YARD);
+		engine.addEntity(builder.build());
+		
+		builder.reset().field(Zones.P1_BATTLE);
+		for (int i = 0; i < 7; i++) {
+			engine.addEntity(builder.build());
+		}
+		
+		builder.reset().field(Zones.P1_REPAIR);
+		for (int i = 0; i < 5; i++) {
+			engine.addEntity(builder.build());
+		}
+		
+		builder.reset().field(Zones.P1_DECK);
+		for (int i = 0; i < 8; i++) {
+			engine.addEntity(builder.build());
+		}
+		
+		builder.reset().field(Zones.P1_MOTHER);
+		engine.addEntity(builder.build());
+		
+		builder.reset().field(Zones.P1_PLANET);
+		engine.addEntity(builder.build());
+		
+		builder.reset().field(Zones.P1_YARD);
+		engine.addEntity(builder.build());
+		
+		// CARDS
 		
 		builder.reset().card(Cards.SPACESHIP_B, Zones.P0_BATTLE, 0);
 		for (int i = 0; i < 4; i++) {
@@ -102,11 +151,6 @@ public class GameClient extends ApplicationAdapter {
 		builder.reset().card(Cards.STRATEGY_1, Zones.P0_DECK, 0).playable();
 		for (int i = 0; i < 4; i++) {
 			engine.addEntity(builder.build());
-		}
-		
-		builder.reset().zone(Zones.P0_BATTLE);
-		for (int i = 0; i < 7; i++) {
-			engine.addEntity(builder.field(i).build());
 		}
 		
 		engine.addEntity(thisPlayer);

@@ -7,10 +7,9 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.github.belserich.Services;
-import com.github.belserich.entity.component.CardHandle;
+import com.github.belserich.entity.component.CardId;
 import com.github.belserich.entity.component.FieldId;
 import com.github.belserich.entity.component.Touchable;
-import com.github.belserich.entity.component.ZoneId;
 import com.github.belserich.entity.core.EventSystem;
 import com.github.belserich.ui.core.UiService;
 
@@ -22,21 +21,13 @@ public class TouchableSystem extends EventSystem implements EntityListener {
 	private final UiService uiService;
 	private final Set<Entity> touchedEntities;
 	
-	private Family sfam;
-	
 	public TouchableSystem() {
 		super(Family.all(
-				ZoneId.class,
-				FieldId.class,
 				Touchable.class
+		).one(
+				CardId.class,
+				FieldId.class
 		).get(), Touchable.Touched.class);
-		
-		sfam = Family.all(
-				ZoneId.class,
-				FieldId.class,
-				CardHandle.class,
-				Touchable.class
-		).get();
 		
 		uiService = Services.getUiService();
 		touchedEntities = new HashSet<>();
@@ -46,7 +37,6 @@ public class TouchableSystem extends EventSystem implements EntityListener {
 	public void addedToEngine(Engine engine) {
 		super.addedToEngine(engine);
 		engine.addEntityListener(fam, this);
-		engine.addEntityListener(sfam, this);
 	}
 	
 	@Override
@@ -58,28 +48,26 @@ public class TouchableSystem extends EventSystem implements EntityListener {
 	@Override
 	public void entityAdded(Entity entity) {
 		
-		ZoneId zc = entity.getComponent(ZoneId.class);
 		FieldId fc = entity.getComponent(FieldId.class);
-		CardHandle hc = entity.getComponent(CardHandle.class);
+		CardId hc = entity.getComponent(CardId.class);
 		
 		if (hc != null) {
-			uiService.setCardClickCallback(hc.handle, new TouchNotifier(entity));
+			uiService.setCardClickCallback(hc.id, new TouchNotifier(entity));
 		} else {
-			uiService.setFieldClickCallback(zc.id, fc.id, new TouchNotifier(entity));
+			uiService.setFieldClickCallback(fc.id, new TouchNotifier(entity));
 		}
 	}
 	
 	@Override
 	public void entityRemoved(Entity entity) {
 		
-		ZoneId zc = entity.getComponent(ZoneId.class);
 		FieldId fc = entity.getComponent(FieldId.class);
-		CardHandle hc = entity.getComponent(CardHandle.class);
+		CardId hc = entity.getComponent(CardId.class);
 		
 		if (hc != null) {
-			uiService.removeCardClickCallback(hc.handle);
+			uiService.removeCardClickCallback(hc.id);
 		} else {
-			uiService.removeFieldClickCallback(zc.id, fc.id);
+			uiService.removeFieldClickCallback(fc.id);
 		}
 	}
 	
