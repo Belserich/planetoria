@@ -69,7 +69,7 @@ public class CardUiSystem extends EntitySystem {
 		float sp = sc != null ? sc.pts : 0;
 		boolean isCovered = cc != null;
 		
-		CardUpdater up = service.getCardUpdater(hc.id);
+		CardUpdater up = service.getCardUpdater(hc.val);
 		if (up != null) {
 			up.setTitle(name);
 			up.setEffect(effect);
@@ -118,7 +118,7 @@ public class CardUiSystem extends EntitySystem {
 		public void entityAdded(Entity entity) {
 			
 			CardId cid = entity.getComponent(CardId.class);
-			service.removeCard(cid.id);
+			service.removeCard(cid.val);
 		}
 		
 		@Override
@@ -143,7 +143,7 @@ public class CardUiSystem extends EntitySystem {
 			OwnedByField oc = entity.getComponent(OwnedByField.class);
 			CardId cid = entity.getComponent(CardId.class);
 			
-			service.setCardOnField(cid.id, oc.id);
+			service.setCardOnField(cid.val, oc.id);
 		}
 		
 		@Override

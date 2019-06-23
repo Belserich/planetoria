@@ -4,10 +4,10 @@ import com.badlogic.ashley.core.Component;
 
 public class CardId implements Component {
 	
-	public int id;
+	public int val;
 	
-	public CardId(int id) {
-		this.id = id;
+	public CardId(int val) {
+		this.val = val;
 	}
 	
 	public static class Request implements Component {

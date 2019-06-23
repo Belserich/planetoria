@@ -10,10 +10,6 @@ public class FieldId implements Component {
 		this.id = id;
 	}
 	
-	public FieldId() {
-		this.id = -1;
-	}
-	
 	public static class Request implements Component {
 	}
 }

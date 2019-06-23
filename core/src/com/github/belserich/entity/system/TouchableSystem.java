@@ -52,7 +52,7 @@ public class TouchableSystem extends EventSystem implements EntityListener {
 		CardId hc = entity.getComponent(CardId.class);
 		
 		if (hc != null) {
-			uiService.setCardClickCallback(hc.id, new TouchNotifier(entity));
+			uiService.setCardClickCallback(hc.val, new TouchNotifier(entity));
 		} else {
 			uiService.setFieldClickCallback(fc.id, new TouchNotifier(entity));
 		}
@@ -65,7 +65,7 @@ public class TouchableSystem extends EventSystem implements EntityListener {
 		CardId hc = entity.getComponent(CardId.class);
 		
 		if (hc != null) {
-			uiService.removeCardClickCallback(hc.id);
+			uiService.removeCardClickCallback(hc.val);
 		} else {
 			uiService.removeFieldClickCallback(fc.id);
 		}

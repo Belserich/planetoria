@@ -14,17 +14,4 @@ public class OwnedByZone implements Component {
 	public OwnedByZone(Zones zone) {
 		this.id = zone.ordinal();
 	}
-	
-	public static class Changed implements Component {
-		
-		public Zones last, now;
-		public int lastField, nowField;
-		
-		public Changed(Zones last, int lastField, Zones now, int nowField) {
-			this.last = last;
-			this.lastField = lastField;
-			this.now = now;
-			this.nowField = nowField;
-		}
-	}
 }
