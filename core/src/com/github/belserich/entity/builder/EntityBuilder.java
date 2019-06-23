@@ -31,6 +31,12 @@ public class EntityBuilder {
 	
 	public EntityBuilder card(Cards template, Zones zone, int ownerId) {
 		
+		suppliers.add(CardId::new);
+		suppliers.add(() -> new OwnedByPlayer(ownerId));
+		ownedByZone(zone);
+		
+		suppliers.add(Touchable::new);
+		
 		switch (template) {
 			
 			case SPACESHIP_A:
@@ -63,13 +69,6 @@ public class EntityBuilder {
 				break;
 		}
 		
-		suppliers.add(CardHandle::new);
-		zone(zone);
-		field(-1);
-		
-		suppliers.add(Touchable::new);
-		suppliers.add(() -> new PlayerOwned(ownerId));
-		
 		return this;
 	}
 	
@@ -79,9 +78,9 @@ public class EntityBuilder {
 		return this;
 	}
 	
-	public EntityBuilder zone(Zones template) {
+	public EntityBuilder ownedByZone(Zones template) {
 		
-		suppliers.add(() -> new ZoneId(template));
+		suppliers.add(() -> new OwnedByZone(template));
 		return this;
 	}
 	
@@ -100,7 +99,7 @@ public class EntityBuilder {
 		return this;
 	}
 	
-	public EntityBuilder player(int playerId) {
+	public EntityBuilder ownedByPlayer(int playerId) {
 		
 		suppliers.add(() -> new PlayerId(playerId));
 		return this;

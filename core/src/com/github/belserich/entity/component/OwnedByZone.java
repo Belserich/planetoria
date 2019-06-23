@@ -3,15 +3,15 @@ package com.github.belserich.entity.component;
 import com.badlogic.ashley.core.Component;
 import com.github.belserich.asset.Zones;
 
-public class ZoneId implements Component {
+public class OwnedByZone implements Component {
 	
 	public int id;
 	
-	public ZoneId(int id) {
+	public OwnedByZone(int id) {
 		this.id = id;
 	}
 	
-	public ZoneId(Zones zone) {
+	public OwnedByZone(Zones zone) {
 		this.id = zone.ordinal();
 	}
 	
