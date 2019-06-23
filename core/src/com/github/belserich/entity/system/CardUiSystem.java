@@ -6,36 +6,46 @@ import com.badlogic.ashley.core.Family;
 import com.github.belserich.GameClient;
 import com.github.belserich.Services;
 import com.github.belserich.entity.component.*;
+import com.github.belserich.entity.core.EntityMaintainer;
 import com.github.belserich.entity.core.EntitySystem;
 import com.github.belserich.ui.core.CardUpdater;
 import com.github.belserich.ui.core.UiService;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class CardUiSystem extends EntitySystem {
 	
 	private UiService service;
 	
-	private Creator creatorSys;
+	private List<EntitySystem> subSystems;
 	
 	public CardUiSystem() {
 		super(Family.all(
 				CardId.class
+		).exclude(
+				Dead.class
 		).get());
 		
 		service = Services.getUiService();
 		
-		creatorSys = new Creator();
+		subSystems = Arrays.asList(new Creator(), new Destroyer());
 	}
 	
 	@Override
 	public void addedToEngine(Engine engine) {
 		super.addedToEngine(engine);
-		engine.addSystem(creatorSys);
+		for (EntitySystem sys : subSystems) {
+			engine.addSystem(sys);
+		}
 	}
 	
 	@Override
 	public void removedFromEngine(Engine engine) {
 		super.removedFromEngine(engine);
-		engine.removeSystem(creatorSys);
+		for (EntitySystem sys : subSystems) {
+			engine.addSystem(sys);
+		}
 	}
 	
 	@Override
@@ -92,6 +102,28 @@ public class CardUiSystem extends EntitySystem {
 				entity.remove(CardId.Request.class);
 				entity.add(new CardId(cardId));
 			}
+		}
+	}
+	
+	private class Destroyer extends EntityMaintainer {
+		
+		public Destroyer() {
+			super(Family.all(
+					CardId.class,
+					Dead.class
+			).get());
+		}
+		
+		@Override
+		public void entityAdded(Entity entity) {
+			
+			CardId cid = entity.getComponent(CardId.class);
+			service.removeCard(cid.id);
+		}
+		
+		@Override
+		public void entityRemoved(Entity entity) {
+			// nothing
 		}
 	}
 }
