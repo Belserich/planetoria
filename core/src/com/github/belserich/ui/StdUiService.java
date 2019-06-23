@@ -1,7 +1,6 @@
 package com.github.belserich.ui;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -14,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.github.belserich.asset.Zones;
 import com.github.belserich.ui.core.BaseUiService;
 import com.github.belserich.util.UiHelper;
 
@@ -22,7 +22,6 @@ import static com.github.belserich.asset.Zones.*;
 public class StdUiService extends BaseUiService {
 	
 	private Stage stage;
-	private InputMultiplexer mult;
 	private Viewport view;
 	private Camera cam;
 	
@@ -33,17 +32,12 @@ public class StdUiService extends BaseUiService {
 	
 	private HorizontalGroup optionGroup;
 	
-	private Label deckToggle;
 	private boolean toggled;
-	
-	private Label turnLabel;
 	
 	public StdUiService() {
 		
 		stage = new Stage();
-		
-		mult = new InputMultiplexer(stage);
-		Gdx.input.setInputProcessor(mult);
+		Gdx.input.setInputProcessor(stage);
 		
 		view = new FitViewport(1200, 900);
 		stage.setViewport(view);
@@ -52,7 +46,26 @@ public class StdUiService extends BaseUiService {
 		cam.translate(600, 450, 0);
 		view.setCamera(cam);
 		
+		createZones();
 		createBoardUi();
+	}
+	
+	private void createZones() {
+		
+		addZone(Zones.P0_BATTLE);
+		addZone(Zones.P1_BATTLE);
+		addZone(Zones.P0_REPAIR);
+		addZone(Zones.P1_REPAIR);
+		
+		addZone(Zones.P0_YARD);
+		addZone(Zones.P1_YARD);
+		addZone(Zones.P0_PLANET);
+		addZone(Zones.P1_PLANET);
+		addZone(Zones.P0_MOTHER);
+		addZone(Zones.P1_MOTHER);
+		
+		addZone(Zones.P0_DECK);
+		addZone(Zones.P1_DECK);
 	}
 	
 	private void createBoardUi() {
@@ -66,12 +79,10 @@ public class StdUiService extends BaseUiService {
 			mainGroup.pad(70);
 			mainGroup.space(10);
 			
-			mainGroup.addActor(UiHelper.horizontalGroup(10, zoneStrat.get(P1_YARD.ordinal()), zoneStrat.get(P1_PLANET.ordinal()), zoneStrat.get(P1_REPAIR.ordinal()),
-					zoneStrat.get(P1_MOTHER.ordinal())));
-			mainGroup.addActor(UiHelper.horizontalGroup(10, zoneStrat.get(P1_BATTLE.ordinal())));
-			mainGroup.addActor(UiHelper.horizontalGroup(10, zoneStrat.get(P0_BATTLE.ordinal())));
-			mainGroup.addActor(UiHelper.horizontalGroup(10, zoneStrat.get(P0_MOTHER.ordinal()), zoneStrat.get(P0_REPAIR.ordinal()), zoneStrat.get(P0_PLANET.ordinal()),
-					zoneStrat.get(P0_YARD.ordinal())));
+			mainGroup.addActor(UiHelper.horizontalGroup(10, getZone(P1_YARD), getZone(P1_PLANET), getZone(P1_REPAIR), getZone(P1_MOTHER)));
+			mainGroup.addActor(UiHelper.horizontalGroup(10, getZone(P1_BATTLE)));
+			mainGroup.addActor(UiHelper.horizontalGroup(10, getZone(P0_BATTLE)));
+			mainGroup.addActor(UiHelper.horizontalGroup(10, getZone(P0_MOTHER), getZone(P0_REPAIR), getZone(P0_PLANET), getZone(P0_YARD)));
 			
 			rootGroup.addActor(mainGroup);
 		}
@@ -81,8 +92,8 @@ public class StdUiService extends BaseUiService {
 			deckGroup.pad(70);
 			deckGroup.space(100);
 			
-			deckGroup.addActor(UiHelper.horizontalGroup(10, zoneStrat.get(P0_DECK.ordinal())));
-			deckGroup.addActor(UiHelper.horizontalGroup(10, zoneStrat.get(P1_DECK.ordinal())));
+			deckGroup.addActor(UiHelper.horizontalGroup(10, getZone(P0_DECK)));
+			deckGroup.addActor(UiHelper.horizontalGroup(10, getZone(P1_DECK)));
 		}
 		
 		// ---
@@ -91,7 +102,7 @@ public class StdUiService extends BaseUiService {
 			optionGroup = new HorizontalGroup();
 			optionGroup.space(300);
 			
-			deckToggle = new Label("Hand", new Label.LabelStyle(UiHelper.largeFont, Color.BLACK));
+			final Label deckToggle = new Label("Hand", new Label.LabelStyle(UiHelper.largeFont, Color.BLACK));
 			deckToggle.addListener(new ClickListener() {
 				
 				@Override
@@ -102,7 +113,7 @@ public class StdUiService extends BaseUiService {
 			});
 			optionGroup.addActor(deckToggle);
 			
-			turnLabel = new Label("Turn", new Label.LabelStyle(UiHelper.largeFont, Color.BLACK));
+			final Label turnLabel = new Label("Turn", new Label.LabelStyle(UiHelper.largeFont, Color.BLACK));
 			turnLabel.addListener(new ClickListener() {
 				
 				@Override

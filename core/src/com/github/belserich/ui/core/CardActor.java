@@ -59,6 +59,10 @@ public class CardActor extends Label {
 		this(CardTypes.STRATEGY, title, effect, -1f, -1f, -1f, isCovered);
 	}
 	
+	public CardActor() {
+		this("???", -1f, -1f, -1f, false);
+	}
+	
 	public CardTypes getType() {
 		return type;
 	}
