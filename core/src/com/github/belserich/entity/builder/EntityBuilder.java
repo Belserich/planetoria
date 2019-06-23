@@ -4,6 +4,7 @@ package com.github.belserich.entity.builder;
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;
 import com.github.belserich.GameClient;
+import com.github.belserich.asset.CardTypes;
 import com.github.belserich.asset.Cards;
 import com.github.belserich.asset.Zones;
 import com.github.belserich.entity.component.*;
@@ -46,6 +47,7 @@ public class EntityBuilder {
 				suppliers.add(() -> new Sp(1));
 				suppliers.add(() -> new Ap(1, 2));
 				suppliers.add(() -> new Name("Raumschiff A"));
+				suppliers.add(() -> new CardType(CardTypes.DEFAULT));
 				
 				break;
 			
@@ -55,6 +57,7 @@ public class EntityBuilder {
 				suppliers.add(() -> new Sp(2));
 				suppliers.add(() -> new Ap(2, 2));
 				suppliers.add(() -> new Name("Raumschiff B"));
+				suppliers.add(() -> new CardType(CardTypes.DEFAULT));
 				
 				break;
 			
@@ -63,6 +66,7 @@ public class EntityBuilder {
 				suppliers.add(() -> new Name("Strategie 1"));
 				suppliers.add(Modification::new);
 				suppliers.add(() -> new Effect("Erhoeht AP um 2."));
+				suppliers.add(() -> new CardType(CardTypes.STRATEGY));
 				
 				break;
 				

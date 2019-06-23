@@ -22,7 +22,8 @@ public class CardUiSystem extends EntitySystem {
 	
 	public CardUiSystem() {
 		super(Family.all(
-				CardId.class
+				CardId.class,
+				CardType.class
 		).exclude(
 				Dead.class
 		).get());
@@ -52,33 +53,45 @@ public class CardUiSystem extends EntitySystem {
 	public void update(Entity card) {
 		
 		CardId hc = card.getComponent(CardId.class);
-		
-		Name nc = card.getComponent(Name.class);
-		Effect ec = card.getComponent(Effect.class);
-		Lp lc = card.getComponent(Lp.class);
-		Ap ac = card.getComponent(Ap.class);
-		Sp sc = card.getComponent(Sp.class);
-		Covered cc = card.getComponent(Covered.class);
-		
-		Modification mc = card.getComponent(Modification.class);
-		
-		String name = nc != null ? nc.name : "???";
-		String effect = ec != null ? ec.text : "";
-		float lp = lc != null ? lc.pts : 0;
-		float ap = ac != null ? ac.pts : 0;
-		float sp = sc != null ? sc.pts : 0;
-		boolean isCovered = cc != null;
+		CardType tc = card.getComponent(CardType.class);
 		
 		CardUpdater up = service.getCardUpdater(hc.val);
-		if (up != null) {
-			up.setTitle(name);
-			up.setEffect(effect);
-			up.setLp(lp);
-			up.setAp(ap);
-			up.setSp(sp);
-			up.setCovered(isCovered);
-			up.update();
+		up.setType(tc.type);
+		
+		Name nc = card.getComponent(Name.class);
+		up.setTitle(nc != null ? nc.name : "???");
+		
+		Covered cc = card.getComponent(Covered.class);
+		up.setCovered(cc != null);
+		
+		switch (tc.type) {
+			
+			case DEFAULT:
+				
+				Lp lc = card.getComponent(Lp.class);
+				Ap ac = card.getComponent(Ap.class);
+				Sp sc = card.getComponent(Sp.class);
+				
+				up.setLp(lc != null ? lc.pts : 0);
+				up.setAp(ac != null ? ac.pts : 0);
+				up.setSp(sc != null ? sc.pts : 0);
+				
+				break;
+			
+			case STRATEGY:
+				
+				Effect ec = card.getComponent(Effect.class);
+				up.setEffect(ec != null ? ec.text : "");
+				
+				break;
+			
+			default:
+				
+				GameClient.error(this, "* Card update. Unknown card type: %s", tc.type);
+				break;
 		}
+		
+		up.update();
 	}
 	
 	private class Creator extends EntitySystem {
