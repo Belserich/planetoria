@@ -2,7 +2,7 @@ package com.github.belserich.entity.component;
 
 import com.badlogic.ashley.core.Component;
 
-public class CardHandle implements Component {
+public class CardId implements Component {
 	
-	public int handle;
+	public int cardId;
 }
