@@ -36,13 +36,13 @@ public class GameClient extends ApplicationAdapter {
 		engine.addSystem(new SelectableSystem());
 		engine.addSystem(new TouchableSystem());
 		
-		engine.addSystem(new TurnChangeSystem());
-		
-		engine.addSystem(new PlayCardFromHandSystem());
+		engine.addSystem(new CardPlaySystem());
 		
 		engine.addSystem(new LpAttackSystem());
 		engine.addSystem(new AttackSystem());
 		engine.addSystem(new ShieldSystem());
+		
+		engine.addSystem(new TurnChangeSystem());
 	}
 	
 	@Override

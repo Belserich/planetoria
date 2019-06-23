@@ -29,7 +29,7 @@ public class CardUiSystem extends EntitySystem {
 		
 		service = Services.getUiService();
 		
-		subSystems = Arrays.asList(new Creator(), new Destroyer());
+		subSystems = Arrays.asList(new Creator(), new Destroyer(), new Mover());
 	}
 	
 	@Override
@@ -119,6 +119,31 @@ public class CardUiSystem extends EntitySystem {
 			
 			CardId cid = entity.getComponent(CardId.class);
 			service.removeCard(cid.id);
+		}
+		
+		@Override
+		public void entityRemoved(Entity entity) {
+			// nothing
+		}
+	}
+	
+	private class Mover extends EntityMaintainer {
+		
+		public Mover() {
+			super(Family.all(
+					OwnedByField.class,
+					CardId.class,
+					Playable.Just.class
+			).get());
+		}
+		
+		@Override
+		public void entityAdded(Entity entity) {
+			
+			OwnedByField oc = entity.getComponent(OwnedByField.class);
+			CardId cid = entity.getComponent(CardId.class);
+			
+			service.setCardOnField(cid.id, oc.id);
 		}
 		
 		@Override
