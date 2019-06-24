@@ -14,12 +14,12 @@ import com.github.belserich.ui.core.UiService;
 import java.util.HashSet;
 import java.util.Set;
 
-public class TouchableSystem extends EntityMaintainer {
+public class TouchSystem extends EntityMaintainer {
 	
 	private final UiService uiService;
 	private final Set<Entity> touchedEntities;
 	
-	public TouchableSystem() {
+	public TouchSystem() {
 		super(Family.all(
 				Touchable.class
 		).one(

@@ -33,14 +33,14 @@ public class GameClient extends ApplicationAdapter {
 		engine.addSystem(new FieldUiSystem());
 		engine.addSystem(new CardUiSystem());
 		
-		engine.addSystem(new SelectableSystem());
-		engine.addSystem(new TouchableSystem());
+		engine.addSystem(new SelectSystem());
+		engine.addSystem(new TouchSystem());
 		
 		engine.addSystem(new CardPlaySystem());
 		
 		engine.addSystem(new LpAttackSystem());
 		engine.addSystem(new AttackSystem());
-		engine.addSystem(new ShieldSystem());
+		engine.addSystem(new SpAttackSystem());
 		
 		engine.addSystem(new TurnChangeSystem());
 	}

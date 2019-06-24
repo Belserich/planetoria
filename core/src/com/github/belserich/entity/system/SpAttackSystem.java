@@ -7,9 +7,9 @@ import com.github.belserich.entity.component.Attackable;
 import com.github.belserich.entity.component.Sp;
 import com.github.belserich.entity.core.EntitySystem;
 
-public class ShieldSystem extends EntitySystem {
+public class SpAttackSystem extends EntitySystem {
 	
-	public ShieldSystem() {
+	public SpAttackSystem() {
 		super(Family.all(
 				Sp.class,
 				Attackable.Attacked.class

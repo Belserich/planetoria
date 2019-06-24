@@ -9,9 +9,9 @@ import com.github.belserich.entity.component.Touchable;
 import com.github.belserich.entity.component.Turn;
 import com.github.belserich.entity.core.EntitySystem;
 
-public class SelectableSystem extends EntitySystem {
+public class SelectSystem extends EntitySystem {
 	
-	public SelectableSystem() {
+	public SelectSystem() {
 		super(Family.all(
 				Turn.class,
 				Touchable.Touched.class,
