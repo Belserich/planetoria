@@ -32,6 +32,8 @@ public class CardPlaySystem extends EntitySystem {
 	@Override
 	public void update(Entity field) {
 		
+		field.remove(Touchable.Touched.class);
+		
 		ImmutableArray<Entity> selectedCardList = super.getEngine().getEntitiesFor(selectedCards);
 		if (selectedCardList.size() > 0) {
 			

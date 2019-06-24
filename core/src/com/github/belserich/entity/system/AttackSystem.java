@@ -5,9 +5,9 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.github.belserich.GameClient;
 import com.github.belserich.entity.component.*;
-import com.github.belserich.entity.core.EventSystem;
+import com.github.belserich.entity.core.EntitySystem;
 
-public class AttackSystem extends EventSystem {
+public class AttackSystem extends EntitySystem {
 	
 	private Family selection;
 	
@@ -16,8 +16,7 @@ public class AttackSystem extends EventSystem {
 		super(Family.all(
 				Attackable.class,
 				Touchable.Touched.class
-				).get(),
-				Attackable.Attacked.class);
+		).get());
 		
 		selection = Family.all(
 				Ap.class,
@@ -28,6 +27,8 @@ public class AttackSystem extends EventSystem {
 	
 	@Override
 	public void update(Entity entity) {
+		
+		entity.remove(Touchable.Touched.class);
 		
 		ImmutableArray<Entity> sel = getEngine().getEntitiesFor(selection);
 		Ap comp;

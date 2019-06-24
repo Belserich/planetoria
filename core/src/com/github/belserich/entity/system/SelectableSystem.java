@@ -22,6 +22,8 @@ public class SelectableSystem extends EntitySystem {
 	@Override
 	public void update(Entity entity) {
 		
+		entity.remove(Touchable.Touched.class);
+		
 		if (ComponentMapper.getFor(Selectable.Selected.class).has(entity)) {
 			entity.remove(Selectable.Selected.class);
 			GameClient.log(this, "! Entity unselected.");

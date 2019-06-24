@@ -1,8 +1,6 @@
 package com.github.belserich.entity.system;
 
-import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
-import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -10,13 +8,13 @@ import com.github.belserich.Services;
 import com.github.belserich.entity.component.CardId;
 import com.github.belserich.entity.component.FieldId;
 import com.github.belserich.entity.component.Touchable;
-import com.github.belserich.entity.core.EventSystem;
+import com.github.belserich.entity.core.EntityMaintainer;
 import com.github.belserich.ui.core.UiService;
 
 import java.util.HashSet;
 import java.util.Set;
 
-public class TouchableSystem extends EventSystem implements EntityListener {
+public class TouchableSystem extends EntityMaintainer {
 	
 	private final UiService uiService;
 	private final Set<Entity> touchedEntities;
@@ -27,22 +25,10 @@ public class TouchableSystem extends EventSystem implements EntityListener {
 		).one(
 				CardId.class,
 				FieldId.class
-		).get(), Touchable.Touched.class);
+		).get());
 		
 		uiService = Services.getUiService();
 		touchedEntities = new HashSet<>();
-	}
-	
-	@Override
-	public void addedToEngine(Engine engine) {
-		super.addedToEngine(engine);
-		engine.addEntityListener(fam, this);
-	}
-	
-	@Override
-	public void removedFromEngine(Engine engine) {
-		super.removedFromEngine(engine);
-		engine.removeEntityListener(this);
 	}
 
 	@Override

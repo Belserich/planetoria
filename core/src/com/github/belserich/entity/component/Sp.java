@@ -9,7 +9,4 @@ public class Sp implements Component {
 	public Sp(float pts) {
 		this.pts = pts;
 	}
-	
-	public static class Broke implements Component {
-	}
 }

@@ -5,15 +5,15 @@ import com.badlogic.ashley.core.Family;
 import com.github.belserich.GameClient;
 import com.github.belserich.entity.component.Attackable;
 import com.github.belserich.entity.component.Sp;
-import com.github.belserich.entity.core.EventSystem;
+import com.github.belserich.entity.core.EntitySystem;
 
-public class ShieldSystem extends EventSystem {
+public class ShieldSystem extends EntitySystem {
 	
 	public ShieldSystem() {
 		super(Family.all(
 				Sp.class,
 				Attackable.Attacked.class
-		).get(), Sp.Broke.class);
+		).get());
 	}
 	
 	@Override
@@ -26,9 +26,10 @@ public class ShieldSystem extends EventSystem {
 		if (sc.pts <= ac.pts) {
 			GameClient.log(this, "! Shield break. " + specLog);
 			entity.remove(Sp.class);
-			entity.add(new Sp.Broke());
 		} else {
 			GameClient.log(this, "! Useless Shield attack. " + specLog);
 		}
+		
+		entity.remove(Attackable.Attacked.class);
 	}
 }
