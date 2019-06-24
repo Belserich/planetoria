@@ -133,17 +133,17 @@ public class GameClient extends ApplicationAdapter {
 		
 		// CARDS
 		
-		builder.reset().card(Cards.SPACESHIP_B, Zones.P0_BATTLE, 0);
+		builder.reset().card(Cards.SPACESHIP_B, Zones.P0_BATTLE, 0).attacker();
 		for (int i = 0; i < 4; i++) {
 			engine.addEntity(builder.build());
 		}
 		
-		builder.reset().card(Cards.SPACESHIP_B, Zones.P1_BATTLE, 1).covered();
+		builder.reset().card(Cards.SPACESHIP_B, Zones.P1_BATTLE, 1).covered().attackable();
 		for (int i = 0; i < 4; i++) {
 			engine.addEntity(builder.build());
 		}
 		
-		builder.reset().card(Cards.SPACESHIP_A, Zones.P0_DECK, 0).playable();
+		builder.reset().card(Cards.SPACESHIP_A, Zones.P0_DECK, 0).attacker().playable();
 		for (int i = 0; i < 4; i++) {
 			engine.addEntity(builder.build());
 		}

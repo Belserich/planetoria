@@ -18,8 +18,6 @@ public class CardPlaySystem extends EntitySystem {
 				FieldId.class,
 				Occupiable.class,
 				Touchable.Touched.class
-		).exclude(
-				CardId.class
 		).get());
 		
 		selectedCards = Family.all(

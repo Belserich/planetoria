@@ -5,7 +5,9 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.github.belserich.GameClient;
 import com.github.belserich.Services;
-import com.github.belserich.entity.component.*;
+import com.github.belserich.entity.component.OwnedByPlayer;
+import com.github.belserich.entity.component.PlayerId;
+import com.github.belserich.entity.component.Turn;
 import com.github.belserich.entity.core.EntityMaintainer;
 
 public class TurnChangeSystem extends EntityMaintainer {
@@ -51,13 +53,9 @@ public class TurnChangeSystem extends EntityMaintainer {
 			
 			OwnedByPlayer pc = owned.getComponent(OwnedByPlayer.class);
 			if (pc.id == pic.val) {
-				owned.remove(Attackable.class);
-				owned.add(new Selectable());
-				owned.add(new Attacker());
+				owned.add(new Turn());
 			} else {
-				owned.remove(Selectable.class);
-				owned.remove(Attacker.class);
-				owned.add(new Attackable());
+				owned.remove(Turn.class);
 			}
 		}
 		

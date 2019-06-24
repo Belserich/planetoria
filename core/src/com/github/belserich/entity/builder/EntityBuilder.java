@@ -79,6 +79,22 @@ public class EntityBuilder {
 		return this;
 	}
 	
+	public EntityBuilder attacker() {
+		
+		suppliers.add(Selectable::new);
+		suppliers.add(Attacker::new);
+		
+		return this;
+	}
+	
+	public EntityBuilder attackable() {
+		
+		suppliers.add(Touchable::new);
+		suppliers.add(Attackable::new);
+		
+		return this;
+	}
+	
 	public EntityBuilder covered() {
 		
 		suppliers.add(Covered::new);
@@ -100,6 +116,13 @@ public class EntityBuilder {
 	public EntityBuilder ownedByZone(Zones template) {
 		
 		suppliers.add(() -> new OwnedByZone(template));
+		
+		return this;
+	}
+	
+	public EntityBuilder selectable() {
+		
+		suppliers.add(() -> new Selectable());
 		
 		return this;
 	}
