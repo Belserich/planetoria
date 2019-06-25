@@ -17,7 +17,7 @@ public class SpAttackSystem extends EntitySystem {
 	}
 	
 	@Override
-	public void update(Entity entity) {
+	public void entityAdded(Entity entity) {
 		
 		Sp sc = entity.getComponent(Sp.class);
 		Attackable.Attacked ac = entity.getComponent(Attackable.Attacked.class);

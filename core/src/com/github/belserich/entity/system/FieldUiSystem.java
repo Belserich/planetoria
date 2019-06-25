@@ -1,6 +1,5 @@
 package com.github.belserich.entity.system;
 
-import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
@@ -15,40 +14,21 @@ import com.github.belserich.ui.core.UiService;
 
 public class FieldUiSystem extends EntitySystem {
 	
-	private UiService service;
-	
 	private Family freeFields;
-	
-	private Creator creatorSys;
 	
 	public FieldUiSystem() {
 		
 		super(Family.all(
-				OwnedByField.Request.class,
-				OwnedByZone.class
-		).get());
-		
-		service = Services.getUiService();
+				OwnedByZone.class,
+				OwnedByField.Request.class
+				).get(),
+				new Creator());
 		
 		freeFields = Family.all(
 				FieldId.class,
 				OwnedByZone.class,
 				Occupiable.class
 		).get();
-		
-		creatorSys = new Creator();
-	}
-	
-	@Override
-	public void addedToEngine(Engine engine) {
-		super.addedToEngine(engine);
-		engine.addSystem(creatorSys);
-	}
-	
-	@Override
-	public void removedFromEngine(Engine engine) {
-		super.removedFromEngine(engine);
-		engine.removeSystem(creatorSys);
 	}
 	
 	@Override
@@ -77,17 +57,21 @@ public class FieldUiSystem extends EntitySystem {
 		}
 	}
 	
-	private class Creator extends EntitySystem {
+	private static class Creator extends EntitySystem {
+		
+		private UiService service;
 		
 		public Creator() {
 			super(Family.all(
-					OwnedByZone.class,
-					FieldId.Request.class
+					FieldId.Request.class,
+					OwnedByZone.class
 			).get());
+			
+			service = Services.getUiService();
 		}
 		
 		@Override
-		public void update(Entity entity) {
+		public void entityAdded(Entity entity) {
 			
 			OwnedByZone oc = entity.getComponent(OwnedByZone.class);
 			int fieldId = service.addField(oc.id);

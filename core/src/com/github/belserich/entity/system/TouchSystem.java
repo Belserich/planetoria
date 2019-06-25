@@ -8,16 +8,16 @@ import com.github.belserich.Services;
 import com.github.belserich.entity.component.CardId;
 import com.github.belserich.entity.component.FieldId;
 import com.github.belserich.entity.component.Touchable;
-import com.github.belserich.entity.core.EntityMaintainer;
+import com.github.belserich.entity.core.EntitySystem;
 import com.github.belserich.ui.core.UiService;
 
 import java.util.HashSet;
 import java.util.Set;
 
-public class TouchSystem extends EntityMaintainer {
+public class TouchSystem extends EntitySystem {
 	
-	private final UiService uiService;
 	private final Set<Entity> touchedEntities;
+	private final UiService uiService;
 	
 	public TouchSystem() {
 		super(Family.all(
@@ -27,8 +27,8 @@ public class TouchSystem extends EntityMaintainer {
 				FieldId.class
 		).get());
 		
-		uiService = Services.getUiService();
 		touchedEntities = new HashSet<>();
+		uiService = Services.getUiService();
 	}
 
 	@Override
@@ -57,21 +57,14 @@ public class TouchSystem extends EntityMaintainer {
 		}
 	}
 	
-	public void touched(Entity entity) {
-		synchronized (touchedEntities) {
-			touchedEntities.add(entity);
-		}
-	}
-	
 	@Override
-	public void updateSystemEntities() {
+	public void update(Entity entity) {
 		
 		synchronized (touchedEntities) {
 			
-			for (Entity entity : touchedEntities) {
+			if (touchedEntities.remove(entity)) {
 				entity.add(new Touchable.Touched());
 			}
-			touchedEntities.clear();
 		}
 	}
 	
@@ -86,7 +79,9 @@ public class TouchSystem extends EntityMaintainer {
 		@Override
 		public void clicked(InputEvent event, float x, float y) {
 			super.clicked(event, x, y);
-			touched(entity);
+			synchronized (touchedEntities) {
+				touchedEntities.add(entity);
+			}
 		}
 	}
 }

@@ -1,24 +1,17 @@
 package com.github.belserich.entity.system;
 
-import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.github.belserich.GameClient;
 import com.github.belserich.Services;
 import com.github.belserich.entity.component.*;
-import com.github.belserich.entity.core.EntityMaintainer;
 import com.github.belserich.entity.core.EntitySystem;
 import com.github.belserich.ui.core.CardUpdater;
 import com.github.belserich.ui.core.UiService;
 
-import java.util.Arrays;
-import java.util.List;
-
 public class CardUiSystem extends EntitySystem {
 	
 	private UiService service;
-	
-	private List<EntitySystem> subSystems;
 	
 	public CardUiSystem() {
 		super(Family.all(
@@ -26,27 +19,12 @@ public class CardUiSystem extends EntitySystem {
 				CardType.class
 		).exclude(
 				Dead.class
-		).get());
+				).get(),
+				new Creator(),
+				new Destroyer(),
+				new Mover());
 		
 		service = Services.getUiService();
-		
-		subSystems = Arrays.asList(new Creator(), new Destroyer(), new Mover());
-	}
-	
-	@Override
-	public void addedToEngine(Engine engine) {
-		super.addedToEngine(engine);
-		for (EntitySystem sys : subSystems) {
-			engine.addSystem(sys);
-		}
-	}
-	
-	@Override
-	public void removedFromEngine(Engine engine) {
-		super.removedFromEngine(engine);
-		for (EntitySystem sys : subSystems) {
-			engine.addSystem(sys);
-		}
 	}
 	
 	@Override
@@ -94,37 +72,45 @@ public class CardUiSystem extends EntitySystem {
 		up.update();
 	}
 	
-	private class Creator extends EntitySystem {
+	private static class Creator extends EntitySystem {
 		
-		public Creator() {
+		private UiService service;
+		
+		Creator() {
 			super(Family.all(
 					CardId.Request.class,
 					OwnedByField.class
 			).get());
+			
+			service = Services.getUiService();
 		}
 		
 		@Override
-		public void update(Entity entity) {
+		public void entityAdded(Entity entity) {
 			
 			OwnedByField fc = entity.getComponent(OwnedByField.class);
 			
 			int cardId = service.addCard(fc.id);
 			if (cardId != -1) {
 				
-				GameClient.log(this, "! Card creation. Creating card %d.", cardId);
+				GameClient.log(this, "! Card creation. Creating card %d on field %d.", cardId, fc.id);
 				entity.remove(CardId.Request.class);
 				entity.add(new CardId(cardId));
 			}
 		}
 	}
 	
-	private class Destroyer extends EntityMaintainer {
+	private static class Destroyer extends EntitySystem {
+		
+		private UiService service;
 		
 		public Destroyer() {
 			super(Family.all(
 					CardId.class,
 					Dead.class
 			).get());
+			
+			service = Services.getUiService();
 		}
 		
 		@Override
@@ -133,14 +119,11 @@ public class CardUiSystem extends EntitySystem {
 			CardId cid = entity.getComponent(CardId.class);
 			service.removeCard(cid.val);
 		}
-		
-		@Override
-		public void entityRemoved(Entity entity) {
-			// nothing
-		}
 	}
 	
-	private class Mover extends EntityMaintainer {
+	private static class Mover extends EntitySystem {
+		
+		private UiService service;
 		
 		public Mover() {
 			super(Family.all(
@@ -148,6 +131,8 @@ public class CardUiSystem extends EntitySystem {
 					CardId.class,
 					Playable.Just.class
 			).get());
+			
+			service = Services.getUiService();
 		}
 		
 		@Override
@@ -157,11 +142,6 @@ public class CardUiSystem extends EntitySystem {
 			CardId cid = entity.getComponent(CardId.class);
 			
 			service.setCardOnField(cid.val, oc.id);
-		}
-		
-		@Override
-		public void entityRemoved(Entity entity) {
-			// nothing
 		}
 	}
 }

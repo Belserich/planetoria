@@ -9,7 +9,7 @@ import com.github.belserich.entity.core.EntitySystem;
 
 public class AttackSystem extends EntitySystem {
 	
-	private Family selection;
+	private final Family selection;
 	
 	public AttackSystem() {
 		
@@ -26,9 +26,7 @@ public class AttackSystem extends EntitySystem {
 	}
 	
 	@Override
-	public void update(Entity entity) {
-		
-		entity.remove(Touchable.Touched.class);
+	public void entityAdded(Entity entity) {
 		
 		ImmutableArray<Entity> sel = getEngine().getEntitiesFor(selection);
 		Ap comp;
@@ -64,5 +62,7 @@ public class AttackSystem extends EntitySystem {
 			other.remove(Selectable.Selected.class);
 			other.remove(Covered.class);
 		}
+		
+		entity.remove(Touchable.Touched.class);
 	}
 }

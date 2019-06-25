@@ -20,7 +20,7 @@ public class SelectSystem extends EntitySystem {
 	}
 	
 	@Override
-	public void update(Entity entity) {
+	public void entityAdded(Entity entity) {
 		
 		entity.remove(Touchable.Touched.class);
 		

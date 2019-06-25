@@ -18,7 +18,7 @@ public class LpAttackSystem extends EntitySystem {
 	}
 	
 	@Override
-	public void update(Entity entity) {
+	public void entityAdded(Entity entity) {
 		
 		Lp lc = entity.getComponent(Lp.class);
 		Attackable.Attacked ac = entity.getComponent(Attackable.Attacked.class);

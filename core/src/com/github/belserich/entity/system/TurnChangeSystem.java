@@ -8,9 +8,9 @@ import com.github.belserich.Services;
 import com.github.belserich.entity.component.OwnedByPlayer;
 import com.github.belserich.entity.component.PlayerId;
 import com.github.belserich.entity.component.Turn;
-import com.github.belserich.entity.core.EntityMaintainer;
+import com.github.belserich.entity.core.EntitySystem;
 
-public class TurnChangeSystem extends EntityMaintainer {
+public class TurnChangeSystem extends EntitySystem {
 	
 	private Family ownedByPlayer;
 	private Family allPlayers;
@@ -60,10 +60,5 @@ public class TurnChangeSystem extends EntityMaintainer {
 		}
 		
 		GameClient.log(this, "! Turn change. Player " + pic.val + "'s turn.");
-	}
-	
-	@Override
-	public void entityRemoved(Entity entity) {
-		// nothing
 	}
 }

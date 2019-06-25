@@ -30,7 +30,7 @@ public class CardPlaySystem extends EntitySystem {
 	}
 	
 	@Override
-	public void update(Entity field) {
+	public void entityAdded(Entity field) {
 		
 		field.remove(Touchable.Touched.class);
 		
