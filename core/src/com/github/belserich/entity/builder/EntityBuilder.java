@@ -48,6 +48,7 @@ public class EntityBuilder {
 				suppliers.add(() -> new Ap(1, 2));
 				suppliers.add(() -> new Name("Raumschiff A"));
 				suppliers.add(() -> new CardType(CardTypes.DEFAULT));
+				suppliers.add(() -> new EpConsuming(10));
 				
 				break;
 			
@@ -58,6 +59,7 @@ public class EntityBuilder {
 				suppliers.add(() -> new Ap(2, 2));
 				suppliers.add(() -> new Name("Raumschiff B"));
 				suppliers.add(() -> new CardType(CardTypes.DEFAULT));
+				suppliers.add(() -> new EpConsuming(20));
 				
 				break;
 			
@@ -67,6 +69,7 @@ public class EntityBuilder {
 				suppliers.add(Modification::new);
 				suppliers.add(() -> new Effect("Erhoeht AP um 2."));
 				suppliers.add(() -> new CardType(CardTypes.STRATEGY));
+				suppliers.add(() -> new EpConsuming(30));
 				
 				break;
 				
@@ -143,9 +146,10 @@ public class EntityBuilder {
 		return this;
 	}
 	
-	public EntityBuilder ownedByPlayer(int playerId) {
+	public EntityBuilder player(int id) {
 		
-		suppliers.add(() -> new PlayerId(playerId));
+		suppliers.add(() -> new PlayerId(id));
+		suppliers.add(() -> new Ep(120));
 		
 		return this;
 	}

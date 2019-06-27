@@ -33,6 +33,9 @@ public class GameClient extends ApplicationAdapter {
 		engine.addSystem(new FieldUiSystem());
 		engine.addSystem(new CardUiSystem());
 		
+		engine.addSystem(new TurnSystem());
+		engine.addSystem(new EpSystem());
+		
 		engine.addSystem(new SelectSystem());
 		engine.addSystem(new TouchSystem());
 		
@@ -41,8 +44,6 @@ public class GameClient extends ApplicationAdapter {
 		engine.addSystem(new LpAttackSystem());
 		engine.addSystem(new AttackSystem());
 		engine.addSystem(new SpAttackSystem());
-		
-		engine.addSystem(new TurnChangeSystem());
 	}
 	
 	@Override
@@ -78,8 +79,8 @@ public class GameClient extends ApplicationAdapter {
 		
 		EntityBuilder builder = new EntityBuilder();
 		
-		thisPlayer = builder.reset().ownedByPlayer(0).turn().build();
-		opponentPlayer = builder.reset().ownedByPlayer(1).build();
+		thisPlayer = builder.reset().player(0).turn().build();
+		opponentPlayer = builder.reset().player(1).build();
 		
 		// FIELDS
 		

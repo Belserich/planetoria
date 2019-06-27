@@ -5,35 +5,34 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.github.belserich.GameClient;
 import com.github.belserich.Services;
-import com.github.belserich.entity.component.OwnedByPlayer;
-import com.github.belserich.entity.component.PlayerId;
-import com.github.belserich.entity.component.Turn;
+import com.github.belserich.entity.component.*;
 import com.github.belserich.entity.core.EntitySystem;
 
-public class TurnChangeSystem extends EntitySystem {
+public class TurnSystem extends EntitySystem {
 	
 	private Family ownedByPlayer;
-	private Family allPlayers;
+	private Family players;
 	
 	private Entity turnEntity;
 	
-	public TurnChangeSystem() {
+	public TurnSystem() {
 		super(Family.all(
 				PlayerId.class,
 				Turn.class
-		).get());
+				).get(),
+				new EpConsumerHandler());
 		
 		ownedByPlayer = Family.all(
 				OwnedByPlayer.class
 		).get();
 		
-		allPlayers = Family.all(
+		players = Family.all(
 				PlayerId.class
 		).get();
 		
 		Services.getUiService().setTurnCallback(() -> {
 			
-			ImmutableArray<Entity> playerEntities = getEngine().getEntitiesFor(allPlayers);
+			ImmutableArray<Entity> playerEntities = getEngine().getEntitiesFor(players);
 			playerEntities.get((playerEntities.indexOf(turnEntity, true) + 1) % playerEntities.size()).add(new Turn());
 		});
 	}
@@ -44,7 +43,6 @@ public class TurnChangeSystem extends EntitySystem {
 		if (this.turnEntity != null) {
 			this.turnEntity.remove(Turn.class);
 		}
-		this.turnEntity = entity;
 		
 		PlayerId pic = entity.getComponent(PlayerId.class);
 		
@@ -54,11 +52,36 @@ public class TurnChangeSystem extends EntitySystem {
 			OwnedByPlayer pc = owned.getComponent(OwnedByPlayer.class);
 			if (pc.id == pic.val) {
 				owned.add(new Turn());
-			} else {
-				owned.remove(Turn.class);
-			}
+			} else owned.remove(Turn.class);
 		}
 		
 		GameClient.log(this, "! Turn change. Player " + pic.val + "'s turn.");
+		
+		this.turnEntity = entity;
+		entity.add(new Turn());
+	}
+	
+	private static class EpConsumerHandler extends EntitySystem {
+		
+		public EpConsumerHandler() {
+			super(Family.all(
+					Turn.class,
+					Playable.Just.class,
+					EpConsuming.class
+			).get());
+		}
+		
+		@Override
+		public void entityAdded(Entity entity) {
+			
+			EpConsuming ec = entity.getComponent(EpConsuming.class);
+			entity.add(new EpConsuming.Is(ec.val));
+		}
+		
+		@Override
+		public void entityRemoved(Entity entity) {
+			
+			entity.remove(EpConsuming.Is.class);
+		}
 	}
 }
