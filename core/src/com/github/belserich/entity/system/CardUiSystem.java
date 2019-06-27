@@ -141,6 +141,7 @@ public class CardUiSystem extends EntitySystem {
 			OwnedByField oc = entity.getComponent(OwnedByField.class);
 			CardId cid = entity.getComponent(CardId.class);
 			
+			GameClient.log(this, "! Card move. Move card %d to field %d.", cid.val, oc.id);
 			service.setCardOnField(cid.val, oc.id);
 		}
 	}

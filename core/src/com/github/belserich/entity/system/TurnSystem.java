@@ -5,6 +5,7 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.github.belserich.GameClient;
 import com.github.belserich.Services;
+import com.github.belserich.asset.Zones;
 import com.github.belserich.entity.component.*;
 import com.github.belserich.entity.core.EntitySystem;
 
@@ -20,7 +21,8 @@ public class TurnSystem extends EntitySystem {
 				PlayerId.class,
 				Turn.class
 				).get(),
-				new EpConsumerHandler());
+				new EpConsumerHandler(),
+				new ZoneDependentHandler());
 		
 		ownedByPlayer = Family.all(
 				OwnedByPlayer.class
@@ -52,7 +54,9 @@ public class TurnSystem extends EntitySystem {
 			OwnedByPlayer pc = owned.getComponent(OwnedByPlayer.class);
 			if (pc.id == pic.val) {
 				owned.add(new Turn());
-			} else owned.remove(Turn.class);
+			} else {
+				owned.remove(Turn.class);
+			}
 		}
 		
 		GameClient.log(this, "! Turn change. Player " + pic.val + "'s turn.");
@@ -82,6 +86,33 @@ public class TurnSystem extends EntitySystem {
 		public void entityRemoved(Entity entity) {
 			
 			entity.remove(EpConsuming.Is.class);
+		}
+	}
+	
+	private static class ZoneDependentHandler extends EntitySystem {
+		
+		public ZoneDependentHandler() {
+			super(Family.all(
+					Turn.class,
+					OwnedByZone.class
+			).get());
+		}
+		
+		@Override
+		public void entityAdded(Entity entity) {
+			
+			OwnedByZone zc = entity.getComponent(OwnedByZone.class);
+			
+			if (zc.id == Zones.P0_DECK.ordinal() || zc.id == Zones.P1_DECK.ordinal()) {
+				
+				entity.add(new Playable());
+			}
+		}
+		
+		@Override
+		public void entityRemoved(Entity entity) {
+			
+			entity.remove(Playable.class);
 		}
 	}
 }

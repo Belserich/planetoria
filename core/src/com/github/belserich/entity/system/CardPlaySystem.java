@@ -14,15 +14,12 @@ public class CardPlaySystem extends EntitySystem {
 	public CardPlaySystem() {
 		
 		super(Family.all(
-				OwnedByPlayer.class,
 				FieldId.class,
 				Occupiable.class,
 				Touchable.Touched.class
 		).get());
 		
 		selectedCards = Family.all(
-				OwnedByPlayer.class,
-				OwnedByField.class,
 				CardId.class,
 				Playable.class,
 				Selectable.Selected.class
@@ -39,25 +36,19 @@ public class CardPlaySystem extends EntitySystem {
 			
 			Entity card = selectedCardList.first();
 			
-			OwnedByPlayer opc1 = field.getComponent(OwnedByPlayer.class);
-			OwnedByPlayer opc2 = card.getComponent(OwnedByPlayer.class);
+			FieldId fid = field.getComponent(FieldId.class);
+			CardId cid = card.getComponent(CardId.class);
 			
-			if (opc1.id == opc2.id) {
-				
-				FieldId fid = field.getComponent(FieldId.class);
-				CardId cid = card.getComponent(CardId.class);
-				
-				GameClient.log(this, "! Card play. Playing card %d on field %d", cid.val, fid.id);
-				
-				OwnedByField fc = card.getComponent(OwnedByField.class);
-				fc.id = fid.id;
-				
-				card.remove(Playable.class);
-				card.add(new Playable.Just());
-				
-				field.remove(Occupiable.class);
-				field.add(new Occupiable.Just());
-			}
+			GameClient.log(this, "! Card play. Playing card %d on field %d", cid.val, fid.id);
+			
+			OwnedByField fc = card.getComponent(OwnedByField.class);
+			fc.id = fid.id;
+			
+			card.remove(Playable.class);
+			card.add(new Playable.Just());
+			
+			field.remove(Occupiable.class);
+			field.add(new Occupiable.Just());
 		}
 	}
 }
