@@ -34,6 +34,8 @@ public interface UiService {
 	
 	// ---
 	
+	void setPlayerEnergy(int playerId, int pts, int def);
+	
 	void setTurnCallback(Runnable clb);
 	
 	void removeTurnCallback();

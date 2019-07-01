@@ -34,6 +34,8 @@ public class StdUiService extends BaseUiService {
 	
 	private boolean toggled;
 	
+	private Label player0Energy, player1Energy;
+	
 	public StdUiService() {
 		
 		stage = new Stage();
@@ -48,6 +50,17 @@ public class StdUiService extends BaseUiService {
 		
 		createZones();
 		createBoardUi();
+	}
+	
+	@Override
+	public void setPlayerEnergy(int playerId, int pts, int def) {
+		
+		String text = pts + " / " + def;
+		if (playerId == 0) {
+			player0Energy.setText(text);
+		} else if (playerId == 1) {
+			player1Energy.setText(text);
+		}
 	}
 	
 	private void createZones() {
@@ -74,9 +87,13 @@ public class StdUiService extends BaseUiService {
 		rootGroup.setFillParent(true);
 		stage.addActor(rootGroup);
 		
+		rootGroup.padTop(30);
+		player1Energy = new Label("0 / 0", new Label.LabelStyle(UiHelper.largeFont, Color.BLACK));
+		rootGroup.addActor(player1Energy);
+		
 		{
 			mainGroup = new VerticalGroup();
-			mainGroup.pad(70);
+			mainGroup.pad(30);
 			mainGroup.space(10);
 			
 			mainGroup.addActor(UiHelper.horizontalGroup(10, getZone(P1_YARD), getZone(P1_PLANET), getZone(P1_REPAIR), getZone(P1_MOTHER)));
@@ -126,6 +143,9 @@ public class StdUiService extends BaseUiService {
 			
 			rootGroup.addActor(optionGroup);
 		}
+		
+		player0Energy = new Label("0 / 0", new Label.LabelStyle(UiHelper.largeFont, Color.BLACK));
+		rootGroup.addActor(player0Energy);
 	}
 	
 	private void toggleDeck() {

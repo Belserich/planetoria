@@ -5,10 +5,7 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.github.belserich.GameClient;
 import com.github.belserich.Services;
-import com.github.belserich.entity.component.FieldId;
-import com.github.belserich.entity.component.Occupiable;
-import com.github.belserich.entity.component.OwnedByField;
-import com.github.belserich.entity.component.OwnedByZone;
+import com.github.belserich.entity.component.*;
 import com.github.belserich.entity.core.EntitySystem;
 import com.github.belserich.ui.core.UiService;
 
@@ -22,7 +19,8 @@ public class FieldUiSystem extends EntitySystem {
 				OwnedByZone.class,
 				OwnedByField.Request.class
 				).get(),
-				new Creator());
+				new Creator(),
+				new EnergyUpdater());
 		
 		freeFields = Family.all(
 				FieldId.class,
@@ -82,6 +80,31 @@ public class FieldUiSystem extends EntitySystem {
 				entity.remove(FieldId.Request.class);
 				entity.add(new FieldId(fieldId));
 			}
+		}
+	}
+	
+	private static class EnergyUpdater extends EntitySystem {
+		
+		private UiService service;
+		
+		public EnergyUpdater() {
+			super(Family.all(
+					PlayerId.class,
+					Ep.class,
+					Ep.Update.class
+			).get());
+			
+			service = Services.getUiService();
+		}
+		
+		@Override
+		public void entityAdded(Entity entity) {
+			
+			PlayerId pid = entity.getComponent(PlayerId.class);
+			Ep ec = entity.getComponent(Ep.class);
+			
+			service.setPlayerEnergy(pid.val, ec.val, ec.def);
+			entity.remove(Ep.Update.class);
 		}
 	}
 }

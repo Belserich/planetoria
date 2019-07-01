@@ -39,5 +39,6 @@ public class EpSystem extends EntitySystem {
 		
 		GameClient.log(this, "! Energy Loss. Reduce ep from %d (-%d).", epc.val, epSum);
 		epc.val -= epSum;
+		entity.add(new Ep.Update());
 	}
 }
