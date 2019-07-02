@@ -5,9 +5,9 @@ import com.badlogic.ashley.core.Family;
 import com.github.belserich.GameClient;
 import com.github.belserich.entity.component.Attackable;
 import com.github.belserich.entity.component.Sp;
-import com.github.belserich.entity.core.EntitySystem;
+import com.github.belserich.entity.core.EAS;
 
-public class SpAttackSystem extends EntitySystem {
+public class SpAttackSystem extends EAS {
 	
 	public SpAttackSystem() {
 		super(Family.all(

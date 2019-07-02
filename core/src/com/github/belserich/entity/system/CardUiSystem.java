@@ -5,13 +5,13 @@ import com.badlogic.ashley.core.Family;
 import com.github.belserich.GameClient;
 import com.github.belserich.Services;
 import com.github.belserich.entity.component.*;
-import com.github.belserich.entity.core.EntitySystem;
+import com.github.belserich.entity.core.EAS;
 import com.github.belserich.ui.core.CardUpdater;
 import com.github.belserich.ui.core.UiService;
 
-public class CardUiSystem extends EntitySystem {
+public class CardUiSystem extends EAS {
 	
-	private UiService service;
+	private static UiService service = Services.getUiService();
 	
 	public CardUiSystem() {
 		super(Family.all(
@@ -23,8 +23,6 @@ public class CardUiSystem extends EntitySystem {
 				new Creator(),
 				new Destroyer(),
 				new Mover());
-		
-		service = Services.getUiService();
 	}
 	
 	@Override
@@ -72,17 +70,13 @@ public class CardUiSystem extends EntitySystem {
 		up.update();
 	}
 	
-	private static class Creator extends EntitySystem {
-		
-		private UiService service;
+	private static class Creator extends EAS {
 		
 		Creator() {
 			super(Family.all(
 					CardId.Request.class,
 					OwnedByField.class
 			).get());
-			
-			service = Services.getUiService();
 		}
 		
 		@Override
@@ -100,17 +94,13 @@ public class CardUiSystem extends EntitySystem {
 		}
 	}
 	
-	private static class Destroyer extends EntitySystem {
-		
-		private UiService service;
+	private static class Destroyer extends EAS {
 		
 		public Destroyer() {
 			super(Family.all(
 					CardId.class,
 					Dead.class
 			).get());
-			
-			service = Services.getUiService();
 		}
 		
 		@Override
@@ -121,9 +111,7 @@ public class CardUiSystem extends EntitySystem {
 		}
 	}
 	
-	private static class Mover extends EntitySystem {
-		
-		private UiService service;
+	private static class Mover extends EAS {
 		
 		public Mover() {
 			super(Family.all(
@@ -131,8 +119,6 @@ public class CardUiSystem extends EntitySystem {
 					CardId.class,
 					Playable.Just.class
 			).get());
-			
-			service = Services.getUiService();
 		}
 		
 		@Override

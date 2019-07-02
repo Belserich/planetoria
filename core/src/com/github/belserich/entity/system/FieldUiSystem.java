@@ -2,60 +2,60 @@ package com.github.belserich.entity.system;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
-import com.badlogic.ashley.utils.ImmutableArray;
 import com.github.belserich.GameClient;
 import com.github.belserich.Services;
 import com.github.belserich.entity.component.*;
-import com.github.belserich.entity.core.EntitySystem;
+import com.github.belserich.entity.core.EAS;
+import com.github.belserich.entity.core.EIS;
 import com.github.belserich.ui.core.UiService;
 
-public class FieldUiSystem extends EntitySystem {
+import java.util.Iterator;
+
+public class FieldUiSystem extends EIS {
 	
-	private Family freeFields;
+	private static final UiService service = Services.getUiService();
 	
 	public FieldUiSystem() {
 		
 		super(Family.all(
 				OwnedByZone.class,
 				OwnedByField.Request.class
-				).get(),
-				new Creator(),
-				new EnergyUpdater());
-		
-		freeFields = Family.all(
+				).get(), Family.all(
 				FieldId.class,
 				OwnedByZone.class,
 				Occupiable.class
-		).get();
+				).get(),
+				new Creator(),
+				new EnergyUpdater());
 	}
 	
 	@Override
-	public void update(Entity card) {
+	public void update(Entity card, Iterator<Entity> selection) {
 		
-		ImmutableArray<Entity> freeFieldList = super.getEngine().getEntitiesFor(freeFields);
-		if (freeFieldList.size() > 0) {
+		OwnedByZone soc = card.getComponent(OwnedByZone.class);
+		
+		while (selection.hasNext()) {
 			
-			OwnedByZone soc = card.getComponent(OwnedByZone.class);
-			for (Entity field : freeFieldList) {
+			Entity field = selection.next();
+			OwnedByZone oc = field.getComponent(OwnedByZone.class);
+			
+			if (soc.id == oc.id) {
 				
-				OwnedByZone oc = field.getComponent(OwnedByZone.class);
-				if (freeFields.matches(field) && oc.id == soc.id) {
-					
-					FieldId fc = field.getComponent(FieldId.class);
-					
-					field.remove(Occupiable.class);
-					field.add(new Occupiable.Just());
-					
-					card.remove(OwnedByField.Request.class);
-					card.add(new OwnedByField(fc.id));
-					
-					break;
-				}
+				FieldId fc = field.getComponent(FieldId.class);
+				
+				field.remove(Occupiable.class);
+				field.add(new Occupiable.Just());
+				
+				card.remove(OwnedByField.Request.class);
+				card.add(new OwnedByField(fc.id));
+				
+				selection.remove();
+				break;
 			}
 		}
 	}
 	
-	private static class Creator extends EntitySystem {
+	private static class Creator extends EAS {
 		
 		private UiService service;
 		
@@ -83,7 +83,7 @@ public class FieldUiSystem extends EntitySystem {
 		}
 	}
 	
-	private static class EnergyUpdater extends EntitySystem {
+	private static class EnergyUpdater extends EAS {
 		
 		private UiService service;
 		

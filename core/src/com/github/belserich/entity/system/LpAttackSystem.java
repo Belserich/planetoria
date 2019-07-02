@@ -4,9 +4,9 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.github.belserich.GameClient;
 import com.github.belserich.entity.component.*;
-import com.github.belserich.entity.core.EntitySystem;
+import com.github.belserich.entity.core.EAS;
 
-public class LpAttackSystem extends EntitySystem {
+public class LpAttackSystem extends EAS {
 	
 	public LpAttackSystem() {
 		super(Family.all(

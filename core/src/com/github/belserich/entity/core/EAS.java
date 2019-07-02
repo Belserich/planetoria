@@ -1,28 +1,28 @@
 package com.github.belserich.entity.core;
 
-import com.badlogic.ashley.core.Engine;
-import com.badlogic.ashley.core.Entity;
-import com.badlogic.ashley.core.EntityListener;
-import com.badlogic.ashley.core.Family;
+import com.badlogic.ashley.core.*;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.utils.Array;
 import java8.util.stream.StreamSupport;
 
 import java.util.Arrays;
 
-public abstract class EntitySystem extends com.badlogic.ashley.core.EntitySystem implements EntityListener {
+/**
+ * An entity action system.
+ */
+public abstract class EAS extends EntitySystem implements EntityListener {
+	
+	private final EntitySystem[] subSystems;
 	
 	private final Family family;
-	
-	private final com.badlogic.ashley.core.EntitySystem[] subSystems;
-	private ImmutableArray<Entity> entities;
+	protected ImmutableArray<Entity> entities;
 	private float delta;
 	
-	public EntitySystem(Family family, com.badlogic.ashley.core.EntitySystem... subSystems) {
+	public EAS(Family family, EntitySystem... subSystems) {
 		this(10, family, subSystems);
 	}
 	
-	public EntitySystem(int priority, Family family, com.badlogic.ashley.core.EntitySystem... subSystems) {
+	public EAS(int priority, Family family, EntitySystem... subSystems) {
 		super(priority);
 		this.family = family;
 		this.subSystems = subSystems;

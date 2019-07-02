@@ -8,13 +8,13 @@ import com.github.belserich.Services;
 import com.github.belserich.entity.component.CardId;
 import com.github.belserich.entity.component.FieldId;
 import com.github.belserich.entity.component.Touchable;
-import com.github.belserich.entity.core.EntitySystem;
+import com.github.belserich.entity.core.EAS;
 import com.github.belserich.ui.core.UiService;
 
 import java.util.HashSet;
 import java.util.Set;
 
-public class TouchSystem extends EntitySystem {
+public class TouchSystem extends EAS {
 	
 	private final Set<Entity> touchedEntities;
 	private final UiService uiService;

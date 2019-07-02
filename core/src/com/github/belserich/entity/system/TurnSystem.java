@@ -7,9 +7,9 @@ import com.github.belserich.GameClient;
 import com.github.belserich.Services;
 import com.github.belserich.asset.Zones;
 import com.github.belserich.entity.component.*;
-import com.github.belserich.entity.core.EntitySystem;
+import com.github.belserich.entity.core.EAS;
 
-public class TurnSystem extends EntitySystem {
+public class TurnSystem extends EAS {
 	
 	private Family ownedByPlayer;
 	private Family players;
@@ -65,7 +65,7 @@ public class TurnSystem extends EntitySystem {
 		entity.add(new Turn());
 	}
 	
-	private static class EpConsumerHandler extends EntitySystem {
+	private static class EpConsumerHandler extends EAS {
 		
 		public EpConsumerHandler() {
 			super(Family.all(
@@ -89,7 +89,7 @@ public class TurnSystem extends EntitySystem {
 		}
 	}
 	
-	private static class ZoneDependentHandler extends EntitySystem {
+	private static class ZoneDependentHandler extends EAS {
 		
 		public ZoneDependentHandler() {
 			super(Family.all(

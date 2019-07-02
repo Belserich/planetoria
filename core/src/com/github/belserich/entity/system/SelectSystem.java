@@ -7,9 +7,9 @@ import com.github.belserich.GameClient;
 import com.github.belserich.entity.component.Selectable;
 import com.github.belserich.entity.component.Touchable;
 import com.github.belserich.entity.component.Turn;
-import com.github.belserich.entity.core.EntitySystem;
+import com.github.belserich.entity.core.EAS;
 
-public class SelectSystem extends EntitySystem {
+public class SelectSystem extends EAS {
 	
 	public SelectSystem() {
 		super(Family.all(
