@@ -7,7 +7,13 @@ import com.badlogic.gdx.Gdx;
 import com.github.belserich.asset.Cards;
 import com.github.belserich.asset.Zones;
 import com.github.belserich.entity.builder.EntityBuilder;
-import com.github.belserich.entity.system.*;
+import com.github.belserich.entity.system.card.CardPlayer;
+import com.github.belserich.entity.system.core.*;
+import com.github.belserich.entity.system.field.FieldOwnerSetter;
+import com.github.belserich.entity.system.ui.*;
+
+import static com.github.belserich.entity.core.EntityHandler.ENTITY_ADDED;
+import static com.github.belserich.entity.core.EntityHandler.ENTITY_UPDATE;
 
 public class GameClient extends ApplicationAdapter {
 	
@@ -30,20 +36,23 @@ public class GameClient extends ApplicationAdapter {
 	
 	private void createSystems() {
 		
-		engine.addSystem(new FieldUiSystem());
-		engine.addSystem(new CardUiSystem());
+		engine.addSystem(new FieldUiCreator(ENTITY_ADDED));
+		engine.addSystem(new CardUiUpdater(ENTITY_UPDATE));
+		engine.addSystem(new CardUiCreator(ENTITY_ADDED));
+		engine.addSystem(new CardUiRemover(ENTITY_ADDED));
+		engine.addSystem(new CardUiMover(ENTITY_ADDED));
+		engine.addSystem(new EnergyUiUpdater(ENTITY_ADDED));
 		
-		engine.addSystem(new TurnSystem());
-		engine.addSystem(new EpSystem());
+		engine.addSystem(new FieldOwnerSetter(ENTITY_ADDED));
+		engine.addSystem(new CardPlayer(ENTITY_ADDED));
 		
-		engine.addSystem(new SelectSystem());
-		engine.addSystem(new TouchSystem());
+		engine.addSystem(new EpReducer(ENTITY_ADDED));
+		engine.addSystem(new SelectHandler(ENTITY_ADDED));
+		engine.addSystem(new TouchHandler(ENTITY_ADDED));
 		
-		engine.addSystem(new CardPlaySystem());
-		
-		engine.addSystem(new LpAttackSystem());
-		engine.addSystem(new AttackSystem());
-		engine.addSystem(new SpAttackSystem());
+		engine.addSystem(new LpAttacker(ENTITY_ADDED));
+		engine.addSystem(new AttackValidator(ENTITY_ADDED));
+		engine.addSystem(new SpAttacker(ENTITY_ADDED));
 	}
 	
 	@Override

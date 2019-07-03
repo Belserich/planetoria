@@ -1,4 +1,4 @@
-package com.github.belserich.entity.system;
+package com.github.belserich.entity.system.core;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
@@ -6,25 +6,35 @@ import com.github.belserich.GameClient;
 import com.github.belserich.entity.component.Ep;
 import com.github.belserich.entity.component.EpConsuming;
 import com.github.belserich.entity.component.Turn;
-import com.github.belserich.entity.core.EIS;
+import com.github.belserich.entity.core.EntityInteractorSystem;
 
 import java.util.Iterator;
 
-public class EpSystem extends EIS {
+public class EpReducer extends EntityInteractorSystem {
 	
-	public EpSystem() {
-		super(Family.all(
-				Turn.class,
-				Ep.class
-		).get(), Family.all(
-				EpConsuming.Is.class
-		).get());
+	public EpReducer(int handleBits) {
+		super(handleBits);
 	}
 	
 	@Override
-	public void entityAdded(Entity entity, Iterator<Entity> selection) {
+	public Family actors() {
+		return Family.all(
+				Turn.class,
+				Ep.class
+		).get();
+	}
+	
+	@Override
+	public Family iactors() {
+		return Family.all(
+				EpConsuming.Is.class
+		).get();
+	}
+	
+	@Override
+	public void interact(Entity actor, Iterator<Entity> selection) {
 		
-		Ep epc = entity.getComponent(Ep.class);
+		Ep epc = actor.getComponent(Ep.class);
 		int epSum = 0;
 		
 		while (selection.hasNext()) {
@@ -35,6 +45,6 @@ public class EpSystem extends EIS {
 		
 		GameClient.log(this, "! Energy Loss. Reduce ep from %d (-%d).", epc.val, epSum);
 		epc.val -= epSum;
-		entity.add(new Ep.Update());
+		actor.add(new Ep.Update());
 	}
 }

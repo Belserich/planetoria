@@ -1,34 +1,43 @@
-package com.github.belserich.entity.system;
+package com.github.belserich.entity.system.card;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.github.belserich.GameClient;
 import com.github.belserich.entity.component.*;
-import com.github.belserich.entity.core.EIS;
+import com.github.belserich.entity.core.EntityInteractorSystem;
 
 import java.util.Iterator;
 
-public class CardPlaySystem extends EIS {
+public class CardPlayer extends EntityInteractorSystem {
 	
-	public CardPlaySystem() {
-		
-		super(Family.all(
-				FieldId.class,
-				Occupiable.class,
-				Touchable.Touched.class
-		).get(), Family.all(
-				CardId.class,
-				Playable.class,
-				Selectable.Selected.class
-		).get());
+	public CardPlayer(int handleBits) {
+		super(handleBits);
 	}
 	
 	@Override
-	public void entityAdded(Entity field, Iterator<Entity> selection) {
+	public Family actors() {
+		return Family.all(
+				FieldId.class,
+				Occupiable.class,
+				Touchable.Touched.class
+		).get();
+	}
+	
+	@Override
+	public Family iactors() {
+		return Family.all(
+				CardId.class,
+				Playable.class,
+				Selectable.Selected.class
+		).get();
+	}
+	
+	@Override
+	public void interact(Entity actor, Iterator<Entity> selection) {
 		
 		Entity card = selection.next();
 		
-		FieldId fid = field.getComponent(FieldId.class);
+		FieldId fid = actor.getComponent(FieldId.class);
 		CardId cid = card.getComponent(CardId.class);
 		
 		OwnedByField fc = card.getComponent(OwnedByField.class);
@@ -40,8 +49,8 @@ public class CardPlaySystem extends EIS {
 		card.remove(Playable.class);
 		card.add(new Playable.Just());
 		
-		field.remove(Touchable.Touched.class);
-		field.remove(Occupiable.class);
-		field.add(new Occupiable.Just());
+		actor.remove(Touchable.Touched.class);
+		actor.remove(Occupiable.class);
+		actor.add(new Occupiable.Just());
 	}
 }

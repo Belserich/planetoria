@@ -1,4 +1,4 @@
-package com.github.belserich.entity.system;
+package com.github.belserich.entity.system.core;
 
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
@@ -7,29 +7,34 @@ import com.github.belserich.GameClient;
 import com.github.belserich.entity.component.Selectable;
 import com.github.belserich.entity.component.Touchable;
 import com.github.belserich.entity.component.Turn;
-import com.github.belserich.entity.core.EAS;
+import com.github.belserich.entity.core.EntityActorSystem;
 
-public class SelectSystem extends EAS {
+public class SelectHandler extends EntityActorSystem {
 	
-	public SelectSystem() {
-		super(Family.all(
-				Turn.class,
-				Touchable.Touched.class,
-				Selectable.class
-		).get());
+	public SelectHandler(int handleBits) {
+		super(handleBits);
 	}
 	
 	@Override
-	public void entityAdded(Entity entity) {
+	public Family actors() {
+		return Family.all(
+				Turn.class,
+				Touchable.Touched.class,
+				Selectable.class
+		).get();
+	}
+	
+	@Override
+	public void act(Entity actor) {
 		
-		entity.remove(Touchable.Touched.class);
+		actor.remove(Touchable.Touched.class);
 		
-		if (ComponentMapper.getFor(Selectable.Selected.class).has(entity)) {
-			entity.remove(Selectable.Selected.class);
+		if (ComponentMapper.getFor(Selectable.Selected.class).has(actor)) {
+			actor.remove(Selectable.Selected.class);
 			GameClient.log(this, "! Entity unselected.");
 		} else {
 			GameClient.log(this, "! Entity selected.");
-			entity.add(new Selectable.Selected());
+			actor.add(new Selectable.Selected());
 		}
 	}
 }
