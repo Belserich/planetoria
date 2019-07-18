@@ -26,6 +26,7 @@ public class SpAttacker extends EntityActorSystem {
 		
 		Sp sc = actor.getComponent(Sp.class);
 		Attackable.Attacked ac = actor.getComponent(Attackable.Attacked.class);
+		actor.remove(Attackable.Attacked.class);
 		
 		String specLog = "SP: " + sc.pts + "; Attack points: " + ac.pts;
 		if (sc.pts <= ac.pts) {
@@ -34,7 +35,5 @@ public class SpAttacker extends EntityActorSystem {
 		} else {
 			GameClient.log(this, "! Useless Shield attack. " + specLog);
 		}
-		
-		actor.remove(Attackable.Attacked.class);
 	}
 }

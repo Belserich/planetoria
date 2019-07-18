@@ -33,6 +33,7 @@ public class EntityBuilder {
 	public EntityBuilder card(Cards template, Zones zone, int ownerId) {
 		
 		suppliers.add(CardId.Request::new);
+		suppliers.add(Turnable::new);
 		suppliers.add(() -> new OwnedByPlayer(ownerId));
 		suppliers.add(OwnedByField.Request::new);
 		ownedByZone(zone);
@@ -107,6 +108,7 @@ public class EntityBuilder {
 	
 	public EntityBuilder field(Zones zone, int ownerId) {
 		
+		suppliers.add(Turnable::new);
 		suppliers.add((() -> new OwnedByPlayer(ownerId)));
 		ownedByZone(zone);
 		suppliers.add(FieldId.Request::new);
@@ -150,13 +152,14 @@ public class EntityBuilder {
 		
 		suppliers.add(() -> new PlayerId(id));
 		suppliers.add(() -> new Ep(120));
+		suppliers.add(Turnable::new);
 		
 		return this;
 	}
 	
-	public EntityBuilder turn() {
+	public EntityBuilder turnableOn() {
 		
-		suppliers.add(Turn::new);
+		suppliers.add(Turnable.On::new);
 		
 		return this;
 	}

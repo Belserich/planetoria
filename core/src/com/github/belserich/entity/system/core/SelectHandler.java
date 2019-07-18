@@ -6,7 +6,7 @@ import com.badlogic.ashley.core.Family;
 import com.github.belserich.GameClient;
 import com.github.belserich.entity.component.Selectable;
 import com.github.belserich.entity.component.Touchable;
-import com.github.belserich.entity.component.Turn;
+import com.github.belserich.entity.component.Turnable;
 import com.github.belserich.entity.core.EntityActorSystem;
 
 public class SelectHandler extends EntityActorSystem {
@@ -18,7 +18,7 @@ public class SelectHandler extends EntityActorSystem {
 	@Override
 	public Family actors() {
 		return Family.all(
-				Turn.class,
+				Turnable.On.class,
 				Touchable.Touched.class,
 				Selectable.class
 		).get();

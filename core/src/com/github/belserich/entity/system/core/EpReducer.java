@@ -5,7 +5,7 @@ import com.badlogic.ashley.core.Family;
 import com.github.belserich.GameClient;
 import com.github.belserich.entity.component.Ep;
 import com.github.belserich.entity.component.EpConsuming;
-import com.github.belserich.entity.component.Turn;
+import com.github.belserich.entity.component.Turnable;
 import com.github.belserich.entity.core.EntityInteractorSystem;
 
 import java.util.Iterator;
@@ -19,7 +19,7 @@ public class EpReducer extends EntityInteractorSystem {
 	@Override
 	public Family actors() {
 		return Family.all(
-				Turn.class,
+				Turnable.On.class,
 				Ep.class
 		).get();
 	}

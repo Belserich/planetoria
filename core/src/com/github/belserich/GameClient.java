@@ -53,6 +53,9 @@ public class GameClient extends ApplicationAdapter {
 		engine.addSystem(new LpAttacker(ENTITY_ADDED));
 		engine.addSystem(new AttackValidator(ENTITY_ADDED));
 		engine.addSystem(new SpAttacker(ENTITY_ADDED));
+		
+		engine.addSystem(new TurnValidator(ENTITY_UPDATE));
+		engine.addSystem(new TurnChanger(ENTITY_ADDED));
 	}
 	
 	@Override
@@ -75,11 +78,6 @@ public class GameClient extends ApplicationAdapter {
 		} catch (InterruptedException ex) {
 			ex.printStackTrace();
 		}
-		
-		if ((timer += delta) >= 5) {
-//			thisPlayer.remove(Turn.class);
-//			opponentPlayer.add(new Turn());
-		}
 	}
 	
 	private void createEntities() {
@@ -88,7 +86,7 @@ public class GameClient extends ApplicationAdapter {
 		
 		EntityBuilder builder = new EntityBuilder();
 		
-		thisPlayer = builder.reset().player(0).turn().build();
+		thisPlayer = builder.reset().player(0).turnableOn().build();
 		opponentPlayer = builder.reset().player(1).build();
 		
 		// FIELDS
