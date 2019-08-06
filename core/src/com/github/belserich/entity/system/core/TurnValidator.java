@@ -23,15 +23,6 @@ public class TurnValidator extends EntityInteractorSystem {
 	}
 	
 	@Override
-	public Family actors() {
-		return Family.all(
-				PlayerId.class,
-				Turnable.class,
-				Turnable.On.class
-		).get();
-	}
-	
-	@Override
 	public void update(float delta) {
 		if (turnChanged.getAndSet(false)) {
 			super.update(delta);
@@ -53,6 +44,15 @@ public class TurnValidator extends EntityInteractorSystem {
 	}
 	
 	@Override
+	public Family actors() {
+		return Family.all(
+				PlayerId.class,
+				Turnable.class,
+				Turnable.On.class
+		).get();
+	}
+	
+	@Override
 	public Family iactors() {
 		return Family.all(
 				PlayerId.class,
@@ -63,10 +63,14 @@ public class TurnValidator extends EntityInteractorSystem {
 	@Override
 	public void interact(Entity actor, Iterator<Entity> selection) {
 		
-		Entity next;
+		Entity next, curr;
 		Entity first = selection.next();
 		
-		while (selection.hasNext() && selection.next() != actor) ;
+		curr = first;
+		
+		while (curr != actor && selection.hasNext()) {
+			curr = selection.next();
+		}
 		
 		if (selection.hasNext()) {
 			next = selection.next();
