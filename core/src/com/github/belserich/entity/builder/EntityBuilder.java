@@ -46,7 +46,8 @@ public class EntityBuilder {
 				
 				suppliers.add(() -> new Lp(1));
 				suppliers.add(() -> new Sp(1));
-				suppliers.add(() -> new Ap(1, 2));
+				suppliers.add(() -> new Ap(1));
+				suppliers.add(() -> new Attacker(2));
 				suppliers.add(() -> new Name("Raumschiff A"));
 				suppliers.add(() -> new CardType(CardTypes.DEFAULT));
 				suppliers.add(() -> new EpConsuming(1));
@@ -57,7 +58,8 @@ public class EntityBuilder {
 				
 				suppliers.add(() -> new Lp(2));
 				suppliers.add(() -> new Sp(2));
-				suppliers.add(() -> new Ap(2, 2));
+				suppliers.add(() -> new Ap(2));
+				suppliers.add(() -> new Attacker(2));
 				suppliers.add(() -> new Name("Raumschiff B"));
 				suppliers.add(() -> new CardType(CardTypes.DEFAULT));
 				suppliers.add(() -> new EpConsuming(2));
@@ -86,7 +88,7 @@ public class EntityBuilder {
 	public EntityBuilder attacker() {
 		
 		suppliers.add(Selectable::new);
-		suppliers.add(Attacker::new);
+		suppliers.add(() -> new Attacker(2));
 		
 		return this;
 	}

@@ -2,12 +2,8 @@ package com.github.belserich.entity.core;
 
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
-import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.utils.Array;
-
-import java.util.Iterator;
-import java.util.NoSuchElementException;
 
 public abstract class EntityInteractorSystem extends BaseEntitySystem implements EntityInteractor {
 	
@@ -43,57 +39,9 @@ public abstract class EntityInteractorSystem extends BaseEntitySystem implements
 	
 	@Override
 	public void handle(Entity actor) {
-		
-		FamilyListIterator it = new FamilyListIterator(iactors(), selection.iterator());
-		if (it.hasNext()) {
-			interact(actor, it);
-		}
-	}
-	
-	private static class FamilyListIterator implements Iterator<Entity> {
-		
-		private final Family fam;
-		private final Iterator<Entity> it;
-		
-		private Entity next;
-		private boolean isNext;
-		
-		public FamilyListIterator(Family fam, Iterator<Entity> it) {
-			this.fam = fam;
-			this.it = it;
-		}
-		
-		@Override
-		public boolean hasNext() {
-			
-			if (!isNext) {
-				do {
-					if (!it.hasNext()) {
-						return false;
-					}
-					next = it.next();
-				}
-				while (!fam.matches(next));
-			}
-			
-			isNext = true;
-			return true;
-		}
-		
-		@Override
-		public Entity next() {
-			
-			if (!hasNext()) {
-				throw new NoSuchElementException();
-			}
-			
-			isNext = false;
-			return next;
-		}
-		
-		@Override
-		public void remove() {
-			it.remove();
+		ImmutableArray<Entity> ients = getEngine().getEntitiesFor(iactors());
+		if (ients.size() > 0) {
+			interact(actor, ients);
 		}
 	}
 }

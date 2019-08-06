@@ -2,13 +2,13 @@ package com.github.belserich.entity.system.core;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
+import com.badlogic.ashley.utils.ImmutableArray;
 import com.github.belserich.GameClient;
 import com.github.belserich.Services;
 import com.github.belserich.entity.component.PlayerId;
 import com.github.belserich.entity.component.Turnable;
 import com.github.belserich.entity.core.EntityInteractorSystem;
 
-import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class TurnValidator extends EntityInteractorSystem {
@@ -61,20 +61,10 @@ public class TurnValidator extends EntityInteractorSystem {
 	}
 	
 	@Override
-	public void interact(Entity actor, Iterator<Entity> selection) {
+	public void interact(Entity actor, ImmutableArray<Entity> selection) {
 		
-		Entity next, curr;
-		Entity first = selection.next();
-		
-		curr = first;
-		
-		while (curr != actor && selection.hasNext()) {
-			curr = selection.next();
-		}
-		
-		if (selection.hasNext()) {
-			next = selection.next();
-		} else next = first;
+		int nextIndex = (selection.indexOf(actor, true) + 1) % selection.size();
+		Entity next = selection.get(nextIndex);
 		
 		PlayerId pc = next.getComponent(PlayerId.class);
 		

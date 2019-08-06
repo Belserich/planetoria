@@ -2,11 +2,10 @@ package com.github.belserich.entity.system.card;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
+import com.badlogic.ashley.utils.ImmutableArray;
 import com.github.belserich.GameClient;
 import com.github.belserich.entity.component.*;
 import com.github.belserich.entity.core.EntityInteractorSystem;
-
-import java.util.Iterator;
 
 public class CardPlayer extends EntityInteractorSystem {
 	
@@ -33,9 +32,9 @@ public class CardPlayer extends EntityInteractorSystem {
 	}
 	
 	@Override
-	public void interact(Entity actor, Iterator<Entity> selection) {
+	public void interact(Entity actor, ImmutableArray<Entity> selection) {
 		
-		Entity card = selection.next();
+		Entity card = selection.first();
 		
 		FieldId fid = actor.getComponent(FieldId.class);
 		CardId cid = card.getComponent(CardId.class);

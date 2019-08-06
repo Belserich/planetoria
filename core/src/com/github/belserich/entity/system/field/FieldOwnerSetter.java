@@ -2,13 +2,16 @@ package com.github.belserich.entity.system.field;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
+import com.badlogic.ashley.utils.ImmutableArray;
+import com.github.belserich.GameClient;
 import com.github.belserich.entity.component.FieldId;
 import com.github.belserich.entity.component.Occupiable;
 import com.github.belserich.entity.component.OwnedByField;
 import com.github.belserich.entity.component.OwnedByZone;
 import com.github.belserich.entity.core.EntityInteractorSystem;
-
-import java.util.Iterator;
+import java8.util.Comparators;
+import java8.util.J8Arrays;
+import java8.util.Optional;
 
 public class FieldOwnerSetter extends EntityInteractorSystem {
 	
@@ -34,27 +37,26 @@ public class FieldOwnerSetter extends EntityInteractorSystem {
 	}
 	
 	@Override
-	public void interact(Entity actor, Iterator<Entity> selection) {
+	public void interact(Entity actor, ImmutableArray<Entity> selection) {
 		
 		OwnedByZone soc = actor.getComponent(OwnedByZone.class);
 		
-		while (selection.hasNext()) {
+		Optional<Entity> fieldOpt = J8Arrays.stream(selection.toArray())
+				.filter(f -> f.getComponent(OwnedByZone.class).id == soc.id)
+				.sorted(Comparators.comparingInt(e -> e.getComponent(FieldId.class).id))
+				.findFirst();
+		
+		if (fieldOpt.isPresent()) {
 			
-			Entity field = selection.next();
-			OwnedByZone oc = field.getComponent(OwnedByZone.class);
+			Entity field = fieldOpt.get();
 			
-			if (soc.id == oc.id) {
-				
-				FieldId fc = field.getComponent(FieldId.class);
-				
-				field.remove(Occupiable.class);
-				field.add(new Occupiable.Just());
-				
-				actor.remove(OwnedByField.Request.class);
-				actor.add(new OwnedByField(fc.id));
-				
-				break;
-			}
+			field.remove(Occupiable.class);
+			field.add(new Occupiable.Just());
+			
+			actor.remove(OwnedByField.Request.class);
+			actor.add(new OwnedByField(field.getComponent(FieldId.class).id));
+		} else {
+			GameClient.error(this, "Couldn't set field owner!");
 		}
 	}
 }

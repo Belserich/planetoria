@@ -2,12 +2,11 @@ package com.github.belserich.entity.system.core;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
+import com.badlogic.ashley.utils.ImmutableArray;
 import com.github.belserich.entity.component.OwnedByPlayer;
 import com.github.belserich.entity.component.PlayerId;
 import com.github.belserich.entity.component.Turnable;
 import com.github.belserich.entity.core.EntityInteractorSystem;
-
-import java.util.Iterator;
 
 public class TurnChanger extends EntityInteractorSystem {
 	
@@ -32,13 +31,12 @@ public class TurnChanger extends EntityInteractorSystem {
 	}
 	
 	@Override
-	public void interact(Entity actor, Iterator<Entity> selection) {
+	public void interact(Entity actor, ImmutableArray<Entity> selection) {
 		
 		PlayerId pc = actor.getComponent(PlayerId.class);
 		
-		while (selection.hasNext()) {
+		for (Entity next : selection) {
 			
-			Entity next = selection.next();
 			OwnedByPlayer opc = next.getComponent(OwnedByPlayer.class);
 			
 			if (opc.id == pc.val) {

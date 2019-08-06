@@ -2,8 +2,7 @@ package com.github.belserich.entity.core;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
-
-import java.util.Iterator;
+import com.badlogic.ashley.utils.ImmutableArray;
 
 public interface EntityInteractor {
 	
@@ -11,5 +10,5 @@ public interface EntityInteractor {
 	
 	Family iactors();
 	
-	void interact(Entity actor, Iterator<Entity> selection);
+	void interact(Entity actor, ImmutableArray<Entity> selection);
 }

@@ -2,13 +2,12 @@ package com.github.belserich.entity.system.core;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
+import com.badlogic.ashley.utils.ImmutableArray;
 import com.github.belserich.GameClient;
 import com.github.belserich.entity.component.Ep;
 import com.github.belserich.entity.component.EpConsuming;
 import com.github.belserich.entity.component.Turnable;
 import com.github.belserich.entity.core.EntityInteractorSystem;
-
-import java.util.Iterator;
 
 public class EpReducer extends EntityInteractorSystem {
 	
@@ -32,14 +31,14 @@ public class EpReducer extends EntityInteractorSystem {
 	}
 	
 	@Override
-	public void interact(Entity actor, Iterator<Entity> selection) {
+	public void interact(Entity actor, ImmutableArray<Entity> selection) {
 		
 		Ep epc = actor.getComponent(Ep.class);
 		int epSum = 0;
 		
-		while (selection.hasNext()) {
+		for (Entity sel : selection) {
 			
-			EpConsuming ec = selection.next().getComponent(EpConsuming.class);
+			EpConsuming ec = sel.getComponent(EpConsuming.class);
 			epSum += ec.val;
 		}
 		
