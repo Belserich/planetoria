@@ -27,7 +27,7 @@ public class EpReducer extends EntityInteractorSystem {
 	@Override
 	public Family iactors() {
 		return Family.all(
-				EpConsuming.Is.class
+				EpConsuming.class
 		).get();
 	}
 	
