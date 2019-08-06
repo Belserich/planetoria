@@ -17,14 +17,6 @@ public abstract class EntityInteractorSystem extends BaseEntitySystem implements
 		super(priority, handleBits);
 	}
 	
-	public EntityInteractorSystem(int handleBits, EntityInteractor handler) {
-		this(10, handleBits, handler);
-	}
-	
-	public EntityInteractorSystem(int priority, int handleBits, EntityInteractor handler) {
-		super(priority, handleBits);
-	}
-	
 	@Override
 	public void addedToEngine(Engine engine) {
 		super.addedToEngine(engine);
@@ -39,9 +31,6 @@ public abstract class EntityInteractorSystem extends BaseEntitySystem implements
 	
 	@Override
 	public void handle(Entity actor) {
-		ImmutableArray<Entity> ients = getEngine().getEntitiesFor(iactors());
-		if (ients.size() > 0) {
-			interact(actor, ients);
-		}
+		interact(actor, selection);
 	}
 }

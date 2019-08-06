@@ -4,9 +4,11 @@ import com.badlogic.ashley.core.Component;
 
 public class Attacker implements Component {
 	
-	public int attCount;
+	public int max;
+	public int curr;
 	
-	public Attacker(int attCount) {
-		this.attCount = attCount;
+	public Attacker(int max) {
+		this.max = max;
+		this.curr = max;
 	}
 }

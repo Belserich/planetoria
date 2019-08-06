@@ -34,27 +34,31 @@ public class AttackValidator extends EntityInteractorSystem {
 	public void interact(Entity actor, ImmutableArray<Entity> selection) {
 		
 		float attackPts = 0f;
+		int attCount = selection.size();
 		
-		for (int i = 0; i < selection.size(); i++) {
+		for (Entity attacker : (Entity[]) selection.toArray(Entity.class)) {
 			
-			Entity attacker = selection.get(i);
 			Ap ac = attacker.getComponent(Ap.class);
 			Attacker atc = attacker.getComponent(Attacker.class);
 			
-			atc.attCount--;
+			atc.curr--;
 			attackPts += ac.pts;
 			
-			if (atc.attCount <= 0) {
-				attacker.remove(Attacker.class);
+			if (atc.curr <= 0) {
+				attacker.remove(Selectable.class);
 			}
+			
 			attacker.remove(Selectable.Selected.class);
 			attacker.remove(Covered.class);
 		}
 		
-		GameClient.log(this, "! Attack. Attackers: " + selection.size() + "; Attack points: " + attackPts);
+		GameClient.log(this, "! Attack. Attackers: " + attCount + "; Attack points: " + attackPts);
 		
 		actor.remove(Touchable.Touched.class);
-		actor.remove(Covered.class);
-		actor.add(new Attackable.Attacked(attackPts));
+		
+		if (attackPts > 0) {
+			actor.remove(Covered.class);
+			actor.add(new Attackable.Attacked(attackPts));
+		}
 	}
 }
