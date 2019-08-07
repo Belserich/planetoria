@@ -4,6 +4,11 @@ import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.github.belserich.asset.Cards;
 import com.github.belserich.asset.Zones;
 import com.github.belserich.entity.builder.EntityBuilder;
@@ -17,12 +22,26 @@ import com.github.belserich.entity.system.ui.*;
 
 public class GameClient extends ApplicationAdapter {
 	
-	private Engine engine;
+	public static final int CARDS_PER_ROW = 12;
 	
-	private Entity thisPlayer, opponentPlayer;
+	private OrthographicCamera cam;
+	private Batch batch;
+	
+	private Texture testTex;
+	
+	private Engine engine;
 	
 	@Override
 	public void create () {
+		
+		float width = Gdx.graphics.getWidth();
+		float height = Gdx.graphics.getHeight();
+		
+		cam = new OrthographicCamera(CARDS_PER_ROW, (171f / 243f) * CARDS_PER_ROW * (height / width));
+		
+		testTex = new Texture(Gdx.files.internal("test.png"));
+		
+		batch = new SpriteBatch();
 		
 		engine = new Engine();
 		
@@ -64,15 +83,11 @@ public class GameClient extends ApplicationAdapter {
 		Services.getUiService().resize(width, height);
 	}
 	
-	float timer;
-	
 	@Override
 	public void render() {
 		
 		float delta = Gdx.graphics.getDeltaTime();
 		update(delta);
-		
-		timer += delta;
 		
 		try {
 			Thread.sleep(2);
@@ -87,8 +102,8 @@ public class GameClient extends ApplicationAdapter {
 		
 		EntityBuilder builder = new EntityBuilder();
 		
-		thisPlayer = builder.reset().player(0).turnableOn().build();
-		opponentPlayer = builder.reset().player(1).build();
+		Entity thisPlayer = builder.reset().player(0).turnableOn().build();
+		Entity opponentPlayer = builder.reset().player(1).build();
 		
 		// FIELDS
 		
@@ -171,6 +186,8 @@ public class GameClient extends ApplicationAdapter {
 		
 		log(this, "Disposing game entities.");
 		
+		batch.dispose();
+		
 		engine.removeAllEntities();
 		engine = null;
 	}
@@ -180,7 +197,19 @@ public class GameClient extends ApplicationAdapter {
 	}
 	
 	public void update(float delta) {
+		
+		cam.update();
+		batch.setProjectionMatrix(cam.combined);
+		
+		Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		
+		batch.begin();
+		
+		batch.draw(testTex, 0, 0, 1, 1);
 		engine.update(delta);
-		Services.getUiService().update(delta);
+		
+		batch.end();
+//		Services.getUiService().update(delta);
 	}
 }
