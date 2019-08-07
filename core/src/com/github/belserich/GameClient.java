@@ -9,6 +9,9 @@ import com.github.belserich.asset.Zones;
 import com.github.belserich.entity.builder.EntityBuilder;
 import com.github.belserich.entity.system.card.CardPlayer;
 import com.github.belserich.entity.system.core.*;
+import com.github.belserich.entity.system.core.input.SelectHandler;
+import com.github.belserich.entity.system.core.input.TouchHandler;
+import com.github.belserich.entity.system.core.input.TurnHandler;
 import com.github.belserich.entity.system.field.FieldOwnerSetter;
 import com.github.belserich.entity.system.ui.*;
 
@@ -51,8 +54,8 @@ public class GameClient extends ApplicationAdapter {
 		engine.addSystem(new AttackValidator());
 		engine.addSystem(new SpAttacker());
 		
-		engine.addSystem(new TurnValidator());
-		engine.addSystem(new TurnChanger());
+		engine.addSystem(new TurnHandler());
+		engine.addSystem(new TurnGiver());
 	}
 	
 	@Override

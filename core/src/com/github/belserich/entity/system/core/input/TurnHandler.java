@@ -1,4 +1,4 @@
-package com.github.belserich.entity.system.core;
+package com.github.belserich.entity.system.core.input;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
@@ -11,11 +11,11 @@ import com.github.belserich.entity.core.EntityInteractor;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class TurnValidator extends EntityInteractor {
+public class TurnHandler extends EntityInteractor {
 	
 	private AtomicBoolean turnChanged;
 	
-	public TurnValidator() {
+	public TurnHandler() {
 		
 		turnChanged = new AtomicBoolean(false);
 		Services.getUiService().setTurnCallback(() -> turnChanged.set(true));

@@ -8,7 +8,7 @@ import com.github.belserich.entity.component.PlayerId;
 import com.github.belserich.entity.component.Turnable;
 import com.github.belserich.entity.core.EntityInteractor;
 
-public class TurnChanger extends EntityInteractor {
+public class TurnGiver extends EntityInteractor {
 	
 	@Override
 	public Family actors() {

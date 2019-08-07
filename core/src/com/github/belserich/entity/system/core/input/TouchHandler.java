@@ -1,4 +1,4 @@
-package com.github.belserich.entity.system.core;
+package com.github.belserich.entity.system.core.input;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
