@@ -7,39 +7,24 @@ import com.github.belserich.GameClient;
 import com.github.belserich.Services;
 import com.github.belserich.entity.component.PlayerId;
 import com.github.belserich.entity.component.Turnable;
-import com.github.belserich.entity.core.EntityInteractorSystem;
+import com.github.belserich.entity.core.EntityInteractor;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class TurnValidator extends EntityInteractorSystem {
+public class TurnValidator extends EntityInteractor {
 	
 	private AtomicBoolean turnChanged;
 	
-	public TurnValidator(int handleBits) {
-		super(handleBits);
+	public TurnValidator() {
 		
 		turnChanged = new AtomicBoolean(false);
 		Services.getUiService().setTurnCallback(() -> turnChanged.set(true));
 	}
 	
 	@Override
-	public void update(float delta) {
+	public void updateEntities() {
 		if (turnChanged.getAndSet(false)) {
-			super.update(delta);
-		}
-	}
-	
-	@Override
-	public void entityAdded(Entity entity) {
-		if (turnChanged.getAndSet(false)) {
-			super.entityAdded(entity);
-		}
-	}
-	
-	@Override
-	public void entityRemoved(Entity entity) {
-		if (turnChanged.getAndSet(false)) {
-			super.entityRemoved(entity);
+			super.updateEntities();
 		}
 	}
 	
@@ -61,7 +46,7 @@ public class TurnValidator extends EntityInteractorSystem {
 	}
 	
 	@Override
-	public void interact(Entity actor, ImmutableArray<Entity> selection) {
+	public void entityUpdate(Entity actor, ImmutableArray<Entity> selection) {
 		
 		int nextIndex = (selection.indexOf(actor, true) + 1) % selection.size();
 		Entity next = selection.get(nextIndex);

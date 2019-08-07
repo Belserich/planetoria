@@ -6,16 +6,12 @@ import com.github.belserich.GameClient;
 import com.github.belserich.Services;
 import com.github.belserich.entity.component.CardId;
 import com.github.belserich.entity.component.OwnedByField;
-import com.github.belserich.entity.core.EntityActorSystem;
+import com.github.belserich.entity.core.EntityActor;
 import com.github.belserich.ui.core.UiService;
 
-public class CardUiCreator extends EntityActorSystem {
+public class CardUiCreator extends EntityActor {
 	
 	private static final UiService service = Services.getUiService();
-	
-	public CardUiCreator(int handleBits) {
-		super(handleBits);
-	}
 	
 	@Override
 	public Family actors() {
@@ -26,7 +22,7 @@ public class CardUiCreator extends EntityActorSystem {
 	}
 	
 	@Override
-	public void act(Entity actor) {
+	public void entityAdded(Entity actor) {
 		
 		OwnedByField fc = actor.getComponent(OwnedByField.class);
 		

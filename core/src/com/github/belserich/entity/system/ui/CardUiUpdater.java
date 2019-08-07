@@ -5,17 +5,13 @@ import com.badlogic.ashley.core.Family;
 import com.github.belserich.GameClient;
 import com.github.belserich.Services;
 import com.github.belserich.entity.component.*;
-import com.github.belserich.entity.core.EntityActorSystem;
+import com.github.belserich.entity.core.EntityActor;
 import com.github.belserich.ui.core.CardUpdater;
 import com.github.belserich.ui.core.UiService;
 
-public class CardUiUpdater extends EntityActorSystem {
+public class CardUiUpdater extends EntityActor {
 	
 	private static UiService service = Services.getUiService();
-	
-	public CardUiUpdater(int handleBits) {
-		super(handleBits);
-	}
 	
 	@Override
 	public Family actors() {
@@ -28,7 +24,7 @@ public class CardUiUpdater extends EntityActorSystem {
 	}
 	
 	@Override
-	public void act(Entity actor) {
+	public void entityUpdate(Entity actor) {
 		
 		CardId hc = actor.getComponent(CardId.class);
 		CardType tc = actor.getComponent(CardType.class);

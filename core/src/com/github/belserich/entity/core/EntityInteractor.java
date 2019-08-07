@@ -1,14 +1,63 @@
 package com.github.belserich.entity.core;
 
+import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
+import com.badlogic.gdx.utils.Array;
 
-public interface EntityInteractor {
+public abstract class EntityInteractor extends EntityActor {
 	
-	Family actors();
+	private ImmutableArray<Entity> selection;
 	
-	Family iactors();
+	public EntityInteractor() {
+		super();
+	}
 	
-	void interact(Entity actor, ImmutableArray<Entity> selection);
+	public EntityInteractor(int priority) {
+		super(priority);
+	}
+	
+	protected Family iactors() {
+		return null;
+	}
+	
+	@Override
+	public void addedToEngine(Engine engine) {
+		super.addedToEngine(engine);
+		selection = engine.getEntitiesFor(iactors());
+	}
+	
+	@Override
+	public void removedFromEngine(Engine engine) {
+		super.removedFromEngine(engine);
+		selection = new ImmutableArray<>(new Array<>());
+	}
+	
+	@Override
+	public final void entityUpdate(Entity entity) {
+		entityUpdate(entity, selection);
+	}
+	
+	@Override
+	public final void entityAdded(Entity entity) {
+		entityAdded(entity, selection);
+	}
+	
+	@Override
+	public final void entityRemoved(Entity entity) {
+		entityRemoved(entity, selection);
+	}
+	
+	public void entityRemoved(Entity actor, ImmutableArray<Entity> selection) {
+		// to be overwritten
+	}
+	
+	public void entityAdded(Entity actor, ImmutableArray<Entity> selection) {
+		// to be overwritten
+	}
+	
+	public void entityUpdate(Entity actor, ImmutableArray<Entity> selection) {
+		// to be overwritten
+	}
 }

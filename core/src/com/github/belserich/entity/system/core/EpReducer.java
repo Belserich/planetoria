@@ -7,13 +7,9 @@ import com.github.belserich.GameClient;
 import com.github.belserich.entity.component.Ep;
 import com.github.belserich.entity.component.EpConsuming;
 import com.github.belserich.entity.component.Turnable;
-import com.github.belserich.entity.core.EntityInteractorSystem;
+import com.github.belserich.entity.core.EntityInteractor;
 
-public class EpReducer extends EntityInteractorSystem {
-	
-	public EpReducer(int handleBits) {
-		super(handleBits);
-	}
+public class EpReducer extends EntityInteractor {
 	
 	@Override
 	public Family actors() {
@@ -31,7 +27,7 @@ public class EpReducer extends EntityInteractorSystem {
 	}
 	
 	@Override
-	public void interact(Entity actor, ImmutableArray<Entity> selection) {
+	public void entityAdded(Entity actor, ImmutableArray<Entity> selection) {
 		
 		Ep epc = actor.getComponent(Ep.class);
 		int epSum = 0;

@@ -8,16 +8,12 @@ import com.github.belserich.entity.component.FieldId;
 import com.github.belserich.entity.component.Occupiable;
 import com.github.belserich.entity.component.OwnedByField;
 import com.github.belserich.entity.component.OwnedByZone;
-import com.github.belserich.entity.core.EntityInteractorSystem;
+import com.github.belserich.entity.core.EntityInteractor;
 import java8.util.Comparators;
 import java8.util.J8Arrays;
 import java8.util.Optional;
 
-public class FieldOwnerSetter extends EntityInteractorSystem {
-	
-	public FieldOwnerSetter(int handleBits) {
-		super(handleBits);
-	}
+public class FieldOwnerSetter extends EntityInteractor {
 	
 	@Override
 	public Family actors() {
@@ -37,7 +33,7 @@ public class FieldOwnerSetter extends EntityInteractorSystem {
 	}
 	
 	@Override
-	public void interact(Entity actor, ImmutableArray<Entity> selection) {
+	public void entityAdded(Entity actor, ImmutableArray<Entity> selection) {
 		
 		OwnedByZone soc = actor.getComponent(OwnedByZone.class);
 		

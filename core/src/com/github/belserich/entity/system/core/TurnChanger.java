@@ -6,13 +6,9 @@ import com.badlogic.ashley.utils.ImmutableArray;
 import com.github.belserich.entity.component.OwnedByPlayer;
 import com.github.belserich.entity.component.PlayerId;
 import com.github.belserich.entity.component.Turnable;
-import com.github.belserich.entity.core.EntityInteractorSystem;
+import com.github.belserich.entity.core.EntityInteractor;
 
-public class TurnChanger extends EntityInteractorSystem {
-	
-	public TurnChanger(int handleBits) {
-		super(handleBits);
-	}
+public class TurnChanger extends EntityInteractor {
 	
 	@Override
 	public Family actors() {
@@ -31,7 +27,7 @@ public class TurnChanger extends EntityInteractorSystem {
 	}
 	
 	@Override
-	public void interact(Entity actor, ImmutableArray<Entity> selection) {
+	public void entityAdded(Entity actor, ImmutableArray<Entity> selection) {
 		
 		PlayerId pc = actor.getComponent(PlayerId.class);
 		

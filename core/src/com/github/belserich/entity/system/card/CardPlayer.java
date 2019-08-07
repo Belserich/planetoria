@@ -5,13 +5,9 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.github.belserich.GameClient;
 import com.github.belserich.entity.component.*;
-import com.github.belserich.entity.core.EntityInteractorSystem;
+import com.github.belserich.entity.core.EntityInteractor;
 
-public class CardPlayer extends EntityInteractorSystem {
-	
-	public CardPlayer(int handleBits) {
-		super(handleBits);
-	}
+public class CardPlayer extends EntityInteractor {
 	
 	@Override
 	public Family actors() {
@@ -32,7 +28,7 @@ public class CardPlayer extends EntityInteractorSystem {
 	}
 	
 	@Override
-	public void interact(Entity actor, ImmutableArray<Entity> selection) {
+	public void entityAdded(Entity actor, ImmutableArray<Entity> selection) {
 		
 		Entity card = selection.first();
 		

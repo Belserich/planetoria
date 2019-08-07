@@ -5,13 +5,9 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.github.belserich.GameClient;
 import com.github.belserich.entity.component.*;
-import com.github.belserich.entity.core.EntityInteractorSystem;
+import com.github.belserich.entity.core.EntityInteractor;
 
-public class AttackValidator extends EntityInteractorSystem {
-	
-	public AttackValidator(int handleBits) {
-		super(handleBits);
-	}
+public class AttackValidator extends EntityInteractor {
 	
 	@Override
 	public Family actors() {
@@ -31,7 +27,7 @@ public class AttackValidator extends EntityInteractorSystem {
 	}
 	
 	@Override
-	public void interact(Entity actor, ImmutableArray<Entity> selection) {
+	public void entityAdded(Entity actor, ImmutableArray<Entity> selection) {
 		
 		float attackPts = 0f;
 		int attCount = selection.size();

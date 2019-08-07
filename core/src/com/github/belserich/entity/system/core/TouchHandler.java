@@ -8,15 +8,25 @@ import com.github.belserich.Services;
 import com.github.belserich.entity.component.CardId;
 import com.github.belserich.entity.component.FieldId;
 import com.github.belserich.entity.component.Touchable;
-import com.github.belserich.entity.core.EntityActorSystem;
+import com.github.belserich.entity.core.EntityActor;
 import com.github.belserich.ui.core.UiService;
 
-public class TouchHandler extends EntityActorSystem {
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+
+public class TouchHandler extends EntityActor {
 	
 	private static final UiService service = Services.getUiService();
 	
-	public TouchHandler(int handleBits) {
-		super(handleBits);
+	private final Set<Entity> justTouched;
+	private final Set<Entity> processed;
+	
+	public TouchHandler() {
+		
+		justTouched = Collections.synchronizedSet(new HashSet<>());
+		processed = Collections.synchronizedSet(new HashSet<>());
 	}
 	
 	@Override
@@ -30,7 +40,35 @@ public class TouchHandler extends EntityActorSystem {
 	}
 	
 	@Override
-	public void act(Entity actor) {
+	public void updateEntities() {
+		
+		Iterator<Entity> it = processed.iterator();
+		Entity actor;
+		
+		while (it.hasNext()) {
+			
+			actor = it.next();
+			actor.remove(Touchable.Touched.class);
+			it.remove();
+		}
+		
+		synchronized (justTouched) {
+			
+			it = justTouched.iterator();
+			while (it.hasNext()) {
+				
+				actor = it.next();
+				actor.add(new Touchable.Touched());
+				processed.add(actor);
+				it.remove();
+			}
+		}
+		
+		super.updateEntities();
+	}
+	
+	@Override
+	public void entityAdded(Entity actor) {
 		
 		FieldId fc = actor.getComponent(FieldId.class);
 		CardId hc = actor.getComponent(CardId.class);
@@ -53,7 +91,9 @@ public class TouchHandler extends EntityActorSystem {
 		@Override
 		public void clicked(InputEvent event, float x, float y) {
 			super.clicked(event, x, y);
-			entity.add(new Touchable.Touched());
+			synchronized (justTouched) {
+				justTouched.add(entity);
+			}
 		}
 	}
 }

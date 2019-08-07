@@ -5,13 +5,9 @@ import com.badlogic.ashley.core.Family;
 import com.github.belserich.GameClient;
 import com.github.belserich.entity.component.Attackable;
 import com.github.belserich.entity.component.Sp;
-import com.github.belserich.entity.core.EntityActorSystem;
+import com.github.belserich.entity.core.EntityActor;
 
-public class SpAttacker extends EntityActorSystem {
-	
-	public SpAttacker(int handleBits) {
-		super(handleBits);
-	}
+public class SpAttacker extends EntityActor {
 	
 	@Override
 	public Family actors() {
@@ -22,7 +18,7 @@ public class SpAttacker extends EntityActorSystem {
 	}
 	
 	@Override
-	public void act(Entity actor) {
+	public void entityAdded(Entity actor) {
 		
 		Sp sc = actor.getComponent(Sp.class);
 		Attackable.Attacked ac = actor.getComponent(Attackable.Attacked.class);

@@ -7,16 +7,12 @@ import com.github.belserich.Services;
 import com.github.belserich.entity.component.CardId;
 import com.github.belserich.entity.component.OwnedByField;
 import com.github.belserich.entity.component.Playable;
-import com.github.belserich.entity.core.EntityActorSystem;
+import com.github.belserich.entity.core.EntityActor;
 import com.github.belserich.ui.core.UiService;
 
-public class CardUiMover extends EntityActorSystem {
+public class CardUiMover extends EntityActor {
 	
 	private static final UiService service = Services.getUiService();
-	
-	public CardUiMover(int handleBits) {
-		super(handleBits);
-	}
 	
 	@Override
 	public Family actors() {
@@ -28,7 +24,7 @@ public class CardUiMover extends EntityActorSystem {
 	}
 	
 	@Override
-	public void act(Entity entity) {
+	public void entityAdded(Entity entity) {
 		
 		OwnedByField oc = entity.getComponent(OwnedByField.class);
 		CardId cid = entity.getComponent(CardId.class);

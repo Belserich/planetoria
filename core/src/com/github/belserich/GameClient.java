@@ -12,9 +12,6 @@ import com.github.belserich.entity.system.core.*;
 import com.github.belserich.entity.system.field.FieldOwnerSetter;
 import com.github.belserich.entity.system.ui.*;
 
-import static com.github.belserich.entity.core.EntityHandler.ENTITY_ADDED;
-import static com.github.belserich.entity.core.EntityHandler.ENTITY_UPDATE;
-
 public class GameClient extends ApplicationAdapter {
 	
 	private Engine engine;
@@ -36,26 +33,26 @@ public class GameClient extends ApplicationAdapter {
 	
 	private void createSystems() {
 		
-		engine.addSystem(new FieldUiCreator(ENTITY_ADDED));
-		engine.addSystem(new CardUiUpdater(ENTITY_UPDATE));
-		engine.addSystem(new CardUiCreator(ENTITY_ADDED));
-		engine.addSystem(new CardUiRemover(ENTITY_ADDED));
-		engine.addSystem(new CardUiMover(ENTITY_ADDED));
-		engine.addSystem(new EnergyUiUpdater(ENTITY_ADDED));
+		engine.addSystem(new FieldUiCreator());
+		engine.addSystem(new CardUiUpdater());
+		engine.addSystem(new CardUiCreator());
+		engine.addSystem(new CardUiRemover());
+		engine.addSystem(new CardUiMover());
+		engine.addSystem(new EnergyUiUpdater());
 		
-		engine.addSystem(new FieldOwnerSetter(ENTITY_ADDED));
-		engine.addSystem(new CardPlayer(ENTITY_ADDED));
+		engine.addSystem(new FieldOwnerSetter());
+		engine.addSystem(new CardPlayer());
 		
-		engine.addSystem(new EpReducer(ENTITY_ADDED));
-		engine.addSystem(new SelectHandler(ENTITY_ADDED));
-		engine.addSystem(new TouchHandler(ENTITY_ADDED));
+		engine.addSystem(new EpReducer());
+		engine.addSystem(new SelectHandler());
+		engine.addSystem(new TouchHandler());
 		
-		engine.addSystem(new LpAttacker(ENTITY_ADDED));
-		engine.addSystem(new AttackValidator(ENTITY_ADDED));
-		engine.addSystem(new SpAttacker(ENTITY_ADDED));
+		engine.addSystem(new LpAttacker());
+		engine.addSystem(new AttackValidator());
+		engine.addSystem(new SpAttacker());
 		
-		engine.addSystem(new TurnValidator(ENTITY_UPDATE));
-		engine.addSystem(new TurnChanger(ENTITY_ADDED));
+		engine.addSystem(new TurnValidator());
+		engine.addSystem(new TurnChanger());
 	}
 	
 	@Override

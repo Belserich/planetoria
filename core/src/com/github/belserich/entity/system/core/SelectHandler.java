@@ -7,13 +7,9 @@ import com.github.belserich.GameClient;
 import com.github.belserich.entity.component.Selectable;
 import com.github.belserich.entity.component.Touchable;
 import com.github.belserich.entity.component.Turnable;
-import com.github.belserich.entity.core.EntityActorSystem;
+import com.github.belserich.entity.core.EntityActor;
 
-public class SelectHandler extends EntityActorSystem {
-	
-	public SelectHandler(int handleBits) {
-		super(handleBits);
-	}
+public class SelectHandler extends EntityActor {
 	
 	@Override
 	public Family actors() {
@@ -25,7 +21,7 @@ public class SelectHandler extends EntityActorSystem {
 	}
 	
 	@Override
-	public void act(Entity actor) {
+	public void entityAdded(Entity actor) {
 		
 		actor.remove(Touchable.Touched.class);
 		

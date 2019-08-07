@@ -4,13 +4,9 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.github.belserich.GameClient;
 import com.github.belserich.entity.component.*;
-import com.github.belserich.entity.core.EntityActorSystem;
+import com.github.belserich.entity.core.EntityActor;
 
-public class LpAttacker extends EntityActorSystem {
-	
-	public LpAttacker(int handleBits) {
-		super(handleBits);
-	}
+public class LpAttacker extends EntityActor {
 	
 	@Override
 	public Family actors() {
@@ -23,7 +19,7 @@ public class LpAttacker extends EntityActorSystem {
 	}
 	
 	@Override
-	public void act(Entity actor) {
+	public void entityAdded(Entity actor) {
 		
 		Lp lc = actor.getComponent(Lp.class);
 		Attackable.Attacked ac = actor.getComponent(Attackable.Attacked.class);
