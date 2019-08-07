@@ -54,7 +54,7 @@ public class CardUiUpdater extends EntityActor {
 			
 			case STRATEGY:
 				
-				Effect ec = actor.getComponent(Effect.class);
+				EffectText ec = actor.getComponent(EffectText.class);
 				up.setEffect(ec != null ? ec.text : "");
 				
 				break;

@@ -70,7 +70,7 @@ public class EntityBuilder {
 				
 				suppliers.add(() -> new Name("Strategie 1"));
 				suppliers.add(Modification::new);
-				suppliers.add(() -> new Effect("Erhoeht AP um 2."));
+				suppliers.add(() -> new EffectText("Erhoeht AP um 2."));
 				suppliers.add(() -> new CardType(CardTypes.STRATEGY));
 				suppliers.add(() -> new EpConsuming(1));
 				
