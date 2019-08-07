@@ -154,6 +154,7 @@ public class EntityBuilder {
 		
 		suppliers.add(() -> new PlayerId(id));
 		suppliers.add(() -> new Ep(120));
+		suppliers.add(Ep.Update::new);
 		suppliers.add(Turnable::new);
 		
 		return this;
