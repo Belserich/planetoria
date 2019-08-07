@@ -30,6 +30,10 @@ public class CardPlayer extends EntityInteractor {
 	@Override
 	public void entityAdded(Entity actor, ImmutableArray<Entity> selection) {
 		
+		if (selection.size() <= 0) {
+			return;
+		}
+		
 		Entity card = selection.first();
 		
 		FieldId fid = actor.getComponent(FieldId.class);

@@ -35,18 +35,18 @@ public abstract class EntityInteractor extends EntityActor {
 	}
 	
 	@Override
-	public final void entityUpdate(Entity entity) {
-		entityUpdate(entity, selection);
+	public final void entityUpdate(Entity actor) {
+		entityUpdate(actor, selection);
 	}
 	
 	@Override
-	public final void entityAdded(Entity entity) {
-		entityAdded(entity, selection);
+	public final void entityAdded(Entity actor) {
+		entityAdded(actor, selection);
 	}
 	
 	@Override
-	public final void entityRemoved(Entity entity) {
-		entityRemoved(entity, selection);
+	public final void entityRemoved(Entity actor) {
+		entityRemoved(actor, selection);
 	}
 	
 	public void entityRemoved(Entity actor, ImmutableArray<Entity> selection) {

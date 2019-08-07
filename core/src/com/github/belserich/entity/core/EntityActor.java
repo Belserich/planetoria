@@ -53,17 +53,17 @@ public abstract class EntityActor extends EntitySystem implements EntityListener
 		}
 	}
 	
-	public void entityUpdate(Entity entity) {
+	public void entityUpdate(Entity actor) {
 		// to be overwritten
 	}
 	
 	@Override
-	public void entityAdded(Entity entity) {
+	public void entityAdded(Entity actor) {
 		// to be overwritten
 	}
 	
 	@Override
-	public void entityRemoved(Entity entity) {
+	public void entityRemoved(Entity actor) {
 		// to be overwritten
 	}
 	

@@ -52,6 +52,7 @@ public class GameClient extends ApplicationAdapter {
 		
 		engine.addSystem(new LpAttacker());
 		engine.addSystem(new AttackValidator());
+		engine.addSystem(new AttackerTurnHandler());
 		engine.addSystem(new SpAttacker());
 		
 		engine.addSystem(new TurnHandler());

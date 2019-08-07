@@ -29,6 +29,10 @@ public class AttackValidator extends EntityInteractor {
 	@Override
 	public void entityAdded(Entity actor, ImmutableArray<Entity> selection) {
 		
+		if (selection.size() <= 0) {
+			return;
+		}
+		
 		float attackPts = 0f;
 		int attCount = selection.size();
 		
@@ -50,11 +54,7 @@ public class AttackValidator extends EntityInteractor {
 		
 		GameClient.log(this, "! Attack. Attackers: " + attCount + "; Attack points: " + attackPts);
 		
-		actor.remove(Touchable.Touched.class);
-		
-		if (attackPts > 0) {
-			actor.remove(Covered.class);
-			actor.add(new Attackable.Attacked(attackPts));
-		}
+		actor.remove(Covered.class);
+		actor.add(new Attackable.Attacked(attackPts));
 	}
 }
