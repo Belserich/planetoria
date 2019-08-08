@@ -85,6 +85,14 @@ public class EntityBuilder {
 		return this;
 	}
 	
+	public EntityBuilder touchableRect(float x, float y) {
+		
+		suppliers.add(() -> new BoardPos(x, y));
+		suppliers.add(() -> new Rect(x, y));
+		
+		return this;
+	}
+	
 	public EntityBuilder attacker() {
 		
 		suppliers.add(Selectable::new);
@@ -111,11 +119,11 @@ public class EntityBuilder {
 	public EntityBuilder field(Zones zone, int ownerId) {
 		
 		suppliers.add(Turnable::new);
-		suppliers.add((() -> new OwnedByPlayer(ownerId)));
-		ownedByZone(zone);
 		suppliers.add(FieldId.Request::new);
-		
 		suppliers.add(Touchable::new);
+		
+		ownedByZone(zone);
+		suppliers.add((() -> new OwnedByPlayer(ownerId)));
 		
 		return this;
 	}

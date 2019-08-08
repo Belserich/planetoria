@@ -1,13 +1,12 @@
 package com.github.belserich.entity.system.field;
 
+import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.github.belserich.GameClient;
-import com.github.belserich.entity.component.FieldId;
-import com.github.belserich.entity.component.Occupiable;
-import com.github.belserich.entity.component.OwnedByField;
-import com.github.belserich.entity.component.OwnedByZone;
+import com.github.belserich.asset.Zones;
+import com.github.belserich.entity.component.*;
 import com.github.belserich.entity.core.EntityInteractor;
 import java8.util.Comparators;
 import java8.util.J8Arrays;
@@ -51,8 +50,21 @@ public class FieldOwnerSetter extends EntityInteractor {
 			
 			actor.remove(OwnedByField.Request.class);
 			actor.add(new OwnedByField(field.getComponent(FieldId.class).id));
+			
+			if (ComponentMapper.getFor(BoardPos.class).has(field)) {
+				
+				BoardPos bc = field.getComponent(BoardPos.class);
+				actor.add(new BoardPos(bc.x, bc.y));
+			}
+			
+			if (ComponentMapper.getFor(Rect.class).has(field)) {
+				
+				Rect rc = field.getComponent(Rect.class);
+				actor.add(new Rect(rc.x, rc.y, rc.width, rc.height));
+			}
+			
 		} else {
-			GameClient.error(this, "Couldn't set field owner!");
+			GameClient.error(this, "Couldn't find field owner for zone " + Zones.values()[soc.id] + "!");
 		}
 	}
 }

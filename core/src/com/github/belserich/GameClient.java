@@ -4,46 +4,60 @@ import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.github.belserich.asset.Cards;
 import com.github.belserich.asset.Zones;
 import com.github.belserich.entity.builder.EntityBuilder;
 import com.github.belserich.entity.system.card.CardPlayer;
 import com.github.belserich.entity.system.core.*;
+import com.github.belserich.entity.system.core.input.RectTouchHandler;
 import com.github.belserich.entity.system.core.input.SelectHandler;
-import com.github.belserich.entity.system.core.input.TouchHandler;
 import com.github.belserich.entity.system.core.input.TurnHandler;
 import com.github.belserich.entity.system.field.FieldOwnerSetter;
+import com.github.belserich.entity.system.gfx.CardRenderer;
+import com.github.belserich.entity.system.gfx.FieldRenderer;
 import com.github.belserich.entity.system.ui.*;
 
 public class GameClient extends ApplicationAdapter {
 	
 	public static final int CARDS_PER_ROW = 12;
 	
-	private OrthographicCamera cam;
-	private Batch batch;
-	
-	private Texture testTex;
-	
 	private Engine engine;
+	private Batch batch;
 	
 	@Override
 	public void create () {
 		
+		engine = new Engine();
+		
 		float width = Gdx.graphics.getWidth();
 		float height = Gdx.graphics.getHeight();
 		
-		cam = new OrthographicCamera(CARDS_PER_ROW, (171f / 243f) * CARDS_PER_ROW * (height / width));
+		OrthographicCamera boardCam = new OrthographicCamera(CARDS_PER_ROW, (171f / 243f) * CARDS_PER_ROW * (height / width));
+		boardCam.translate(boardCam.viewportWidth / 2f, boardCam.viewportHeight / 2f);
+		Services.setBoardCamera(boardCam);
 		
-		testTex = new Texture(Gdx.files.internal("test.png"));
+		OrthographicCamera textCam = new OrthographicCamera(width, height);
+		textCam.translate(textCam.viewportWidth / 2f, textCam.viewportHeight / 2f);
+		Services.setTextCamera(textCam);
 		
 		batch = new SpriteBatch();
+		Services.setBatch(batch);
 		
-		engine = new Engine();
+		FreeTypeFontGenerator fontGen = new FreeTypeFontGenerator(Gdx.files.internal("fonts/gugi.ttf"));
+		FreeTypeFontGenerator.FreeTypeFontParameter param = new FreeTypeFontGenerator.FreeTypeFontParameter();
+		param.color = Color.FOREST;
+		param.size = 20;
+		BitmapFont font = fontGen.generateFont(param);
+		fontGen.dispose();
+		
+		Services.setFont(font);
 		
 		createSystems();
 		createEntities();
@@ -67,7 +81,6 @@ public class GameClient extends ApplicationAdapter {
 		
 		engine.addSystem(new EpReducer());
 		engine.addSystem(new SelectHandler());
-		engine.addSystem(new TouchHandler());
 		
 		engine.addSystem(new LpAttacker());
 		engine.addSystem(new AttackValidator());
@@ -76,6 +89,10 @@ public class GameClient extends ApplicationAdapter {
 		
 		engine.addSystem(new TurnHandler());
 		engine.addSystem(new TurnGiver());
+		
+		engine.addSystem(new FieldRenderer());
+		engine.addSystem(new CardRenderer());
+		engine.addSystem(new RectTouchHandler());
 	}
 	
 	@Override
@@ -107,52 +124,58 @@ public class GameClient extends ApplicationAdapter {
 		
 		// FIELDS
 		
-		builder.reset().field(Zones.P0_BATTLE, 0).occupiable();
+		builder.reset().occupiable().field(Zones.P0_BATTLE, 0);
 		for (int i = 0; i < 7; i++) {
+			builder.touchableRect(1.25f * i + 1.75f, 1.25f * 1 + .5f);
 			engine.addEntity(builder.build());
 		}
 		
 		builder.reset().field(Zones.P0_REPAIR, 0);
 		for (int i = 0; i < 5; i++) {
+			builder.touchableRect(1.25f * (i + 1f) + 1.1f, 1.25f * 0 + .5f);
 			engine.addEntity(builder.build());
 		}
+
+//		builder.reset().occupiable();
+//		for (int i = 0; i < 8; i++) {
+//			builder.field(Zones.P0_BATTLE, 0, 1.25f * i + 1.75f, 1.25f * 1 + .5f);
+//			engine.addEntity(builder.build());
+//		}
 		
-		builder.reset().field(Zones.P0_DECK, 0).occupiable();
-		for (int i = 0; i < 8; i++) {
-			engine.addEntity(builder.build());
-		}
-		
-		builder.reset().field(Zones.P0_MOTHER, 0);
+		builder.reset().field(Zones.P0_MOTHER, 0).touchableRect(1.25f * 6f + 1.1f, 1.25f * 0 + .5f);
 		engine.addEntity(builder.build());
 		
-		builder.reset().field(Zones.P0_PLANET, 0);
+		builder.reset().field(Zones.P0_PLANET, 0).touchableRect(1.25f * 7f + 1.1f, 1.25f * 0 + .5f);
 		engine.addEntity(builder.build());
 		
-		builder.reset().field(Zones.P0_YARD, 0);
+		builder.reset().field(Zones.P0_YARD, 0).touchableRect(1.25f * 0f + 1.1f, 1.25f * 0 + .5f);
 		engine.addEntity(builder.build());
 		
-		builder.reset().field(Zones.P1_BATTLE, 1).occupiable();
+		builder.reset().occupiable().field(Zones.P1_BATTLE, 1);
 		for (int i = 0; i < 7; i++) {
+			builder.touchableRect(1.25f * i + 1.75f, 1.25f * 2 + .5f);
 			engine.addEntity(builder.build());
 		}
 		
 		builder.reset().field(Zones.P1_REPAIR, 1);
 		for (int i = 0; i < 5; i++) {
+			builder.touchableRect(1.25f * (i + 2f) + 1.1f, 1.25f * 3 + .5f);
 			engine.addEntity(builder.build());
 		}
+
+//		builder.reset().occupiable();
+//		for (int i = 0; i < 8; i++) {
+//			builder.field(Zones.P1_BATTLE, 1, 1.25f * i + 1.75f, 1.25f * 1 + .5f);
+//			engine.addEntity(builder.build());
+//		}
 		
-		builder.reset().field(Zones.P1_DECK, 1);
-		for (int i = 0; i < 8; i++) {
-			engine.addEntity(builder.build());
-		}
-		
-		builder.reset().field(Zones.P1_MOTHER, 1);
+		builder.reset().field(Zones.P1_MOTHER, 1).touchableRect(1.25f * 1f + 1.1f, 1.25f * 3 + .5f);
 		engine.addEntity(builder.build());
 		
-		builder.reset().field(Zones.P1_PLANET, 1);
+		builder.reset().field(Zones.P1_PLANET, 1).touchableRect(1.25f * 0f + 1.1f, 1.25f * 3 + .5f);
 		engine.addEntity(builder.build());
 		
-		builder.reset().field(Zones.P1_YARD, 1);
+		builder.reset().field(Zones.P1_YARD, 1).touchableRect(1.25f * 7f + 1.1f, 1.25f * 3 + .5f);
 		engine.addEntity(builder.build());
 		
 		// CARDS
@@ -166,16 +189,16 @@ public class GameClient extends ApplicationAdapter {
 		for (int i = 0; i < 4; i++) {
 			engine.addEntity(builder.build());
 		}
-		
-		builder.reset().card(Cards.SPACESHIP_A, Zones.P0_DECK, 0).attacker().playable();
-		for (int i = 0; i < 4; i++) {
-			engine.addEntity(builder.build());
-		}
-		
-		builder.reset().card(Cards.STRATEGY_1, Zones.P0_DECK, 0).playable();
-		for (int i = 0; i < 4; i++) {
-			engine.addEntity(builder.build());
-		}
+
+//		builder.reset().card(Cards.SPACESHIP_A, Zones.P0_DECK, 0).attacker().playable();
+//		for (int i = 0; i < 4; i++) {
+//			engine.addEntity(builder.build());
+//		}
+//
+//		builder.reset().card(Cards.STRATEGY_1, Zones.P0_DECK, 0).playable();
+//		for (int i = 0; i < 4; i++) {
+//			engine.addEntity(builder.build());
+//		}
 		
 		engine.addEntity(thisPlayer);
 		engine.addEntity(opponentPlayer);
@@ -186,10 +209,8 @@ public class GameClient extends ApplicationAdapter {
 		
 		log(this, "Disposing game entities.");
 		
-		batch.dispose();
-		
 		engine.removeAllEntities();
-		engine = null;
+		batch.dispose();
 	}
 	
 	public static void log(Object obj, String message, Object... args) {
@@ -198,18 +219,10 @@ public class GameClient extends ApplicationAdapter {
 	
 	public void update(float delta) {
 		
-		cam.update();
-		batch.setProjectionMatrix(cam.combined);
-		
 		Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
-		batch.begin();
-		
-		batch.draw(testTex, 0, 0, 1, 1);
 		engine.update(delta);
-		
-		batch.end();
 //		Services.getUiService().update(delta);
 	}
 }
