@@ -175,6 +175,15 @@ public class EntityBuilder {
 		return this;
 	}
 	
+	public EntityBuilder ui(float offX, float offY, float width, float height, String name) {
+		
+		suppliers.add(Ui::new);
+		suppliers.add(() -> new Rect(offX, offY, width, height));
+		suppliers.add(() -> new Name(name));
+		
+		return this;
+	}
+	
 	public EntityBuilder reset() {
 		suppliers.clear();
 		return this;

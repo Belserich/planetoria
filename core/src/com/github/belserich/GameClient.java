@@ -22,6 +22,7 @@ import com.github.belserich.entity.system.core.input.TurnHandler;
 import com.github.belserich.entity.system.field.FieldOwnerSetter;
 import com.github.belserich.entity.system.gfx.CardRenderer;
 import com.github.belserich.entity.system.gfx.FieldRenderer;
+import com.github.belserich.entity.system.gfx.UiRenderer;
 import com.github.belserich.entity.system.ui.*;
 
 public class GameClient extends ApplicationAdapter {
@@ -29,6 +30,9 @@ public class GameClient extends ApplicationAdapter {
 	public static final int CARDS_PER_ROW = 12;
 	
 	private Engine engine;
+	
+	private OrthographicCamera boardCam;
+	private OrthographicCamera textCam;
 	private Batch batch;
 	
 	@Override
@@ -39,11 +43,11 @@ public class GameClient extends ApplicationAdapter {
 		float width = Gdx.graphics.getWidth();
 		float height = Gdx.graphics.getHeight();
 		
-		OrthographicCamera boardCam = new OrthographicCamera(CARDS_PER_ROW, (171f / 243f) * CARDS_PER_ROW * (height / width));
+		boardCam = new OrthographicCamera(CARDS_PER_ROW, (171f / 243f) * CARDS_PER_ROW * (height / width));
 		boardCam.translate(boardCam.viewportWidth / 2f, boardCam.viewportHeight / 2f);
 		Services.setBoardCamera(boardCam);
 		
-		OrthographicCamera textCam = new OrthographicCamera(width, height);
+		textCam = new OrthographicCamera(width, height);
 		textCam.translate(textCam.viewportWidth / 2f, textCam.viewportHeight / 2f);
 		Services.setTextCamera(textCam);
 		
@@ -92,25 +96,8 @@ public class GameClient extends ApplicationAdapter {
 		
 		engine.addSystem(new FieldRenderer());
 		engine.addSystem(new CardRenderer());
+		engine.addSystem(new UiRenderer());
 		engine.addSystem(new RectTouchHandler());
-	}
-	
-	@Override
-	public void resize(int width, int height) {
-		Services.getUiService().resize(width, height);
-	}
-	
-	@Override
-	public void render() {
-		
-		float delta = Gdx.graphics.getDeltaTime();
-		update(delta);
-		
-		try {
-			Thread.sleep(2);
-		} catch (InterruptedException ex) {
-			ex.printStackTrace();
-		}
 	}
 	
 	private void createEntities() {
@@ -122,60 +109,63 @@ public class GameClient extends ApplicationAdapter {
 		Entity thisPlayer = builder.reset().player(0).turnableOn().build();
 		Entity opponentPlayer = builder.reset().player(1).build();
 		
+		float offY = 1f;
+		float offX;
+		
 		// FIELDS
 		
 		builder.reset().occupiable().field(Zones.P0_BATTLE, 0);
 		for (int i = 0; i < 7; i++) {
-			builder.touchableRect(1.25f * i + 1.75f, 1.25f * 1 + .5f);
+			builder.touchableRect(1.25f * i + 1.75f, 1.25f * 1 + offY);
 			engine.addEntity(builder.build());
 		}
 		
 		builder.reset().field(Zones.P0_REPAIR, 0);
 		for (int i = 0; i < 5; i++) {
-			builder.touchableRect(1.25f * (i + 1f) + 1.1f, 1.25f * 0 + .5f);
+			builder.touchableRect(1.25f * (i + 1f) + 1.1f, 1.25f * 0 + offY);
 			engine.addEntity(builder.build());
 		}
 
 //		builder.reset().occupiable();
 //		for (int i = 0; i < 8; i++) {
-//			builder.field(Zones.P0_BATTLE, 0, 1.25f * i + 1.75f, 1.25f * 1 + .5f);
+//			builder.field(Zones.P0_BATTLE, 0, 1.25f * i + 1.75f, 1.25f * 1 + offY);
 //			engine.addEntity(builder.build());
 //		}
 		
-		builder.reset().field(Zones.P0_MOTHER, 0).touchableRect(1.25f * 6f + 1.1f, 1.25f * 0 + .5f);
+		builder.reset().field(Zones.P0_MOTHER, 0).touchableRect(1.25f * 6f + 1.1f, 1.25f * 0 + offY);
 		engine.addEntity(builder.build());
 		
-		builder.reset().field(Zones.P0_PLANET, 0).touchableRect(1.25f * 7f + 1.1f, 1.25f * 0 + .5f);
+		builder.reset().field(Zones.P0_PLANET, 0).touchableRect(1.25f * 7f + 1.1f, 1.25f * 0 + offY);
 		engine.addEntity(builder.build());
 		
-		builder.reset().field(Zones.P0_YARD, 0).touchableRect(1.25f * 0f + 1.1f, 1.25f * 0 + .5f);
+		builder.reset().field(Zones.P0_YARD, 0).touchableRect(1.25f * 0f + 1.1f, 1.25f * 0 + offY);
 		engine.addEntity(builder.build());
 		
 		builder.reset().occupiable().field(Zones.P1_BATTLE, 1);
 		for (int i = 0; i < 7; i++) {
-			builder.touchableRect(1.25f * i + 1.75f, 1.25f * 2 + .5f);
+			builder.touchableRect(1.25f * i + 1.75f, 1.25f * 2 + offY);
 			engine.addEntity(builder.build());
 		}
 		
 		builder.reset().field(Zones.P1_REPAIR, 1);
 		for (int i = 0; i < 5; i++) {
-			builder.touchableRect(1.25f * (i + 2f) + 1.1f, 1.25f * 3 + .5f);
+			builder.touchableRect(1.25f * (i + 2f) + 1.1f, 1.25f * 3 + offY);
 			engine.addEntity(builder.build());
 		}
 
 //		builder.reset().occupiable();
 //		for (int i = 0; i < 8; i++) {
-//			builder.field(Zones.P1_BATTLE, 1, 1.25f * i + 1.75f, 1.25f * 1 + .5f);
+//			builder.field(Zones.P1_BATTLE, 1, 1.25f * i + 1.75f, 1.25f * 1 + offY);
 //			engine.addEntity(builder.build());
 //		}
 		
-		builder.reset().field(Zones.P1_MOTHER, 1).touchableRect(1.25f * 1f + 1.1f, 1.25f * 3 + .5f);
+		builder.reset().field(Zones.P1_MOTHER, 1).touchableRect(1.25f * 1f + 1.1f, 1.25f * 3 + offY);
 		engine.addEntity(builder.build());
 		
-		builder.reset().field(Zones.P1_PLANET, 1).touchableRect(1.25f * 0f + 1.1f, 1.25f * 3 + .5f);
+		builder.reset().field(Zones.P1_PLANET, 1).touchableRect(1.25f * 0f + 1.1f, 1.25f * 3 + offY);
 		engine.addEntity(builder.build());
 		
-		builder.reset().field(Zones.P1_YARD, 1).touchableRect(1.25f * 7f + 1.1f, 1.25f * 3 + .5f);
+		builder.reset().field(Zones.P1_YARD, 1).touchableRect(1.25f * 7f + 1.1f, 1.25f * 3 + offY);
 		engine.addEntity(builder.build());
 		
 		// CARDS
@@ -202,6 +192,33 @@ public class GameClient extends ApplicationAdapter {
 		
 		engine.addEntity(thisPlayer);
 		engine.addEntity(opponentPlayer);
+		
+		// UI
+		
+		offX = 4.2f;
+		
+		engine.addEntity(builder.reset().ui(offX, 0.333f, 1, 0.25f, "Hand").build());
+		engine.addEntity(builder.reset().ui(offX + 1.25f, 0.333f, 1, 0.25f, "0 / 0").build());
+		engine.addEntity(builder.reset().ui(offX + 2.5f, 0.333f, 1, 0.25f, "Turn").build());
+	}
+	
+	@Override
+	public void render() {
+		
+		float delta = Gdx.graphics.getDeltaTime();
+		update(delta);
+		
+		try {
+			Thread.sleep(2);
+		} catch (InterruptedException ex) {
+			ex.printStackTrace();
+		}
+	}
+	
+	@Override
+	public void resize(int width, int height) {
+		textCam.setToOrtho(false, width, height);
+		Services.getUiService().resize(width, height);
 	}
 	
 	@Override
