@@ -1,7 +1,6 @@
 package com.github.belserich;
 
 import com.badlogic.ashley.core.Engine;
-import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -19,7 +18,7 @@ import com.github.belserich.entity.system.core.*;
 import com.github.belserich.entity.system.core.input.RectTouchHandler;
 import com.github.belserich.entity.system.core.input.SceneSwitcher;
 import com.github.belserich.entity.system.core.input.SelectHandler;
-import com.github.belserich.entity.system.core.input.TurnHandler;
+import com.github.belserich.entity.system.core.input.TurnSwitcher;
 import com.github.belserich.entity.system.field.FieldOwnerSetter;
 import com.github.belserich.entity.system.gfx.CardRenderer;
 import com.github.belserich.entity.system.gfx.FieldRenderer;
@@ -92,8 +91,7 @@ public class GameClient extends ApplicationAdapter {
 		engine.addSystem(new AttackerTurnHandler());
 		engine.addSystem(new SpAttacker());
 		
-		engine.addSystem(new TurnHandler());
-		engine.addSystem(new TurnGiver());
+		engine.addSystem(new TurnSwitcher());
 		
 		engine.addSystem(new FieldRenderer());
 		engine.addSystem(new CardRenderer());
@@ -108,11 +106,8 @@ public class GameClient extends ApplicationAdapter {
 		
 		EntityBuilder builder = new EntityBuilder();
 		
-		Entity thisPlayer = builder.reset().player(0).turnableOn().build();
-		Entity opponentPlayer = builder.reset().player(1).build();
-		
 		float offY = 1f;
-		float offX;
+		float offX = 4.2f;
 		
 		// FIELDS
 		
@@ -192,12 +187,7 @@ public class GameClient extends ApplicationAdapter {
 			engine.addEntity(builder.build());
 		}
 		
-		engine.addEntity(thisPlayer);
-		engine.addEntity(opponentPlayer);
-		
 		// UI
-		
-		offX = 4.2f;
 		
 		engine.addEntity(builder.reset().scene(0).switc(1).ui("Hand", offX, 0.333f, 1, 0.25f).build());
 		engine.addEntity(builder.reset().scene(1).switc(0).ui("Back", offX, 0.333f, 1, 0.25f).build());
@@ -206,7 +196,10 @@ public class GameClient extends ApplicationAdapter {
 		engine.addEntity(builder.reset().scene(0).ui("-", offX + 1.25f, 1.25f * 4f + offY, 1, 0.25f).build());
 		engine.addEntity(builder.scene(1).build());
 		
-		engine.addEntity(builder.reset().scene(0).ui("Turn", offX + 2.5f, 0.333f, 1, 0.25f).build());
+		// PLAYERS
+		
+		engine.addEntity(builder.reset().scene(0).ui("Turn", offX + 2.5f, 0.333f, 1, 0.25f).player(0).build());
+		engine.addEntity(builder.reset().player(1).build());
 	}
 	
 	@Override

@@ -135,13 +135,6 @@ public class EntityBuilder {
 		return this;
 	}
 	
-	public EntityBuilder selectable() {
-		
-		suppliers.add(() -> new Selectable());
-		
-		return this;
-	}
-	
 	public EntityBuilder occupiable() {
 		
 		suppliers.add(Occupiable::new);
@@ -164,13 +157,9 @@ public class EntityBuilder {
 		suppliers.add(() -> new Ep(120));
 		suppliers.add(Ep.Update::new);
 		suppliers.add(Turnable::new);
-		
-		return this;
-	}
-	
-	public EntityBuilder turnableOn() {
-		
-		suppliers.add(Turnable.On::new);
+		if (id == 0) {
+			suppliers.add(Touchable.Released::new);
+		}
 		
 		return this;
 	}

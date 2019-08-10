@@ -12,21 +12,9 @@ import com.github.belserich.entity.component.Touchable;
 import com.github.belserich.entity.component.Visible;
 import com.github.belserich.entity.core.EntityActor;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-
 public class RectTouchHandler extends EntityActor {
 	
-	private final Set<Entity> touched;
-	private final Set<Entity> released;
-	
 	private Vector3 wVec;
-	
-	public RectTouchHandler() {
-		touched = new HashSet<>();
-		released = new HashSet<>();
-	}
 	
 	@Override
 	protected Family actors() {
@@ -40,10 +28,17 @@ public class RectTouchHandler extends EntityActor {
 	@Override
 	public void updateEntities() {
 		
-		Iterator<Entity> it = released.iterator();
-		while (it.hasNext()) {
-			it.next().remove(Touchable.Released.class);
-			it.remove();
+		Entity[] arr = getEngine().getEntitiesFor(Family.all(
+				Rect.class,
+				Touchable.class,
+				Touchable.Released.class,
+				Visible.class)
+				.get()).toArray(Entity.class);
+		
+		int i;
+		
+		for (i = 0; i < arr.length; i++) {
+			arr[i].remove(Touchable.Released.class);
 		}
 		
 		if (Gdx.input.isTouched(Input.Buttons.LEFT)) {
@@ -53,18 +48,19 @@ public class RectTouchHandler extends EntityActor {
 			wVec = cam.unproject(wVec);
 			
 			super.updateEntities();
+		} else {
 			
-		} else if (!touched.isEmpty()) {
+			arr = getEngine().getEntitiesFor(Family.all(
+					Rect.class,
+					Touchable.class,
+					Touchable.Touched.class,
+					Visible.class
+			).get()).toArray(Entity.class);
 			
-			it = touched.iterator();
-			while (it.hasNext()) {
+			for (i = 0; i < arr.length; i++) {
 				
-				Entity next = it.next();
-				next.remove(Touchable.Touched.class);
-				it.remove();
-				
-				next.add(new Touchable.Released());
-				released.add(next);
+				arr[i].remove(Touchable.Touched.class);
+				arr[i].add(new Touchable.Released());
 			}
 		}
 	}
@@ -75,18 +71,9 @@ public class RectTouchHandler extends EntityActor {
 		Rect rc = actor.getComponent(Rect.class);
 		
 		if (wVec.x < rc.x || wVec.x > rc.x + rc.width || wVec.y < rc.y || wVec.y > rc.y + rc.height) {
-			
-			if (touched.contains(actor)) {
-				actor.remove(Touchable.Touched.class);
-				touched.remove(actor);
-			}
 			return;
 		}
 		
-		if (!touched.contains(actor)) {
-			
-			actor.add(new Touchable.Touched());
-			touched.add(actor);
-		}
+		actor.add(new Touchable.Touched());
 	}
 }
