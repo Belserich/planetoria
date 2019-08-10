@@ -10,7 +10,7 @@ import com.github.belserich.entity.component.Touchable;
 import com.github.belserich.entity.component.Visible;
 import com.github.belserich.entity.core.EntityInteractor;
 
-public class UiHandler extends EntityInteractor {
+public class SceneSwitcher extends EntityInteractor {
 	
 	@Override
 	protected Family actors() {

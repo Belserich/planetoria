@@ -17,9 +17,9 @@ import com.github.belserich.entity.builder.EntityBuilder;
 import com.github.belserich.entity.system.card.CardPlayer;
 import com.github.belserich.entity.system.core.*;
 import com.github.belserich.entity.system.core.input.RectTouchHandler;
+import com.github.belserich.entity.system.core.input.SceneSwitcher;
 import com.github.belserich.entity.system.core.input.SelectHandler;
 import com.github.belserich.entity.system.core.input.TurnHandler;
-import com.github.belserich.entity.system.core.input.UiHandler;
 import com.github.belserich.entity.system.field.FieldOwnerSetter;
 import com.github.belserich.entity.system.gfx.CardRenderer;
 import com.github.belserich.entity.system.gfx.FieldRenderer;
@@ -99,7 +99,7 @@ public class GameClient extends ApplicationAdapter {
 		engine.addSystem(new CardRenderer());
 		engine.addSystem(new UiRenderer());
 		engine.addSystem(new RectTouchHandler());
-		engine.addSystem(new UiHandler());
+		engine.addSystem(new SceneSwitcher());
 	}
 	
 	private void createEntities() {
@@ -202,8 +202,8 @@ public class GameClient extends ApplicationAdapter {
 		engine.addEntity(builder.reset().scene(0).switc(1).ui("Hand", offX, 0.333f, 1, 0.25f).build());
 		engine.addEntity(builder.reset().scene(1).switc(0).ui("Back", offX, 0.333f, 1, 0.25f).build());
 		
-		engine.addEntity(builder.reset().scene(0).ui("0 / 0", offX + 1.25f, 0.333f, 1, 0.25f).build());
-		engine.addEntity(builder.reset().scene(0).ui("0 / 0", offX + 1.25f, 1.25f * 4f + offY, 1, 0.25f).build());
+		engine.addEntity(builder.reset().scene(0).ui("-", offX + 1.25f, 0.333f, 1, 0.25f).build());
+		engine.addEntity(builder.reset().scene(0).ui("-", offX + 1.25f, 1.25f * 4f + offY, 1, 0.25f).build());
 		engine.addEntity(builder.scene(1).build());
 		
 		engine.addEntity(builder.reset().scene(0).ui("Turn", offX + 2.5f, 0.333f, 1, 0.25f).build());
