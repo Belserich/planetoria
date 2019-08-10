@@ -6,4 +6,7 @@ public class Touchable implements Component {
 	
 	public static class Touched implements Component {
 	}
+	
+	public static class Released implements Component {
+	}
 }

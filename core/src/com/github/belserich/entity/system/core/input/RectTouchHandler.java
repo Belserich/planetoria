@@ -9,33 +9,42 @@ import com.badlogic.gdx.math.Vector3;
 import com.github.belserich.Services;
 import com.github.belserich.entity.component.Rect;
 import com.github.belserich.entity.component.Touchable;
+import com.github.belserich.entity.component.Visible;
 import com.github.belserich.entity.core.EntityActor;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
 public class RectTouchHandler extends EntityActor {
 	
-	private final Set<Entity> processed;
+	private final Set<Entity> touched;
+	private final Set<Entity> released;
 	
 	private Vector3 wVec;
 	
 	public RectTouchHandler() {
-		processed = Collections.synchronizedSet(new HashSet<>());
+		touched = new HashSet<>();
+		released = new HashSet<>();
 	}
 	
 	@Override
 	protected Family actors() {
 		return Family.all(
 				Rect.class,
-				Touchable.class
+				Touchable.class,
+				Visible.class
 		).get();
 	}
 	
 	@Override
 	public void updateEntities() {
+		
+		Iterator<Entity> it = released.iterator();
+		while (it.hasNext()) {
+			it.next().remove(Touchable.Released.class);
+			it.remove();
+		}
 		
 		if (Gdx.input.isTouched(Input.Buttons.LEFT)) {
 			
@@ -44,12 +53,18 @@ public class RectTouchHandler extends EntityActor {
 			wVec = cam.unproject(wVec);
 			
 			super.updateEntities();
-		} else if (!processed.isEmpty()) {
 			
-			Iterator<Entity> it = processed.iterator();
+		} else if (!touched.isEmpty()) {
+			
+			it = touched.iterator();
 			while (it.hasNext()) {
-				it.next().remove(Touchable.Touched.class);
+				
+				Entity next = it.next();
+				next.remove(Touchable.Touched.class);
 				it.remove();
+				
+				next.add(new Touchable.Released());
+				released.add(next);
 			}
 		}
 	}
@@ -61,17 +76,17 @@ public class RectTouchHandler extends EntityActor {
 		
 		if (wVec.x < rc.x || wVec.x > rc.x + rc.width || wVec.y < rc.y || wVec.y > rc.y + rc.height) {
 			
-			if (processed.contains(actor)) {
+			if (touched.contains(actor)) {
 				actor.remove(Touchable.Touched.class);
-				processed.remove(actor);
+				touched.remove(actor);
 			}
 			return;
 		}
 		
-		if (!processed.contains(actor)) {
+		if (!touched.contains(actor)) {
 			
 			actor.add(new Touchable.Touched());
-			processed.add(actor);
+			touched.add(actor);
 		}
 	}
 }

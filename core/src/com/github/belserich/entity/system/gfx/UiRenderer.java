@@ -9,6 +9,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.github.belserich.entity.component.Name;
 import com.github.belserich.entity.component.Rect;
 import com.github.belserich.entity.component.Ui;
+import com.github.belserich.entity.component.Visible;
 
 public class UiRenderer extends BaseRenderer {
 	
@@ -23,7 +24,8 @@ public class UiRenderer extends BaseRenderer {
 		return Family.all(
 				Ui.class,
 				Name.class,
-				Rect.class
+				Rect.class,
+				Visible.class
 		).get();
 	}
 	

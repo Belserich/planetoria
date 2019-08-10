@@ -175,11 +175,37 @@ public class EntityBuilder {
 		return this;
 	}
 	
-	public EntityBuilder ui(float offX, float offY, float width, float height, String name) {
+	public EntityBuilder scene(int sceneId) {
+		
+		suppliers.add(() -> new Scene(sceneId));
+		if (sceneId == 0) {
+			suppliers.add(Visible::new);
+		}
+		
+		return this;
+	}
+	
+	public EntityBuilder ui(String name, float offX, float offY, float width, float height) {
+		
+		suppliers.add(Touchable::new);
 		
 		suppliers.add(Ui::new);
 		suppliers.add(() -> new Rect(offX, offY, width, height));
 		suppliers.add(() -> new Name(name));
+		
+		return this;
+	}
+	
+	public EntityBuilder name(String name) {
+		
+		suppliers.add(() -> new Name(name));
+		
+		return this;
+	}
+	
+	public EntityBuilder switc(int toId) {
+		
+		suppliers.add(() -> new Switch(toId));
 		
 		return this;
 	}

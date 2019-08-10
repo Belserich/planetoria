@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.github.belserich.entity.component.BoardPos;
 import com.github.belserich.entity.component.FieldId;
+import com.github.belserich.entity.component.Visible;
 
 public class FieldRenderer extends BaseRenderer {
 	
@@ -23,7 +24,8 @@ public class FieldRenderer extends BaseRenderer {
 	protected Family actors() {
 		return Family.all(
 				FieldId.class,
-				BoardPos.class
+				BoardPos.class,
+				Visible.class
 		).get();
 	}
 	

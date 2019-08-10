@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector3;
 import com.github.belserich.entity.component.BoardPos;
 import com.github.belserich.entity.component.CardId;
+import com.github.belserich.entity.component.Visible;
 
 public class CardRenderer extends BaseRenderer {
 	
@@ -24,7 +25,8 @@ public class CardRenderer extends BaseRenderer {
 	protected Family actors() {
 		return Family.all(
 				CardId.class,
-				BoardPos.class
+				BoardPos.class,
+				Visible.class
 		).get();
 	}
 	

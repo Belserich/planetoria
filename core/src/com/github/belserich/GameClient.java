@@ -19,6 +19,7 @@ import com.github.belserich.entity.system.core.*;
 import com.github.belserich.entity.system.core.input.RectTouchHandler;
 import com.github.belserich.entity.system.core.input.SelectHandler;
 import com.github.belserich.entity.system.core.input.TurnHandler;
+import com.github.belserich.entity.system.core.input.UiHandler;
 import com.github.belserich.entity.system.field.FieldOwnerSetter;
 import com.github.belserich.entity.system.gfx.CardRenderer;
 import com.github.belserich.entity.system.gfx.FieldRenderer;
@@ -98,6 +99,7 @@ public class GameClient extends ApplicationAdapter {
 		engine.addSystem(new CardRenderer());
 		engine.addSystem(new UiRenderer());
 		engine.addSystem(new RectTouchHandler());
+		engine.addSystem(new UiHandler());
 	}
 	
 	private void createEntities() {
@@ -114,81 +116,81 @@ public class GameClient extends ApplicationAdapter {
 		
 		// FIELDS
 		
-		builder.reset().occupiable().field(Zones.P0_BATTLE, 0);
+		builder.reset().occupiable().field(Zones.P0_BATTLE, 0).scene(0);
 		for (int i = 0; i < 7; i++) {
 			builder.touchableRect(1.25f * i + 1.75f, 1.25f * 1 + offY);
 			engine.addEntity(builder.build());
 		}
 		
-		builder.reset().field(Zones.P0_REPAIR, 0);
+		builder.reset().field(Zones.P0_REPAIR, 0).scene(0);
 		for (int i = 0; i < 5; i++) {
 			builder.touchableRect(1.25f * (i + 1f) + 1.1f, 1.25f * 0 + offY);
 			engine.addEntity(builder.build());
 		}
-
-//		builder.reset().occupiable();
-//		for (int i = 0; i < 8; i++) {
-//			builder.field(Zones.P0_BATTLE, 0, 1.25f * i + 1.75f, 1.25f * 1 + offY);
-//			engine.addEntity(builder.build());
-//		}
 		
-		builder.reset().field(Zones.P0_MOTHER, 0).touchableRect(1.25f * 6f + 1.1f, 1.25f * 0 + offY);
+		builder.reset().field(Zones.P0_DECK, 0).occupiable().scene(1);
+		for (int i = 0; i < 8; i++) {
+			builder.touchableRect(1.25f * i + 1.1f, 1.25f * 3 + offY);
+			engine.addEntity(builder.build());
+		}
+		
+		builder.reset().field(Zones.P0_MOTHER, 0).touchableRect(1.25f * 6f + 1.1f, 1.25f * 0 + offY).scene(0);
 		engine.addEntity(builder.build());
 		
-		builder.reset().field(Zones.P0_PLANET, 0).touchableRect(1.25f * 7f + 1.1f, 1.25f * 0 + offY);
+		builder.reset().field(Zones.P0_PLANET, 0).touchableRect(1.25f * 7f + 1.1f, 1.25f * 0 + offY).scene(0);
 		engine.addEntity(builder.build());
 		
-		builder.reset().field(Zones.P0_YARD, 0).touchableRect(1.25f * 0f + 1.1f, 1.25f * 0 + offY);
+		builder.reset().field(Zones.P0_YARD, 0).touchableRect(1.25f * 0f + 1.1f, 1.25f * 0 + offY).scene(0);
 		engine.addEntity(builder.build());
 		
-		builder.reset().occupiable().field(Zones.P1_BATTLE, 1);
+		builder.reset().occupiable().field(Zones.P1_BATTLE, 1).scene(0);
 		for (int i = 0; i < 7; i++) {
 			builder.touchableRect(1.25f * i + 1.75f, 1.25f * 2 + offY);
 			engine.addEntity(builder.build());
 		}
 		
-		builder.reset().field(Zones.P1_REPAIR, 1);
+		builder.reset().field(Zones.P1_REPAIR, 1).scene(0);
 		for (int i = 0; i < 5; i++) {
 			builder.touchableRect(1.25f * (i + 2f) + 1.1f, 1.25f * 3 + offY);
 			engine.addEntity(builder.build());
 		}
-
-//		builder.reset().occupiable();
-//		for (int i = 0; i < 8; i++) {
-//			builder.field(Zones.P1_BATTLE, 1, 1.25f * i + 1.75f, 1.25f * 1 + offY);
-//			engine.addEntity(builder.build());
-//		}
 		
-		builder.reset().field(Zones.P1_MOTHER, 1).touchableRect(1.25f * 1f + 1.1f, 1.25f * 3 + offY);
+		builder.reset().field(Zones.P1_DECK, 1).occupiable().scene(1);
+		for (int i = 0; i < 8; i++) {
+			builder.touchableRect(1.25f * i + 1.1f, 1.25f * 2 + offY);
+			engine.addEntity(builder.build());
+		}
+		
+		builder.reset().field(Zones.P1_MOTHER, 1).touchableRect(1.25f * 1f + 1.1f, 1.25f * 3 + offY).scene(0);
 		engine.addEntity(builder.build());
 		
-		builder.reset().field(Zones.P1_PLANET, 1).touchableRect(1.25f * 0f + 1.1f, 1.25f * 3 + offY);
+		builder.reset().field(Zones.P1_PLANET, 1).touchableRect(1.25f * 0f + 1.1f, 1.25f * 3 + offY).scene(0);
 		engine.addEntity(builder.build());
 		
-		builder.reset().field(Zones.P1_YARD, 1).touchableRect(1.25f * 7f + 1.1f, 1.25f * 3 + offY);
+		builder.reset().field(Zones.P1_YARD, 1).touchableRect(1.25f * 7f + 1.1f, 1.25f * 3 + offY).scene(0);
 		engine.addEntity(builder.build());
 		
 		// CARDS
 		
-		builder.reset().card(Cards.SPACESHIP_B, Zones.P0_BATTLE, 0).attacker();
+		builder.reset().card(Cards.SPACESHIP_B, Zones.P0_BATTLE, 0).attacker().scene(0);
 		for (int i = 0; i < 4; i++) {
 			engine.addEntity(builder.build());
 		}
 		
-		builder.reset().card(Cards.SPACESHIP_B, Zones.P1_BATTLE, 1).covered().attackable();
+		builder.reset().card(Cards.SPACESHIP_B, Zones.P1_BATTLE, 1).covered().attackable().scene(0);
 		for (int i = 0; i < 4; i++) {
 			engine.addEntity(builder.build());
 		}
-
-//		builder.reset().card(Cards.SPACESHIP_A, Zones.P0_DECK, 0).attacker().playable();
-//		for (int i = 0; i < 4; i++) {
-//			engine.addEntity(builder.build());
-//		}
-//
-//		builder.reset().card(Cards.STRATEGY_1, Zones.P0_DECK, 0).playable();
-//		for (int i = 0; i < 4; i++) {
-//			engine.addEntity(builder.build());
-//		}
+		
+		builder.reset().card(Cards.SPACESHIP_A, Zones.P0_DECK, 0).attacker().playable().scene(1);
+		for (int i = 0; i < 4; i++) {
+			engine.addEntity(builder.build());
+		}
+		
+		builder.reset().card(Cards.STRATEGY_1, Zones.P0_DECK, 0).playable().scene(1);
+		for (int i = 0; i < 4; i++) {
+			engine.addEntity(builder.build());
+		}
 		
 		engine.addEntity(thisPlayer);
 		engine.addEntity(opponentPlayer);
@@ -197,9 +199,14 @@ public class GameClient extends ApplicationAdapter {
 		
 		offX = 4.2f;
 		
-		engine.addEntity(builder.reset().ui(offX, 0.333f, 1, 0.25f, "Hand").build());
-		engine.addEntity(builder.reset().ui(offX + 1.25f, 0.333f, 1, 0.25f, "0 / 0").build());
-		engine.addEntity(builder.reset().ui(offX + 2.5f, 0.333f, 1, 0.25f, "Turn").build());
+		engine.addEntity(builder.reset().scene(0).switc(1).ui("Hand", offX, 0.333f, 1, 0.25f).build());
+		engine.addEntity(builder.reset().scene(1).switc(0).ui("Back", offX, 0.333f, 1, 0.25f).build());
+		
+		engine.addEntity(builder.reset().scene(0).ui("0 / 0", offX + 1.25f, 0.333f, 1, 0.25f).build());
+		engine.addEntity(builder.reset().scene(0).ui("0 / 0", offX + 1.25f, 1.25f * 4f + offY, 1, 0.25f).build());
+		engine.addEntity(builder.scene(1).build());
+		
+		engine.addEntity(builder.reset().scene(0).ui("Turn", offX + 2.5f, 0.333f, 1, 0.25f).build());
 	}
 	
 	@Override
