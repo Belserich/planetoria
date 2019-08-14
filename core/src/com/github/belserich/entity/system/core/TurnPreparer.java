@@ -5,16 +5,17 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.github.belserich.entity.component.OwnedByPlayer;
 import com.github.belserich.entity.component.PlayerId;
+import com.github.belserich.entity.component.Selectable;
 import com.github.belserich.entity.component.Turnable;
 import com.github.belserich.entity.core.EntityInteractor;
 
-public class TurnGiver extends EntityInteractor {
+public class TurnPreparer extends EntityInteractor {
 	
 	@Override
 	public Family actors() {
 		return Family.all(
 				PlayerId.class,
-				Turnable.On.class
+				Turnable.HasTurn.class
 		).get();
 	}
 	
@@ -36,9 +37,10 @@ public class TurnGiver extends EntityInteractor {
 			OwnedByPlayer opc = next.getComponent(OwnedByPlayer.class);
 			
 			if (opc.id == pc.val) {
-				next.add(new Turnable.On());
+				next.add(new Turnable.HasTurn());
 			} else {
-				next.remove(Turnable.On.class);
+				next.remove(Turnable.HasTurn.class);
+				next.remove(Selectable.Selected.class);
 			}
 		}
 	}

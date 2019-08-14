@@ -14,7 +14,7 @@ public class EpReducer extends EntityInteractor {
 	@Override
 	public Family actors() {
 		return Family.all(
-				Turnable.On.class,
+				Turnable.HasTurn.class,
 				Ep.class
 		).get();
 	}

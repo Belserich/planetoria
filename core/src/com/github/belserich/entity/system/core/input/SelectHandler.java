@@ -14,16 +14,14 @@ public class SelectHandler extends EntityActor {
 	@Override
 	public Family actors() {
 		return Family.all(
-				Turnable.On.class,
-				Touchable.Touched.class,
+				Turnable.HasTurn.class,
+				Touchable.Released.class,
 				Selectable.class
 		).get();
 	}
 	
 	@Override
 	public void entityAdded(Entity actor) {
-		
-		actor.remove(Touchable.Touched.class);
 		
 		if (ComponentMapper.getFor(Selectable.Selected.class).has(actor)) {
 			actor.remove(Selectable.Selected.class);

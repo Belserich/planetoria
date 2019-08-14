@@ -92,6 +92,7 @@ public class GameClient extends ApplicationAdapter {
 		engine.addSystem(new SpAttacker());
 		
 		engine.addSystem(new TurnSwitcher());
+		engine.addSystem(new TurnPreparer());
 		
 		engine.addSystem(new FieldRenderer());
 		engine.addSystem(new CardRenderer());
@@ -198,7 +199,9 @@ public class GameClient extends ApplicationAdapter {
 		
 		// PLAYERS
 		
-		engine.addEntity(builder.reset().scene(0).ui("Turn", offX + 2.5f, 0.333f, 1, 0.25f).player(0).build());
+		engine.addEntity(builder.reset().scene(0).ui("Turn", offX + 2.5f, 0.333f, 1, 0.25f).ownedByPlayer(0).turnable().build());
+		
+		engine.addEntity(builder.reset().player(0).build());
 		engine.addEntity(builder.reset().player(1).build());
 	}
 	

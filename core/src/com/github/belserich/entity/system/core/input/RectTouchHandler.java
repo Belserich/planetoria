@@ -48,6 +48,7 @@ public class RectTouchHandler extends EntityActor {
 			wVec = cam.unproject(wVec);
 			
 			super.updateEntities();
+			
 		} else {
 			
 			arr = getEngine().getEntitiesFor(Family.all(

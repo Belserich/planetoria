@@ -131,7 +131,12 @@ public class EntityBuilder {
 	public EntityBuilder ownedByZone(Zones template) {
 		
 		suppliers.add(() -> new OwnedByZone(template));
+		return this;
+	}
+	
+	public EntityBuilder ownedByPlayer(int playerId) {
 		
+		suppliers.add(() -> new OwnedByPlayer(playerId));
 		return this;
 	}
 	
@@ -158,7 +163,7 @@ public class EntityBuilder {
 		suppliers.add(Ep.Update::new);
 		suppliers.add(Turnable::new);
 		if (id == 0) {
-			suppliers.add(Touchable.Released::new);
+			suppliers.add(Turnable.HasTurn::new);
 		}
 		
 		return this;
@@ -182,6 +187,18 @@ public class EntityBuilder {
 		suppliers.add(() -> new Rect(offX, offY, width, height));
 		suppliers.add(() -> new Name(name));
 		
+		return this;
+	}
+	
+	public EntityBuilder turnable() {
+		
+		suppliers.add(Turnable::new);
+		return this;
+	}
+	
+	public EntityBuilder turnableOn() {
+		
+		suppliers.add(Turnable.HasTurn::new);
 		return this;
 	}
 	
