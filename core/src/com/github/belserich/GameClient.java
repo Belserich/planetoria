@@ -84,6 +84,8 @@ public class GameClient extends ApplicationAdapter {
 		engine.addSystem(new CardPlayer());
 		
 		engine.addSystem(new EpReducer());
+		engine.addSystem(new EpUpdater());
+		
 		engine.addSystem(new SelectHandler());
 		
 		engine.addSystem(new LpAttacker());
@@ -193,8 +195,8 @@ public class GameClient extends ApplicationAdapter {
 		engine.addEntity(builder.reset().scene(0).switc(1).ui("Hand", offX, 0.333f, 1, 0.25f).build());
 		engine.addEntity(builder.reset().scene(1).switc(0).ui("Back", offX, 0.333f, 1, 0.25f).build());
 		
-		engine.addEntity(builder.reset().scene(0).ui("-", offX + 1.25f, 0.333f, 1, 0.25f).build());
-		engine.addEntity(builder.reset().scene(0).ui("-", offX + 1.25f, 1.25f * 4f + offY, 1, 0.25f).build());
+		engine.addEntity(builder.reset().scene(0).ui("-", offX + 1.25f, 0.333f, 1, 0.25f).ownedByPlayer(0).turnable().epUpdatable().build());
+		engine.addEntity(builder.reset().scene(0).ui("-", offX + 1.25f, 1.25f * 4f + offY, 1, 0.25f).ownedByPlayer(1).turnable().epUpdatable().build());
 		engine.addEntity(builder.scene(1).build());
 		
 		// PLAYERS

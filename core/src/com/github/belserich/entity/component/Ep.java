@@ -14,4 +14,7 @@ public class Ep implements Component {
 	
 	public static class Update implements Component {
 	}
+	
+	public static class Updatable implements Component {
+	}
 }

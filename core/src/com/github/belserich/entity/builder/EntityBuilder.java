@@ -156,6 +156,13 @@ public class EntityBuilder {
 		return this;
 	}
 	
+	public EntityBuilder epUpdatable() {
+		
+		suppliers.add(Ep.Updatable::new);
+		
+		return this;
+	}
+	
 	public EntityBuilder player(int id) {
 		
 		suppliers.add(() -> new PlayerId(id));
