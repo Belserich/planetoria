@@ -4,8 +4,8 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.Vector2;
+import com.github.belserich.Renderer;
 import com.github.belserich.Services;
 import com.github.belserich.entity.component.Rect;
 import com.github.belserich.entity.component.Touchable;
@@ -14,7 +14,12 @@ import com.github.belserich.entity.core.EntityActor;
 
 public class RectTouchHandler extends EntityActor {
 	
-	private Vector3 wVec;
+	private Renderer renderer;
+	private Vector2 unitsVec;
+	
+	public RectTouchHandler() {
+		this.renderer = Services.getRenderer();
+	}
 	
 	@Override
 	protected Family actors() {
@@ -43,10 +48,7 @@ public class RectTouchHandler extends EntityActor {
 		
 		if (Gdx.input.isTouched(Input.Buttons.LEFT)) {
 			
-			Camera cam = Services.getBoardCamera();
-			wVec = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
-			wVec = cam.unproject(wVec);
-			
+			unitsVec = renderer.gameView().unproject(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
 			super.updateEntities();
 			
 		} else {
@@ -71,7 +73,9 @@ public class RectTouchHandler extends EntityActor {
 		
 		Rect rc = actor.getComponent(Rect.class);
 		
-		if (wVec.x < rc.x || wVec.x > rc.x + rc.width || wVec.y < rc.y || wVec.y > rc.y + rc.height) {
+		final float halfWidth = rc.width / 2f;
+		final float halfHeight = rc.height / 2f;
+		if (unitsVec.x < rc.x - halfWidth || unitsVec.x > rc.x + halfWidth || unitsVec.y < rc.y - halfHeight || unitsVec.y > rc.y + halfHeight) {
 			return;
 		}
 		

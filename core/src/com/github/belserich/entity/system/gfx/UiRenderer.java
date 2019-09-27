@@ -3,20 +3,21 @@ package com.github.belserich.entity.system.gfx;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.math.Vector3;
-import com.github.belserich.entity.component.Name;
-import com.github.belserich.entity.component.Rect;
-import com.github.belserich.entity.component.Ui;
-import com.github.belserich.entity.component.Visible;
+import com.badlogic.gdx.utils.Align;
+import com.github.belserich.Services;
+import com.github.belserich.entity.component.*;
+import com.github.belserich.entity.core.EntityActor;
+import com.github.belserich.util.RelGlyphLayout;
 
-public class UiRenderer extends BaseRenderer {
+public class UiRenderer extends EntityActor {
 	
-	private final Sprite uiSprite;
+	private final Texture uiTex;
 	
 	public UiRenderer() {
-		uiSprite = new Sprite(new Texture(Gdx.files.internal("ui_default.png")));
+		uiTex = new Texture(Gdx.files.internal("ui_default.png"));
 	}
 	
 	@Override
@@ -35,16 +36,21 @@ public class UiRenderer extends BaseRenderer {
 		Rect rc = actor.getComponent(Rect.class);
 		Name nc = actor.getComponent(Name.class);
 		
-		Vector3 textVec = new Vector3(rc.x, rc.y, 0);
-		boardCam.project(textVec);
-		
-		uiSprite.setPosition(rc.x, rc.y);
+		Sprite uiSprite = new Sprite(uiTex);
 		uiSprite.setSize(rc.width, rc.height);
+		uiSprite.setCenter(rc.x, rc.y);
 		
-		batch.setProjectionMatrix(boardCam.combined);
-		uiSprite.draw(batch);
+		RelGlyphLayout textLayout = Services.getRenderer().createRelGlyphLayout(
+				nc.name, 0, 0,
+				Color.WHITE,
+				rc.width,
+				Align.center,
+				false
+		);
 		
-		batch.setProjectionMatrix(textCam.combined);
-		font.draw(batch, nc.name, textVec.x + 10, textVec.y + 25);
+		actor.add(new Draw(
+				new Sprite[]{},
+				new RelGlyphLayout[]{textLayout}
+		));
 	}
 }

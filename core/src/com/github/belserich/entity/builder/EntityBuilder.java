@@ -85,10 +85,10 @@ public class EntityBuilder {
 		return this;
 	}
 	
-	public EntityBuilder touchableRect(float x, float y) {
+	public EntityBuilder bounds(float x, float y, float width, float height) {
 		
-		suppliers.add(() -> new BoardPos(x, y));
-		suppliers.add(() -> new Rect(x, y));
+		suppliers.add(() -> new Bounds(x, y, width, height));
+		suppliers.add(() -> new Rect(x, y, width, height));
 		
 		return this;
 	}

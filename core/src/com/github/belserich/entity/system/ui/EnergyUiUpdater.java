@@ -37,7 +37,7 @@ public class EnergyUiUpdater extends EntityInteractor {
 //		PlayerId pid = actor.getComponent(PlayerId.class);
 //		Ep ec = actor.getComponent(Ep.class);
 //
-//		service.setPlayerEnergy(pid.val, ec.val, ec.def);
+//		service.setPlayerEnergy(pid.sprite, ec.sprite, ec.def);
 //		actor.remove(Ep.Update.class);
 //	}
 }

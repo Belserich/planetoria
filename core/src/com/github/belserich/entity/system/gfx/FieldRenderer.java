@@ -5,11 +5,13 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.github.belserich.entity.component.BoardPos;
+import com.github.belserich.entity.component.Bounds;
+import com.github.belserich.entity.component.Draw;
 import com.github.belserich.entity.component.FieldId;
 import com.github.belserich.entity.component.Visible;
+import com.github.belserich.entity.core.EntityActor;
 
-public class FieldRenderer extends BaseRenderer {
+public class FieldRenderer extends EntityActor {
 	
 	private final Sprite fieldSprite;
 	
@@ -17,25 +19,27 @@ public class FieldRenderer extends BaseRenderer {
 		super();
 		
 		fieldSprite = new Sprite(new Texture(Gdx.files.internal("ui_field.png")));
-		fieldSprite.setSize(1, 1);
 	}
 	
 	@Override
 	protected Family actors() {
 		return Family.all(
 				FieldId.class,
-				BoardPos.class,
+				Bounds.class,
 				Visible.class
 		).get();
 	}
 	
 	@Override
-	public void entityUpdate(Entity actor) {
+	public void entityAdded(Entity actor) {
 		
-		BoardPos bpc = actor.getComponent(BoardPos.class);
+		Bounds bc = actor.getComponent(Bounds.class);
 		
-		batch.setProjectionMatrix(boardCam.combined);
-		fieldSprite.setPosition(bpc.x, bpc.y);
-		fieldSprite.draw(batch);
+		Sprite sprite = new Sprite(fieldSprite);
+		
+		sprite.setSize(bc.width, bc.height);
+		sprite.setCenter(bc.x, bc.y);
+		
+		actor.add(new Draw(new Sprite[]{sprite}));
 	}
 }

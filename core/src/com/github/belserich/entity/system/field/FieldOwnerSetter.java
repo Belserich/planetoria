@@ -51,10 +51,10 @@ public class FieldOwnerSetter extends EntityInteractor {
 			actor.remove(OwnedByField.Request.class);
 			actor.add(new OwnedByField(field.getComponent(FieldId.class).id));
 			
-			if (ComponentMapper.getFor(BoardPos.class).has(field)) {
+			if (ComponentMapper.getFor(Bounds.class).has(field)) {
 				
-				BoardPos bc = field.getComponent(BoardPos.class);
-				actor.add(new BoardPos(bc.x, bc.y));
+				Bounds bc = field.getComponent(Bounds.class);
+				actor.add(new Bounds(bc.x, bc.y, bc.width, bc.height));
 			}
 			
 			if (ComponentMapper.getFor(Rect.class).has(field)) {
